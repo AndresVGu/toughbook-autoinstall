@@ -44,6 +44,48 @@ check_root() {
     fi
 }
 
+#Neofetch
+check_neofetch() {
+    #Confirm dmidecode
+
+    #brand & model
+    brand=$(sudo dmidecode -s system-manufacturer 2>/dev/null)
+    model=$(sudo dmidecode -s system-product-name 2>/dev/null)
+
+    #serial & part number
+    serial=$(sudo dmidecode -s system-serial-number 2>/dev/null)
+    part_number=$(sudo dmidecode -s baseboard-product-name 2>/dev/null)
+
+    #hours
+    hours=$(sudo dmidecode -t 22 2>/dev/null | grep "Hours" | awk '{print $2}')
+    [ -z "$hours" ] && hours="Not Available"
+
+    #Procesor
+    cpu=$(lscpu | grep "model name" | sed 's/Model name:\s*//')
+
+    #RAM
+    ram_gb=$(free -g | awk '/Mem:/ {print $2}')
+    ram_type=$(sudo dmidecode -t memory | grep -E "Type:.*DDR" | awk '{print $2}' | head -n1)
+
+    #Disks
+    disks=$(lsblk -d -o SIZE,MODEL,SERIAL | grep -v "loop")
+
+    echo -e "==================== PC INFO ===================="
+    echo -e "Brand:             $brand"
+    echo -e "Model:             $model"
+    echo -e "Part Number:       $part_number"
+    echo -e "Serial Number      $serial"
+    echo -e "Hours:             $hours"
+    echo -e "Procesor:          $cpu"
+    echo -e "-------------------- MEMORY ---------------------"
+    echo -e "Total:             $ram_gb Gb"
+    echo -e "memoria 1          (${ram_type}) Speed:"
+    echo -e "-------------------- Disks ----------------------"
+    echo "$disks"
+    echo -e "================================================="
+
+}
+
 # ==================== Core Functions ====================
 
 # Detects connected USB devices
@@ -56,14 +98,19 @@ device_detection() {
     local devices_to_check=("Sierra Wireless" "U-Blox" "Fingerprint" "Webcam" "Bluetooth" "Smart Card Reader" "Touch Panel")
     local usb_devices=$(lsusb)
 
+    #neofetch
+    neofetch
+
+    sleep 1
+
     printf "%-25s | %s\n" "Device" "Status"
     printf "%-25s | %s\n" "-------------------------" "------------"
 
     for device_name in "${devices_to_check[@]}"; do
         if echo "$usb_devices" | grep -qi "$device_name"; then
-            printf "${GREEN}%-25s${END} | ${GREEN}%s${END}\n" "$device_name" "[+] Detected"
+            printf "${GREEN}%-25s${END} | ${GREEN}%s${END}\n" "$device_name" "✅ Detected"
         else
-            printf "${RED}%-25s${END} | ${RED}%s${END}\n" "$device_name" "[-] Not Detected"
+            printf "${RED}%-25s${END} | ${RED}%s${END}\n" "$device_name" "⚠️  Not Detected"
         fi
     done
 
@@ -205,4 +252,5 @@ main_menu() {
 trap ctrl_c INT
 check_root
 show_banner
+check_neofetch
 main_menu
