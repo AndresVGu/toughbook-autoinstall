@@ -145,6 +145,16 @@ check_neofetch() {
     bat_health=$(acpi -V | grep "mAh" | grep -o "[0-9]\+%")
     #Status
     bat_status=$(acpi -V | grep "Battery" | grep -o "[0-9]\+%" | sed -n '1p')
+    clean_value=${bat_health%\%}
+    bat_message=""
+    
+    if [ "$clean_value" -gt 85 ]; then
+        bat_message="${GREEN}Recomended for Amazon Orders ${END}"
+    elif [ "$clean_value" -gt 80 ]; then
+        bat_message="${GREEN}Recomended for Shopify or Amazon ${END}"
+    else
+        bat_message="${YELLOW}Not Guarateed Health Orders ${END}"
+    fi
 
     #Information chart
     echo -e "${TURQUOISE}==================== PC INFO ====================${END}"
@@ -152,7 +162,7 @@ check_neofetch() {
     echo -e "Model:             $model"
     echo -e "Part Number:       $part_number"
     echo -e "Serial Number      $serial"
-    echo -e "Processor:          $cpu"
+    echo -e "Processor:         $cpu"
     echo -e "${TURQUOISE}-------------------- MEMORY ---------------------${END}"
     echo -e "RAM Total:  ${ram_gb} GB (${ram_type})"
     echo -e "Slot 1: ${ram_slot_a} ${ram_size_a}         Speed: ${ram_speed_a} MT/s"
@@ -161,8 +171,8 @@ check_neofetch() {
     echo "$disks"
     echo -e "${TURQUOISE}=================================================${END}"
     echo -e "${TURQUOISE}================ BATTERY INFO ===================${END}"
-    echo -e "Power Status: ${bat_status}     ||    Health Battery: ${bat_health}"
-
+    echo -e "Power Status: $bat_status"
+    echo -e "Battery Health: ${bat_health}   ||   ${bat_message}    "
 }
 
 # ==================== Core Functions ====================
