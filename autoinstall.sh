@@ -50,6 +50,8 @@ check_neofetch() {
     sleep 1
 
     sudo apt update -y
+    sleep 0.5
+    sudo apt upgrade
 
     sleep 1
     #Confirm dmidecode
@@ -123,7 +125,6 @@ check_neofetch() {
     ram_speed_a=$(sudo dmidecode -t memory 2>/dev/null | grep -E "Speed:" | head -n1 | awk '{print $2}')
     [ -z "$ram_speed_a" ] && ram_speed_a=$(echo " ")
 
-
     #slot 2
     ram_slot_b=$(sudo dmidecode -t memory | grep -E "Handle" | sed -n '6p' | awk '{print $2}' | cut -c1-6)
     [ -z "$ram_slot_b" ] && ram_slot_b=$(echo "Empty")
@@ -134,13 +135,16 @@ check_neofetch() {
     ram_speed_b=$(sudo dmidecode -t memory 2>/dev/null | grep  -E "Speed:" | sed -n '3p' | awk '{print $2}')
     [ -z "$ram_speed_b" ] && ram_speed_b=$(echo " ")
 
-
     #Disks
     disks=$(lsblk -d -o TYPE,SIZE,SERIAL | grep "disk")
     [ -z "$disks" ] && disks=$(echo "Empty")
  
     #Battery
-
+    
+    #Healt
+    bat_health=$(acpi -V | grep "mAh" | grep -o "[0-9]\+%")
+    #Status
+    bat_status=$(acpi -V | grep "Battery" | grep -o "[0-9]\+%")
 
     #Information chart
     echo -e "${TURQUOISE}==================== PC INFO ====================${END}"
@@ -148,15 +152,17 @@ check_neofetch() {
     echo -e "Model:             $model"
     echo -e "Part Number:       $part_number"
     echo -e "Serial Number      $serial"
-    echo -e "Procesor:          $cpu"
+    echo -e "Processor:          $cpu"
     echo -e "${TURQUOISE}-------------------- MEMORY ---------------------${END}"
-    echo -e "Total:             ${ram_gb} GB (${ram_type})"
+    echo -e " RAM Total:  ${ram_gb} GB (${ram_type})"
     echo -e "Slot 1: ${ram_slot_a} ${ram_size_a}         Speed: ${ram_speed_a} MT/s"
     echo -e "Slot 2: ${ram_slot_b} ${ram_size_b}         Speed: ${ram_speed_b} MT/s"
     echo -e "${TURQUOISE}-------------------- Disks ----------------------${END}"
     echo "$disks"
     echo -e "${TURQUOISE}=================================================${END}"
     echo -e "${TURQUOISE}================ BATTERY INFO ===================${END}"
+    echo -e "Power Status: $bat_status"
+    echo -e "Health Battery: $bat_health"
 
 }
 
