@@ -49,7 +49,7 @@ check_neofetch() {
     echo -e "${PURPLE}[!] Checking Dependencies...${END}"
     sleep 1
 
-    #sudo apt update -y
+    sudo apt update -y
 
     sleep 1
     #Confirm dmidecode
@@ -70,49 +70,9 @@ check_neofetch() {
         sudo apt install acpi -y
     fi
 
-    #----------------
-    #--Libre Office
-    #----------------
-    PAK="org.libreoffice.LibreOffice"
-
-    is_installed(){
-        flatpak info "$PAK" &> /dev/null
-        return $?
-    }
-
-    #Confirm flatpak
-    if command -v flatpak &> /dev/null; then
-        echo "[+] flatpak already Installed."
-    else    
-        echo "[!] Installing flatpak ..."
-        sudo apt install flatpak -y
-    fi
-
-    #Add repo
-    if ! flatpak remotes | grep -q "flathub"; then
-        echo -e "[+] Adding Flathub repository"
-        sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-    fi
-
-    #Confirm LibreOffice
-    if is_installed; then
-        echo -e "[+] LibreOffice already Installed"
-    else
-        echo -e "[!] Installing LibreOffice..."
-        sudo flatpak install -y flathub "$PAK"
-    fi
-
     #--------
     #PYTHON
     #--------
-
-    #Confirm python
-    if command -v python &> /dev/null; then
-        echo "[+] python already Installed."
-    else    
-        echo "[!] Installing python ..."
-        sudo apt install -y python 
-    fi
 
     #Confirm python3
     if command -v python3 &> /dev/null; then
@@ -130,22 +90,13 @@ check_neofetch() {
         sudo apt install -y python3-pip
     fi
 
-    #Confirm tkinter
-    if command -v tk &> /dev/null; then
-        echo "[+] tkinter already Installed."
-    else    
-        echo "[!] Installing tkinter ..."
-        #sudo apt install -y python3-tk
-    fi
-    
-
     sleep 0.5
     echo -e "${YELLOW}[!] Collecting Device Information. ${END}"
     sleep 1
 
     #brand & model
     brand=$(sudo dmidecode -s system-manufacturer | awk '{print $1}' 2>/dev/null)
-    model=$(sudo dmidecode -s system-product-name | sed -r 's/([A-Z]{2})([0-9]{2})-([0-9)/\1-\2 MK\3/' 2>/dev/null)
+    model=$(sudo dmidecode -s system-product-name | sed -r 's/([A-Z]{2})([0-9]{2})-([0-9])/\1-\2 MK\3/' 2>/dev/null)
 
     #serial & part number
     serial=$(sudo dmidecode -s system-serial-number 2>/dev/null)
@@ -185,7 +136,7 @@ check_neofetch() {
 
 
     #Disks
-    disks=$(lsblk -d -o SIZE,TYPE,SERIAL | grep "disk")
+    disks=$(lsblk -d -o TYPE,SIZE,SERIAL | grep "disk")
     [ -z "$disks" ] && disks=$(echo "Empty")
  
     #Battery
