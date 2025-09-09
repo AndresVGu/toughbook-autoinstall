@@ -51,7 +51,7 @@ check_neofetch() {
 
     sudo apt update -y
     sleep 0.5
-    sudo apt upgrade
+    sudo apt upgrade -y
 
     sleep 1
     #Confirm dmidecode
@@ -144,7 +144,7 @@ check_neofetch() {
     #Healt
     bat_health=$(acpi -V | grep "mAh" | grep -o "[0-9]\+%")
     #Status
-    bat_status=$(acpi -V | grep "Battery" | grep -o "[0-9]\+%")
+    bat_status=$(acpi -V | grep "Battery" | grep -o "[0-9]\+%" | sed -n '1p')
 
     #Information chart
     echo -e "${TURQUOISE}==================== PC INFO ====================${END}"
@@ -154,15 +154,14 @@ check_neofetch() {
     echo -e "Serial Number      $serial"
     echo -e "Processor:          $cpu"
     echo -e "${TURQUOISE}-------------------- MEMORY ---------------------${END}"
-    echo -e " RAM Total:  ${ram_gb} GB (${ram_type})"
+    echo -e "RAM Total:  ${ram_gb} GB (${ram_type})"
     echo -e "Slot 1: ${ram_slot_a} ${ram_size_a}         Speed: ${ram_speed_a} MT/s"
     echo -e "Slot 2: ${ram_slot_b} ${ram_size_b}         Speed: ${ram_speed_b} MT/s"
     echo -e "${TURQUOISE}-------------------- Disks ----------------------${END}"
     echo "$disks"
     echo -e "${TURQUOISE}=================================================${END}"
     echo -e "${TURQUOISE}================ BATTERY INFO ===================${END}"
-    echo -e "Power Status: $bat_status"
-    echo -e "Health Battery: $bat_health"
+    echo -e "Power Status: ${bat_status}     ||    Health Battery: ${bat_health}"
 
 }
 
