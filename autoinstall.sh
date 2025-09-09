@@ -144,22 +144,22 @@ check_neofetch() {
     sleep 1
 
     #brand & model
-    brand=$(sudo dmidecode -s system-manufacturer 2>/dev/null)
-    model=$(sudo dmidecode -s system-product-name 2>/dev/null)
+    brand=$(sudo dmidecode -s system-manufacturer | awk '{print $1}' 2>/dev/null)
+    model=$(sudo dmidecode -s system-product-name | sed -r 's/([A-Z]{2})([0-9]{2})-([0-9)/\1-\2 MK\3/' 2>/dev/null)
 
     #serial & part number
     serial=$(sudo dmidecode -s system-serial-number 2>/dev/null)
-    part_number=$(sudo dmidecode -s baseboard-product-name 2>/dev/null)
+    part_number=$(sudo dmidecode -s system-sku-number 2>/dev/null)
 
     #hours
     hours=$(sudo dmidecode -t 22 2>/dev/null | grep "Hours" | awk '{print $2}')
     [ -z "$hours" ] && hours=$(uptime -p)
 
     #Procesor
-    cpu=$(lscpu | grep "Model name:" | sed 's/Model name:\s*//')
+    cpu=$(lscpu | grep "BIOS Model name:" | sed 's/BIOS Model name:\s*//')
 
     #RAM
-    ram_gb=$(free | awk '/Mem:/ {print $2}' | cut -c1-2)
+    ram_gb=$(free -h | awk '/Mem:/ {sub(/[a-zA-Z]/,"",$2); print int($2+0.5)}')
     ram_type=$(sudo dmidecode -t memory | grep -E "Type:.*DDR" | awk '{print $2}' | head -n1)
 
     #slot 1
@@ -185,7 +185,7 @@ check_neofetch() {
 
 
     #Disks
-    disks=$(lsblk -d -o SIZE,MODEL,SERIAL | grep -v "loop")
+    disks=$(lsblk -d -o SIZE,TYPE,SERIAL | grep "disk")
     [ -z "$disks" ] && disks=$(echo "Empty")
  
     #Battery
@@ -197,7 +197,6 @@ check_neofetch() {
     echo -e "Model:             $model"
     echo -e "Part Number:       $part_number"
     echo -e "Serial Number      $serial"
-    echo -e "Hours:             $hours"
     echo -e "Procesor:          $cpu"
     echo -e "${TURQUOISE}-------------------- MEMORY ---------------------${END}"
     echo -e "Total:             ${ram_gb} GB (${ram_type})"
