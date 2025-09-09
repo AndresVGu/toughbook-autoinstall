@@ -46,7 +46,102 @@ check_root() {
 
 #Neofetch
 check_neofetch() {
+    echo -e "${PURPLE}[!] Checking Dependencies...${END}"
+    sleep 1
+
+    #sudo apt update -y
+
+    sleep 1
     #Confirm dmidecode
+    if command -v dmidecode &> /dev/null; then
+        echo "[+] dmidecode alredy Installed."
+    else
+        echo "[!] Installing dmindecode..."
+        sudo apt install dmidecode -y
+    fi
+
+    sleep 0.5
+
+    #Confirm acpi
+    if command -v acpi &> /dev/null; then
+        echo "[+] acpi already Installed."
+    else    
+        echo "[!] Installing acpi ..."
+        sudo apt install acpi -y
+    fi
+
+    #----------------
+    #--Libre Office
+    #----------------
+    PAK="org.libreoffice.LibreOffice"
+
+    is_installed(){
+        flatpak info "$PAK" &> /dev/null
+        return $?
+    }
+
+    #Confirm flatpak
+    if command -v flatpak &> /dev/null; then
+        echo "[+] flatpak already Installed."
+    else    
+        echo "[!] Installing flatpak ..."
+        sudo apt install flatpak -y
+    fi
+
+    #Add repo
+    if ! flatpak remotes | grep -q "flathub"; then
+        echo -e "[+] Adding Flathub repository"
+        sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+    fi
+
+    #Confirm LibreOffice
+    if is_installed; then
+        echo -e "[+] LibreOffice already Installed"
+    else
+        echo -e "[!] Installing LibreOffice..."
+        sudo flatpak install -y flathub "$PAK"
+    fi
+
+    #--------
+    #PYTHON
+    #--------
+
+    #Confirm python
+    if command -v python &> /dev/null; then
+        echo "[+] python already Installed."
+    else    
+        echo "[!] Installing python ..."
+        sudo apt install -y python 
+    fi
+
+    #Confirm python3
+    if command -v python3 &> /dev/null; then
+        echo "[+] python3 already Installed."
+    else    
+        echo "[!] Installing python3 ..."
+        sudo apt install -y python3
+    fi
+
+    #Confirm pip3
+    if command -v pip3 &> /dev/null; then
+        echo "[+] pip3 already Installed."
+    else    
+        echo "[!] Installing pip3 ..."
+        sudo apt install -y python3-pip
+    fi
+
+    #Confirm tkinter
+    if command -v tk &> /dev/null; then
+        echo "[+] tkinter already Installed."
+    else    
+        echo "[!] Installing tkinter ..."
+        #sudo apt install -y python3-tk
+    fi
+    
+
+    sleep 0.5
+    echo -e "${YELLOW}[!] Collecting Device Information. ${END}"
+    sleep 1
 
     #brand & model
     brand=$(sudo dmidecode -s system-manufacturer 2>/dev/null)
@@ -58,31 +153,60 @@ check_neofetch() {
 
     #hours
     hours=$(sudo dmidecode -t 22 2>/dev/null | grep "Hours" | awk '{print $2}')
-    [ -z "$hours" ] && hours="Not Available"
+    [ -z "$hours" ] && hours=$(uptime -p)
 
     #Procesor
-    cpu=$(lscpu | grep "model name" | sed 's/Model name:\s*//')
+    cpu=$(lscpu | grep "Model name:" | sed 's/Model name:\s*//')
 
     #RAM
-    ram_gb=$(free -g | awk '/Mem:/ {print $2}')
+    ram_gb=$(free | awk '/Mem:/ {print $2}' | cut -c1-2)
     ram_type=$(sudo dmidecode -t memory | grep -E "Type:.*DDR" | awk '{print $2}' | head -n1)
+
+    #slot 1
+    ram_slot_a=$(sudo dmidecode -t memory | grep -E "Handle" | sed -n '3p' | awk '{print $2}' | cut -c1-6)
+    [ -z "$ram_slot_a" ] && ram_slot_a=$(echo "Empty")
+
+    ram_size_a=$(sudo dmidecode -t memory | grep -E "Size:" | sed -n '1p')
+    [ -z "$ram_size_a" ] && ram_size_a=$(echo " ")
+
+    ram_speed_a=$(sudo dmidecode -t memory 2>/dev/null | grep -E "Speed:" | head -n1 | awk '{print $2}')
+    [ -z "$ram_speed_a" ] && ram_speed_a=$(echo " ")
+
+
+    #slot 2
+    ram_slot_b=$(sudo dmidecode -t memory | grep -E "Handle" | sed -n '6p' | awk '{print $2}' | cut -c1-6)
+    [ -z "$ram_slot_b" ] && ram_slot_b=$(echo "Empty")
+
+    ram_size_b=$(sudo dmidecode -t memory | grep -E "Size:" | sed -n '2p')
+    [ -z "$ram_size_b" ] && ram_size_b=$(echo " ")
+
+    ram_speed_b=$(sudo dmidecode -t memory 2>/dev/null | grep  -E "Speed:" | sed -n '3p' | awk '{print $2}')
+    [ -z "$ram_speed_b" ] && ram_speed_b=$(echo " ")
+
 
     #Disks
     disks=$(lsblk -d -o SIZE,MODEL,SERIAL | grep -v "loop")
+    [ -z "$disks" ] && disks=$(echo "Empty")
+ 
+    #Battery
 
-    echo -e "==================== PC INFO ===================="
+
+    #Information chart
+    echo -e "${TURQUOISE}==================== PC INFO ====================${END}"
     echo -e "Brand:             $brand"
     echo -e "Model:             $model"
     echo -e "Part Number:       $part_number"
     echo -e "Serial Number      $serial"
     echo -e "Hours:             $hours"
     echo -e "Procesor:          $cpu"
-    echo -e "-------------------- MEMORY ---------------------"
-    echo -e "Total:             $ram_gb Gb"
-    echo -e "memoria 1          (${ram_type}) Speed:"
-    echo -e "-------------------- Disks ----------------------"
+    echo -e "${TURQUOISE}-------------------- MEMORY ---------------------${END}"
+    echo -e "Total:             ${ram_gb} GB (${ram_type})"
+    echo -e "Slot 1: ${ram_slot_a} ${ram_size_a}         Speed: ${ram_speed_a} MT/s"
+    echo -e "Slot 2: ${ram_slot_b} ${ram_size_b}         Speed: ${ram_speed_b} MT/s"
+    echo -e "${TURQUOISE}-------------------- Disks ----------------------${END}"
     echo "$disks"
-    echo -e "================================================="
+    echo -e "${TURQUOISE}=================================================${END}"
+    echo -e "${TURQUOISE}================ BATTERY INFO ===================${END}"
 
 }
 
@@ -98,10 +222,6 @@ device_detection() {
     local devices_to_check=("Sierra Wireless" "U-Blox" "Fingerprint" "Webcam" "Bluetooth" "Smart Card Reader" "Touch Panel")
     local usb_devices=$(lsusb)
 
-    #neofetch
-    neofetch
-
-    sleep 1
 
     printf "%-25s | %s\n" "Device" "Status"
     printf "%-25s | %s\n" "-------------------------" "------------"
@@ -238,7 +358,7 @@ main_menu() {
                 prepare_environment
                 ;;
             [qQ])
-                echo -e "${BLUE}[*] Exiting script...${END}"
+                echo -e "${RED}[*] Closing script...${END}"
                 exit 0
                 ;;
             *)
