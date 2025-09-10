@@ -64,6 +64,14 @@ check_neofetch() {
 
     sleep 0.5
 
+    #Confirm net-tools
+    if command -v net-tools &> /dev/null; then
+        echo "[+] net-tools already Installed."
+    else
+        echo "[!] Installing net-tools"
+        sudo apt install net-tools -y
+    fi
+
     #Confirm acpi
     if command -v acpi &> /dev/null; then
         echo "[+] acpi already Installed."
