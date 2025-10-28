@@ -90,6 +90,8 @@ check_neofetch() {
     else    
         echo "[!] Installing python3 ..."
         sudo apt install -y python3
+        echo "[!] Installing Tkinter ..."
+        sudo apt install -y python3-tk
     fi
 
     #Confirm pip3
@@ -99,6 +101,11 @@ check_neofetch() {
         echo "[!] Installing pip3 ..."
         sudo apt install -y python3-pip
     fi
+
+    REPO_URL="https://github.com/AndresVGu/linux-keytest"
+    DIR_PATH="$HOME/Downloads"
+    REPO_NAME="linux-keytest"
+    FINAL_PATH="$DIR_PATH/$REPO_NAME"
 
     sleep 0.5
     echo -e "${YELLOW}[!] Collecting Device Information. ${END}"
