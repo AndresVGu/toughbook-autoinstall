@@ -102,10 +102,37 @@ check_neofetch() {
         sudo apt install -y python3-pip
     fi
 
+#---------
+#-KeyTest-
+#---------
+    # Define la ruta completa de la carpeta Downloads
+    DOWNLOADS_DIR="$HOME/Downloads"
+    # Define el nombre de la carpeta de destino que crea git clone
+    REPO_FOLDER="linux-keytest"
+    # Define la ruta completa donde se esperaría encontrar la carpeta
+    FULL_REPO_PATH="$DOWNLOADS_DIR/$REPO_FOLDER"
+    # Define la URL del repositorio
     REPO_URL="https://github.com/AndresVGu/linux-keytest"
-    DIR_PATH="$HOME/Downloads"
-    REPO_NAME="linux-keytest"
-    FINAL_PATH="$DIR_PATH/$REPO_NAME"
+
+    echo "🔎 Verifing repository in $DOWNLOADS_DIR"
+
+    # Verifica si la carpeta ya existe usando la ruta completa
+   if [ -d "$FULL_REPO_PATH" ]; then
+       echo "⚠️ **repository already on the system** (Directory $REPO_FOLDER already exist in $DOWNLOADS_DIR)"
+   else
+       echo "✅ Dierectory $REPO_FOLDER does not exist. Clonning in $DOWNLOADS_DIR..."
+    
+       # Clona el repositorio directamente en el directorio Downloads.
+       # El comando 'git clone' creará automáticamente la carpeta 'linux-keytest' dentro de $DOWNLOADS_DIR.
+       git clone "$REPO_URL" "$FULL_REPO_PATH"
+    
+       # Verifica si la clonación fue exitosa
+       if [ $? -eq 0 ]; then
+           echo "🎉 Repository has clonned succesfully $FULL_REPO_PATH"
+       else
+           echo "❌ ¡Error! Verify Internet connection and credentials"
+       fi
+    fi
 
     sleep 0.5
     echo -e "${YELLOW}[!] Collecting Device Information. ${END}"
