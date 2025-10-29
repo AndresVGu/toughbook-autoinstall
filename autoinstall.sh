@@ -32,7 +32,7 @@ show_banner() {
     echo -e "\\__,_/ \\__,_/ \\__/ \\____/      /__/_/ /_//____/_ \\__/ \\__,_/ /_____//_____/ __"
     echo -e "${END}${YELLOW}(${END}${GRAY}By ${END}${PURPLE}@4vs3c${END}${YELLOW})${END}${TURQUOISE}"
     echo -e "For Ubuntu 24 & Panasonic Toughbooks${END}"
-    sleep 1
+    sleep 2
 }
 
 # Checks if the script is run with root privileges
