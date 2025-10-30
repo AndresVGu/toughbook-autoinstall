@@ -328,7 +328,7 @@ prepare_environment() {
             fi
 
             echo -e "👍 ${GREEN}System preparation is ready.${END}"
-            echo -e "✨✨${YELLOW}Shutting down system in 5 seconds...${END}✨✨"
+            echo -e "✨✨ ${YELLOW}Shutting down system in 5 seconds...${END}✨✨"
             for i in {5..1}; do
                 echo "$i seconds..."
                 sleep 1
@@ -349,10 +349,10 @@ prepare_environment() {
 main_menu() {
     while true; do
         echo -e "\n${BLUE}--- Main Menu ---${END}"
-        echo -e "[1] 🔎Device Detection"
-        echo -e "[2] ⚙️Device & Driver Configuration"
-        echo -e "[3] ⚙️OEM Environment Setup **(SYSPREP)**"
-        echo -e "[q|Q] ↩️Exit"
+        echo -e "[1] 🔎 Device Detection"
+        echo -e "[2] ⚙️ Device & Driver Configuration"
+        echo -e "[3] ⚙️ OEM Environment Setup **(SYSPREP)**"
+        echo -e "[q|Q] ↩️ Exit"
         read -rp "Select an option: " choice
 
         case "$choice" in
