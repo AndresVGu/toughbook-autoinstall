@@ -106,7 +106,8 @@ check_neofetch() {
 #-KeyTest-
 #---------
     # Define la ruta completa de la carpeta Downloads
-    DOWNLOADS_DIR="$HOME/Downloads"
+    USER_DIR=$SUDO_USER
+    DOWNLOADS_DIR="/home/$USER_DIR/Downloads"
     # Define el nombre de la carpeta de destino que crea git clone
     REPO_FOLDER="linux-keytest"
     # Define la ruta completa donde se esperaría encontrar la carpeta
