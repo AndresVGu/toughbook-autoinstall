@@ -31,7 +31,7 @@ show_banner() {
     echo -e "/ /_/ // /_/ // /_ / /_/ /     _/  / / / /(__  ) / /_ / /_/ / /  /__ /  /____"
     echo -e "\\__,_/ \\__,_/ \\__/ \\____/      /__/_/ /_//____/_ \\__/ \\__,_/ /_____//_____/ __"
     echo -e "${END}${YELLOW}(${END}${GRAY}By Andres V. ${END}${PURPLE}a.k.a. 4vs3c${END}${YELLOW})${END}${TURQUOISE}"
-    echo -e "For Ubuntu 24 & Panasonic Toughbooks${END}"
+    echo -e "✨✨ For Ubuntu 24 & Panasonic Toughbooks${END} ✨✨"
     sleep 1.5
 }
 
@@ -351,7 +351,7 @@ main_menu() {
         echo -e "\n${BLUE}--- Main Menu ---${END}"
         echo -e "[1] 🔎 Device Detection"
         echo -e "[2] ⚙️  Device & Driver Configuration"
-        echo -e "[3] ⚙️  OEM Environment Setup **(SYSPREP)**"
+        echo -e "[3] 💻  OEM Environment Setup **(SYSPREP)**"
         echo -e "[q|Q] ↩️  Exit"
         read -rp "Select an option: " choice
 
