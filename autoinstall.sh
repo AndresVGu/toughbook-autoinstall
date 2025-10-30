@@ -30,7 +30,7 @@ show_banner() {
     echo -e "_  __ \`/  / / /  __/  __ \\     __/  / _  \\_  ___// __/_/ __ \`/ /  /__ /  /__ __"
     echo -e "/ /_/ // /_/ // /_ / /_/ /     _/  / / / /(__  ) / /_ / /_/ / /  /__ /  /____"
     echo -e "\\__,_/ \\__,_/ \\__/ \\____/      /__/_/ /_//____/_ \\__/ \\__,_/ /_____//_____/ __"
-    echo -e "${END}${YELLOW}(${END}${GRAY}By Andres V.${END}${PURPLE}a.k.a. 4vs3c${END}${YELLOW})${END}${TURQUOISE}"
+    echo -e "${END}${YELLOW}(${END}${GRAY}By Andres V. ${END}${PURPLE}a.k.a. 4vs3c${END}${YELLOW})${END}${TURQUOISE}"
     echo -e "For Ubuntu 24 & Panasonic Toughbooks${END}"
     sleep 1.5
 }
@@ -238,7 +238,7 @@ device_detection() {
         if echo "$usb_devices" | grep -qi "$device_name"; then
             printf "${GREEN}%-25s${END} | ${GREEN}%s${END}\n" "$device_name" "✅ Detected"
         else
-            printf "${RED}%-25s${END} | ${RED}%s${END}\n" "$device_name" "⚠️  Not Detected"
+            printf "${RED}%-25s${END} | ${RED}%s${END}\n" "$device_name" "❌  Not Detected"
         fi
     done
 
@@ -306,7 +306,7 @@ install_drivers() {
 
 # Prepares the system for OEM distribution
 prepare_environment() {
-    echo -e "\n${YELLOW}[!] WARNING: This action will prepare the system for OEM distribution.${END}"
+    echo -e "\n${YELLOW}⚠️ WARNING: This action will prepare the system for OEM distribution.${END}"
     echo -e "It will delete the current user and perform a factory reset."
     read -rp "[y|Y] Continue | [n|N] Cancel: " choice
 
@@ -327,8 +327,8 @@ prepare_environment() {
                 exit 1
             fi
 
-            echo -e "${GREEN}[+] System preparation is ready.${END}"
-            echo -e "${YELLOW}[+] Shutting down system in 5 seconds...${END}"
+            echo -e "👍 ${GREEN}System preparation is ready.${END}"
+            echo -e "✨✨${YELLOW}Shutting down system in 5 seconds...${END}✨✨"
             for i in {5..1}; do
                 echo "$i seconds..."
                 sleep 1
@@ -340,7 +340,7 @@ prepare_environment() {
             echo -e "${BLUE}[*] Action canceled.${END}"
             ;;
         *)
-            echo -e "${RED}[!] Invalid option. Returning to the main menu.${END}"
+            echo -e "${RED}🚫 Invalid option. Returning to the main menu.${END}"
             ;;
     esac
 }
@@ -349,10 +349,10 @@ prepare_environment() {
 main_menu() {
     while true; do
         echo -e "\n${BLUE}--- Main Menu ---${END}"
-        echo -e "[1] Device Detection"
-        echo -e "[2] Device & Driver Configuration"
-        echo -e "[3] OEM Environment Setup (SYSPREP)"
-        echo -e "[q|Q] Exit"
+        echo -e "[1] 🔎Device Detection"
+        echo -e "[2] ⚙️Device & Driver Configuration"
+        echo -e "[3] ⚙️OEM Environment Setup **(SYSPREP)**"
+        echo -e "[q|Q] ↩️Exit"
         read -rp "Select an option: " choice
 
         case "$choice" in
