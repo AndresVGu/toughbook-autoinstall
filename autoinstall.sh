@@ -82,6 +82,18 @@ check_neofetch() {
         sudo apt install acpi -y
     fi
 
+    #---------
+    #nettools
+    #---------
+    if command -v net-tools &> /dev/null; then
+        echo "[+] net-tools already Installed."
+    else
+        echo "[+] Installing net-tools..."
+        sudo apt install net-tools
+        sleep 1
+        echo "export PATH=$PATH:/sbin" >> ~/.bashrc
+    fi
+
     #--------
     #PYTHON
     #--------
@@ -229,7 +241,7 @@ device_detection() {
     sleep 1.5
 
     # Array of device names to look for
-    local devices_to_check=("Sierra Wireless" "U-Blox" "Fingerprint" "Webcam" "Bluetooth" "Smart Card Reader" "Touch Panel")
+    local devices_to_check=("Sierra Wireless" "U-Blox" "Fingerprint" "Webcam" "Bluetooth" "Smart Card Reader" "Touch Panel" "eGalaxTouch")
     local usb_devices=$(lsusb)
 
 
@@ -253,7 +265,7 @@ install_drivers() {
     sudo apt update
     sudo apt upgrade -y
 
-    local devices_to_check=("Sierra Wireless" "U-Blox" "Fingerprint" "Webcam" "Bluetooth" "Smart Card Reader" "Touch Panel")
+    local devices_to_check=("Sierra Wireless" "U-Blox" "Fingerprint" "Webcam" "Bluetooth" "Smart Card Reader" "Touch Panel" "eGalaxTouch")
     local usb_devices=$(lsusb)
 
     printf "%-25s | %s\n" "Component" "Status"
@@ -292,6 +304,11 @@ install_drivers() {
                     sleep 1
                     ;;
                 "Touch Panel")
+                    echo "  -> Installing Touch Panel calibrator..."
+                    sudo apt install -y xinput-calibrator
+                    sleep 1
+                    ;;
+                "eGalaxTouch")
                     echo "  -> Installing Touch Panel calibrator..."
                     sudo apt install -y xinput-calibrator
                     sleep 1
