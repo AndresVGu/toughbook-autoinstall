@@ -1,5 +1,6 @@
+---
 # Ubuntu 24.0 installation for Panasonic CF-53 mk4 & CF-54 mk2
-
+---
 1. Boot from the USB drive
 Choose the language and keyboard layout
 2. Connect to a network: It is recommended to connect to the internet during installation. **This allows the installer to download updates and third-party drivers**
@@ -24,10 +25,14 @@ sudo su
 sudo apt update -y && sudo apt upgrade -y
 sudo apt install git -y
 ```
-### Check drives (Super + Software & updates)
-Go to Additional drivers tab and make sure that says “No additional drivers available”
+3.Check drives (Super + Software & updates)
+Go to Additional drivers tab and make sure that says **“No additional drivers available”**
 
-## Ubuntu testing
+## Perform Automatic Installation
+
+---
+## Ubuntu testing Step by Step
+---
 ### How to Check Your Connected Devices: This method will show you how to check if the computer is detecting connected devices such as Webcam, 4G Modem, GPSd, Fingerprint, Touch Screen, or Smart Card Reader
 Open the terminal and use the following commands
 lsusb
