@@ -1,21 +1,29 @@
 # Ubuntu 24.0 installation for Panasonic CF-53 mk4 & CF-54 mk2
-Boot from the USB drive
+
+1. Boot from the USB drive
 Choose the language and keyboard layout
-### Connect to a network: It is recommended to connect to the internet during installation. This allows the installer to download updates and third-party drivers
-# Select the Installation type: Enable third-party drivers.
-Create user account:
-Name => oem
-User => oem
-password = 1234
-# Begin the Installation
-Restart
+2. Connect to a network: It is recommended to connect to the internet during installation. **This allows the installer to download updates and third-party drivers**
+3. Select the Installation type: Enable third-party drivers.
+4. Create user account **with the following credentials**:\
+   It is important to use these credentials because when performing a **factory reset (sysprep)**, the system needs to identify a user named 'oem'; otherwise, the reset will fail.
+   | <!--> | <!--> |
+   |:-----:|:------|
+   | Name  |  oem  |
+   | user  |  oem  |
+   | password | 1234 |
+
+6. Begin the Installation
+7. Restart
+
 ## Ubuntu configuration
-Connect to Wi-fi
-Open the ubuntu terminal ( Super + terminal) and perform the following commands:
-sudo su => (then use the password, for this case 1234)
-sudo apt update
-sudo apt upgrade –y
+1. Connect to Wi-fi
+2. Open the ubuntu terminal ( Super + terminal) and perform the following commands as **root**:\
+   Use the password for this case => 1234
+```bash
+sudo su  
+sudo apt update -y && sudo apt upgrade -y
 sudo apt install git -y
+```
 ### Check drives (Super + Software & updates)
 Go to Additional drivers tab and make sure that says “No additional drivers available”
 
