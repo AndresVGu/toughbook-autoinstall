@@ -31,7 +31,7 @@ Go to Additional drivers tab and make sure that says **“No additional drivers 
 ## Perform Automatic Installation
 
 ---
-## Ubuntu testing Step by Step
+## Ubuntu Manual testing Step by Step
 ---
 ### How to Check Your Connected Devices: 
 This method will show you how to check if the computer is detecting connected devices such as Webcam, 4G Modem, GPSd, Fingerprint, Touch Screen, or Smart Card Reader
