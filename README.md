@@ -6,7 +6,7 @@ Choose the language and keyboard layout
 2. Connect to a network: It is recommended to connect to the internet during installation. **This allows the installer to download updates and third-party drivers**
 3. Select the Installation type: Enable third-party drivers.
 4. Create user account **with the following credentials**:\
-   It is important to use these credentials because when performing a **factory reset (sysprep)**, the system needs to identify a user named 'oem'; otherwise, the reset will fail.
+   It is important to use these credentials because when performing a **factory reset (sysprep)**, the system needs to identify a user named **'oem'**; otherwise, the reset will fail.
    | <!--> | <!--> |
    |:-----:|:------|
    | Name  |  oem  |
@@ -33,24 +33,41 @@ Go to Additional drivers tab and make sure that says **“No additional drivers 
 ---
 ## Ubuntu testing Step by Step
 ---
-### How to Check Your Connected Devices: This method will show you how to check if the computer is detecting connected devices such as Webcam, 4G Modem, GPSd, Fingerprint, Touch Screen, or Smart Card Reader
+### How to Check Your Connected Devices: 
+This method will show you how to check if the computer is detecting connected devices such as Webcam, 4G Modem, GPSd, Fingerprint, Touch Screen, or Smart Card Reader
 Open the terminal and use the following commands
-lsusb
 
+```bash
+lsusb
+```
 If you do not see the device required in the list: This means the computer has not detected. This could be because the device is not working properly, it is not compatible, or it is not properly connected.
 
-### How to Test Bluetooth & Wi-Fi: To test the Wi-Fi and Bluetooth, you don’t need to use the terminal. You can use the UI.
+### How to Test Bluetooth & Wi-Fi: 
+To test the Wi-Fi and Bluetooth, you don’t need to use the terminal. You can use the UI.
+
 Settings => Networks || Bluetooth
 
-### How to Set Up and Test the 4G Modem: Most of the time the Sierra Wireless EM7455 Modem works on Ubuntu 24.0, these devices are automatically detected and should work with the built-in drivers. However, you need to configurate the Access Point Name (APN) to connect your mobile data network.
-## Insert the SIM Card: You will not see the “Mobile Network Configuration” option in the UI until a SIM Card is detected.
-Go to Mobile Network Settings and configure the APN: Access Point Names => add new APN and you will need to fill these fields:
-Name => internet
-APN => sp.telus.com (remember you need to use the APN for the data provider)
-Save changes and make sure to select this APN as the default
+### How to Set Up and Test the 4G Modem: 
+Most of the time the **Sierra Wireless EM7455 Modem** works on Ubuntu 24.0, these devices are automatically detected and should work with the built-in drivers. However, you need to configurate the Access Point Name (APN) to connect your mobile data network.
 
-### Activate the Mobile data & Test:
+1. Insert the SIM Card: You will not see the **“Mobile Network Configuration”** option in the UI until a SIM Card is detected.
+2. Go to Mobile Network Settings and configure the APN: Access Point Names => add new APN and you will need to fill these fields:
+   
+   | <!--> | <!--> |
+   |:-----:|:------|
+   | Name  |  internet |
+   | APN  |  sp.telus.com  |
+
+(remember you need to use the APN for the data provider) \
+
+3. Save changes and make sure to select this APN as the default
+   
+4. Activate the Mobile data & Test:
+   
+```bash
 ping 8.8.8.8
+```
+
 ### How to Test GPS dedicated: To test the GPS module, you will use a service called gpsd and its related tools.  This service manages data from the GPS receiver and makes it available for other applications
 Install gpsd and its tools: use the following command
 sudo apt install gpsd gpsd-clients -y
