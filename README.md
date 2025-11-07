@@ -19,7 +19,7 @@ Choose the language and keyboard layout
 ## Ubuntu configuration
 1. Connect to Wi-fi
 2. Open the ubuntu terminal ( Super + terminal) and perform the following commands as **root**:\
-   Use the password for this case => 1234
+   Use the password for this case **&rarr; 1234**
 ```bash
 sudo su  
 sudo apt update -y && sudo apt upgrade -y
