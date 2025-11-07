@@ -28,7 +28,7 @@ sudo apt install git -y
 3.Check drives (Super + Software & updates)
 Go to Additional drivers tab and make sure that says **“No additional drivers available”**
 
-## Perform Automatic Installation
+## AutoInstall Script 
 
 ---
 ## Ubuntu Manual testing Step by Step
