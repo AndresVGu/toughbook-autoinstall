@@ -200,11 +200,13 @@ check_neofetch() {
     bat_message=""
     
     if [ "$clean_value" -gt 85 ]; then
-        bat_message="${GREEN}Recomended for Amazon Orders ${END}"
+        bat_message="✅{GREEN} Recomended for Amazon Orders ${END}"
     elif [ "$clean_value" -gt 80 ]; then
-        bat_message="${GREEN}Recomended for Shopify or Amazon ${END}"
+        bat_message="✅${GREEN} Recomended for Shopify ${END}"
+    elif [ "$clean_value" -gt 1 ]; then
+        bat_message="⚠️ ${YELLOW} Battery Health lower than 80% ${END}" 
     else
-        bat_message="${YELLOW}Not Guarateed Health Orders ${END}"
+        bat_message="❌${RED} No Battery Detected ${END}"
     fi
 
     #Information chart
@@ -235,7 +237,9 @@ device_detection() {
     sleep 1.5
 
     # Array of device names to look for
-    local devices_to_check=("Sierra Wireless" "U-Blox" "Fingerprint" "Webcam" "Bluetooth" "Smart Card Reader" "Touch Panel" "eGalaxTouch")
+    #Add eGalaxTouch
+    local devices_to_check=("Sierra Wireless" "U-Blox" "Fingerprint" "Webcam" "Bluetooth" "Smart Card Reader" "Touch Panel")
+    local touch_devices=("Touch Panel" "eGalaxTouch)
     local usb_devices=$(lsusb)
 
 
