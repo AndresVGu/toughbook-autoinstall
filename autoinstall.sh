@@ -110,10 +110,22 @@ check_neofetch() {
         sudo apt install -y python3-pip
     fi
 
+#------
+#LibreOffice
+#------
+#Confirm python3
+    if command -v libreoffice &> /dev/null; then
+        echo "[+] LibreOffice already Installed."
+    else    
+        echo "[!] Installing Libreoffice ..."
+        sudo snap install libreoffice
+    fi
+
 #---------
 #-KeyTest-
 #---------
     # Define la ruta completa de la carpeta Downloads
+    sleep 1
     USER_DIR=$SUDO_USER
     DOWNLOADS_DIR="/home/$USER_DIR/Downloads"
     # Define el nombre de la carpeta de destino que crea git clone
@@ -238,7 +250,7 @@ device_detection() {
 
     # Array of device names to look for
     #Add eGalaxTouch
-    local devices_to_check=("Sierra Wireless" "U-Blox" "Fingerprint" "Webcam" "Bluetooth" "Smart Card Reader")
+    local devices_to_check=("Sierra Wireless" "U-Blox" "Fingerprint" "Webcam" "Bluetooth" "Smart Card Reader" "Touch Panel")
     local touch_devices=("Touch Panel" "eGalaxTouch")
     local usb_devices=$(lsusb)
 
