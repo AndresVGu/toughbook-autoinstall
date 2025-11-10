@@ -239,7 +239,7 @@ device_detection() {
     # Array of device names to look for
     #Add eGalaxTouch
     local devices_to_check=("Sierra Wireless" "U-Blox" "Fingerprint" "Webcam" "Bluetooth" "Smart Card Reader" "Touch Panel")
-    #local touch_devices=("Touch Panel" "eGalaxTouch)
+    local touch_devices=("Touch Panel" "eGalaxTouch")
     local usb_devices=$(lsusb)
 
 
@@ -251,6 +251,17 @@ device_detection() {
             printf "${GREEN}%-25s${END} | ${GREEN}%s${END}\n" "$device_name" "✅ Detected"
         else
             printf "${RED}%-25s${END} | ${RED}%s${END}\n" "$device_name" "❌  Not Detected"
+        fi
+    done
+
+    #-------------
+    #Touch panels
+    #-------------
+    for touch in "${touch_devices[@]}"; do
+        if echo "$usb_devices" | grep -qi "$touch"; then
+            printf "${GREEN}%-25s${END} | ${GREEN}%s${END}\n" TouchScreen "✅ Detected"
+        else
+            printf "${RED}%-25s${END} | ${RED}%s${END}\n" TouchScreen "❌  Not Detected"
         fi
     done
 
