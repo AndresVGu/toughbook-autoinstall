@@ -204,7 +204,7 @@ check_neofetch() {
     elif [ "$clean_value" -gt 80 ]; then
         bat_message="✅${GREEN} Recomended for Shopify ${END}"
     elif [ "$clean_value" -gt 1 ]; then
-        bat_message="⚠️ ${YELLOW} Battery Health lower than 80% ${END}" 
+        bat_message="⚠️${YELLOW} Battery Health lower than 80% ${END}" 
     else
         bat_message="❌${RED} No Battery Detected ${END}"
     fi
@@ -239,7 +239,7 @@ device_detection() {
     # Array of device names to look for
     #Add eGalaxTouch
     local devices_to_check=("Sierra Wireless" "U-Blox" "Fingerprint" "Webcam" "Bluetooth" "Smart Card Reader" "Touch Panel")
-    local touch_devices=("Touch Panel" "eGalaxTouch)
+    #local touch_devices=("Touch Panel" "eGalaxTouch)
     local usb_devices=$(lsusb)
 
 
