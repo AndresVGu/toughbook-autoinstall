@@ -212,7 +212,7 @@ check_neofetch() {
     bat_message=""
     
     if [ "$clean_value" -gt 85 ]; then
-        bat_message="✅{GREEN} Recomended for Amazon Orders ${END}"
+        bat_message="✅${GREEN} Recomended for Amazon Orders ${END}"
     elif [ "$clean_value" -gt 80 ]; then
         bat_message="✅${GREEN} Recomended for Shopify ${END}"
     elif [ "$clean_value" -gt 1 ]; then
@@ -250,7 +250,7 @@ device_detection() {
 
     # Array of device names to look for
     #Add eGalaxTouch
-    local devices_to_check=("Sierra Wireless" "U-Blox" "Fingerprint" "Webcam" "Bluetooth" "Smart Card Reader" "Touch Panel")
+    local devices_to_check=("Sierra Wireless" "U-Blox" "Fingerprint" "Webcam" "Bluetooth" "Smart Card Reader")
     local touch_devices=("Touch Panel" "eGalaxTouch")
     local usb_devices=$(lsusb)
     local touch_detected=false
