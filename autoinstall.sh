@@ -421,7 +421,7 @@ keyboard_test(){
 
 	echo -e "Initializing Keytest"
 
-	gnome-terminal -- bash -c "python3 \"$KEYBOARD_PATH\""
+	gnome-terminal -- bash -c "python3 \"$KEYBOARD_PATH\"; read"
 }
 
 #-------------------------------------------
