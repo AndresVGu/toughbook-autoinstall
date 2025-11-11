@@ -474,7 +474,7 @@ main_menu() {
         echo -e "\n${BLUE}--- Main Menu ---${END}"
         echo -e "[1] 🔎 Device Detection"
         echo -e "[2] ⚙️  Device & Driver Configuration"
-        echo -e "[3] ⌨️  Test Keyboard"
+        echo -e "[3] ⌨️  Test Keyboard (not available)"
         echo -e "[4] 💻 OEM Environment Setup ✨(SYSPREP)✨"
         echo -e "[q|Q] ↩️  Exit"
         read -rp "Select an option: " choice
