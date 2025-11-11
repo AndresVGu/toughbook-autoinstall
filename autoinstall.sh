@@ -411,6 +411,7 @@ install_drivers() {
 #---------
 keyboard_test(){
 	echo -e "keyboard test"
+	sudo apt install dbus-x11 -y
 	echo "[!] Installing Tkinter ..."
     sudo apt install -y python3-tk
 	KEYBOARD_PATH="/home/$SUDO_USER/Downloads/linux-keytest/keytest.py"
@@ -422,7 +423,7 @@ keyboard_test(){
 
 	echo -e "Initializing Keytest"
 
-	gnome-terminal -- bash -c "python3 \"$KEYBOARD_PATH\"; read"
+	gnome-terminal -- bash -c "python3 \"$KEYBOARD_PATH\""
 }
 
 #-------------------------------------------
@@ -475,7 +476,7 @@ main_menu() {
         echo -e "\n${BLUE}--- Main Menu ---${END}"
         echo -e "[1] 🔎 Device Detection"
         echo -e "[2] ⚙️  Device & Driver Configuration"
-        echo -e "[3] ⌨️  Test Keyboard (not available)"
+        echo -e "[3] ⌨️  Test Keyboard"
         echo -e "[4] 💻 OEM Environment Setup ✨(SYSPREP)✨"
         echo -e "[q|Q] ↩️  Exit"
         read -rp "Select an option: " choice
