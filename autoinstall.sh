@@ -98,8 +98,7 @@ check_neofetch() {
     else    
         echo "[!] Installing python3 ..."
         sudo apt install -y python3
-        echo "[!] Installing Tkinter ..."
-        sudo apt install -y python3-tk
+        
     fi
 
     #Confirm pip3
@@ -412,6 +411,8 @@ install_drivers() {
 #---------
 keyboard_test(){
 	echo -e "keyboard test"
+	echo "[!] Installing Tkinter ..."
+    sudo apt install -y python3-tk
 	KEYBOARD_PATH="/home/$SUDO_USER/Downloads/linux-keytest/keytest.py"
 
 	if [ ! -f "$KEYBOARD_PATH" ]; then
