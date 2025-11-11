@@ -169,6 +169,25 @@ check_neofetch() {
 
     #brand & model
     brand=$(sudo dmidecode -s system-manufacturer | awk '{print $1}' 2>/dev/null)
+	
+	# --- Bloque de Validación y Modificación de la variable 'brand' ---
+	case "$brand" in
+    	# Si la salida es exactamente CF-54-2
+    	"CF-54-2")
+        	brand="CF-54 Mk2"
+        	;;
+    	# Si la salida es g1-1a (la validación es sensible a mayúsculas y minúsculas por defecto)
+    	"g1-1a")
+        	brand="G1 MK1"
+        	;;
+    	# Caso por defecto (*): si no coincide con ninguno de los anteriores,
+    	# no se ejecuta nada, y la variable 'brand' mantiene su valor original.
+    	*)
+        	# Opcional: puedes añadir un 'echo' para debug aquí si quieres
+        	;;
+	esac
+	# -----------------------------------------------------------------
+	
     model=$(sudo dmidecode -s system-product-name | sed -r 's/([A-Z]{2})([0-9]{2})-([0-9])/\1-\2 MK\3/' 2>/dev/null)
 
     #serial & part number
