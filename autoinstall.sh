@@ -65,6 +65,15 @@ check_neofetch() {
     fi
 
     sleep 0.5
+
+	if command -v neofetch &> /dev/null; then
+		echo "[+] Neofetch already Installed."
+	else
+		echo "[!] Installing Neofetch..."
+		sudo apt install neofetch -y
+	fi
+
+	sleep 0.5
     #---------
     #nettools
     #---------
@@ -242,6 +251,10 @@ check_neofetch() {
 # ==================== Core Functions ====================
 #Draw Title
 draw_box(){
+
+	#operating system
+	linux_os=$(neofetch --stdout | grep 'OS:' | awk -F': ' '{print $2}' | awk '{print $1, $2}')
+	
 	local UNIT_TEXT="$1"
 	local TEXT_LEN=${#UNIT_TEXT}
 	local BORDER_CHAR="*"
@@ -252,6 +265,7 @@ draw_box(){
 
 	echo -e "${TURQUOISE} +${BORDER_LINE}+ ${END}"
 	echo -e "${TURQUOISE} | ${UNIT_TEXT} | ${END}"
+	echo -e "${TURQUOISE} | ${linux_os} | ${END}"
 	echo -e "${TURQUOISE} +${BORDER_LINE}+ ${END}"
 
 }
