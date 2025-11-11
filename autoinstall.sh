@@ -241,6 +241,21 @@ check_neofetch() {
 }
 
 # ==================== Core Functions ====================
+#Draw Title
+draw_box(){
+	local UNIT_TEXT="$1"
+	local TEXT_LEN=${#UNIT_TEXT}
+	local BORDER_CHAR="*"
+	local BORDER_LEN=$((TEXT_LEN + 2))
+
+	printf -v BORDER_LINE "%*s" $BORDER_LEN ""
+	BORDER_LINE="${BORDER_LINE// /$BORDER_CHAR}"
+
+	echo -e "${TURQUOISE} +${BORDER_LINE}+ ${END}"
+	echo -e "${TURQUOISE} | ${UNIT_TEXT} | ${END}"
+	echo -e "${TURQUOISE} +${BORDER_LINE}+ ${END}"
+
+}
 
 # Detects connected USB devices
 device_detection() {
@@ -250,10 +265,20 @@ device_detection() {
 
     # Array of device names to look for
     #Add eGalaxTouch
-    local devices_to_check=("Sierra Wireless" "U-Blox" "Fingerprint" "Webcam" "Bluetooth" "Smart Card Reader")
+    local devices_to_check=( "Fingerprint"  "Bluetooth" "Smart Card Reader")
     local touch_devices=("Touch Panel" "eGalaxTouch")
     local usb_devices=$(lsusb)
     local touch_detected=false
+    local cameras=(
+    	"Webcam:Front Camera" 
+    	"Camera:Rear Camera")
+    local modemg=$(lsusb | grep "Sierra Wireless" | awk -F 'Inc. ' '{print $2}')
+    local network_devices=(
+    "Sierra Wireless:Sierra Wireless(${modemg})"
+    "U-Blox:GPS Dedicated")
+
+	UNIT_TITLE="You are working on a ${brand} ${model}"
+    draw_box "$UNIT_TITLE"
 
 
     printf "%-25s | %s\n" "Device" "Status"
@@ -266,6 +291,37 @@ device_detection() {
             printf "${RED}%-25s${END} | ${RED}%s${END}\n" "$device_name" "❌  Not Detected"
         fi
     done
+
+    #----------
+    #---NETWORK
+    #----------
+    for item in "${network_devices[@]}";do
+        local search_pattern="${item%%:*}"
+        local output_alias="${item##*:}"
+
+        if echo "$usb_devices" | grep -qi "$search_pattern"; then
+            printf "${GREEN}%-25s${END} | ${GREEN}%s${END}\n" "$output_alias" "✅ Detected"
+
+        else
+            printf "${RED}%-25s${END} | ${RED}%s${END}\n" "$output_alias" "❌  Not Detected"
+        fi
+    done
+
+    #--------
+    #Cameras
+    #--------
+    for item in "${cameras[@]}";do
+    	local search_pattern="${item%%:*}"
+    	local output_alias="${item##*:}"
+
+    	if echo "$usb_devices" | grep -qi "$search_pattern"; then
+    		printf "${GREEN}%-25s${END} | ${GREEN}%s${END}\n" "$output_alias" "✅ Detected"
+
+    	else 
+    		printf "${RED}%-25s${END} | ${RED}%s${END}\n" "$output_alias" "❌  Not Detected"
+    	fi
+    done
+
 
     #-------------
     #Touch panels
@@ -351,7 +407,27 @@ install_drivers() {
     echo -e "${YELLOW}[!] Test all devices manually before running the OEM system preparation.${END}"
 }
 
+#--------
+#keytest
+#---------
+keyboard_test(){
+	echo -e "keyboard test"
+	KEYBOARD_PATH="/home/$SUDO_USER/Downloads/linux-keytest/keytest.py"
+
+	if [ ! -f "$KEYBOARD_PATH" ]; then
+		echo "ERROR: Keytest undefined"
+		exit 1
+	fi
+
+	echo -e "Initializing Keytest"
+
+	gnome-terminal -- bash -c "python3 \"$KEYBOARD_PATH\""
+}
+
+#-------------------------------------------
 # Prepares the system for OEM distribution
+#-------------------------------------------
+
 prepare_environment() {
     echo -e "\n${YELLOW}⚠️ WARNING: This action will prepare the system for OEM distribution.${END}"
     echo -e "It will delete the current user and perform a factory reset."
@@ -398,7 +474,8 @@ main_menu() {
         echo -e "\n${BLUE}--- Main Menu ---${END}"
         echo -e "[1] 🔎 Device Detection"
         echo -e "[2] ⚙️  Device & Driver Configuration"
-        echo -e "[3] 💻 OEM Environment Setup ✨(SYSPREP)✨"
+        echo -e "[3] ⌨️  Test Keyboard"
+        echo -e "[4] 💻 OEM Environment Setup ✨(SYSPREP)✨"
         echo -e "[q|Q] ↩️  Exit"
         read -rp "Select an option: " choice
 
@@ -410,6 +487,9 @@ main_menu() {
                 install_drivers
                 ;;
             3)
+                keyboard_test
+                ;;
+            4)
                 prepare_environment
                 ;;
             [qQ])
