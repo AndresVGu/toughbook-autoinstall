@@ -252,21 +252,46 @@ check_neofetch() {
 #Draw Title
 draw_box(){
 
-	#operating system
+	# Obtener el OS (Nombre y Versión)
 	linux_os=$(neofetch --stdout | grep 'OS:' | awk -F': ' '{print $2}' | awk '{print $1, $2}')
 	
 	local UNIT_TEXT="$1"
 	local TEXT_LEN=${#UNIT_TEXT}
+	local OS_LEN=${#linux_os} # Longitud de la línea del OS
+	
 	local BORDER_CHAR="*"
+	# La longitud de la línea del borde y el contenido (TEXT_LEN + 2 espacios + 2 barras laterales)
 	local BORDER_LEN=$((TEXT_LEN + 2))
 
+	# 1. Crear la línea de borde
 	printf -v BORDER_LINE "%*s" $BORDER_LEN ""
 	BORDER_LINE="${BORDER_LINE// /$BORDER_CHAR}"
 
-	echo -e "${TURQUOISE} +${BORDER_LINE}+ ${END}"
-	echo -e "${TURQUOISE} | ${UNIT_TEXT} | ${END}"
-	echo -e "${TURQUOISE} | ${linux_os} | ${END}"
-	echo -e "${TURQUOISE} +${BORDER_LINE}+ ${END}"
+	# 2. Calcular el padding para centrar linux_os
+	
+	# La diferencia de longitud entre el texto principal y el OS
+	local DIFF=$((TEXT_LEN - OS_LEN))
+	
+	# Calcular los espacios de relleno a la izquierda. Usamos (DIFF + 1) para dar un espacio de ' margen'
+	# y dividimos por 2 para centrar.
+	local LEFT_PAD=$(( (DIFF / 2) + 1 ))
+	
+	# Calcular los espacios de relleno a la derecha. Es el total de espacios (DIFF + 2) - LEFT_PAD.
+	local RIGHT_PAD=$(( TEXT_LEN - OS_LEN - LEFT_PAD + 2))
+    
+    # Manejar el caso donde OS_LEN > TEXT_LEN. Esto podría hacer que el cuadro se vea raro.
+    if [ $LEFT_PAD -lt 1 ]; then
+        LEFT_PAD=1
+        RIGHT_PAD=1
+    fi
+
+	# 3. Construir las cadenas de padding
+	printf -v LEFT_SPACES "%*s" $LEFT_PAD ""
+	printf -v RIGHT_SPACES "%*s" $RIGHT_PAD ""
+
+	# Asume que TURQUOISE y END están definidos como variables de color
+	# Se usa '\n' en un solo echo para evitar problemas con la variable de color $END
+	echo -e "${TURQUOISE} +${BORDER_LINE}+ ${END}\n${TURQUOISE} | ${UNIT_TEXT} | ${END}\n${TURQUOISE} |${LEFT_SPACES}${linux_os}${RIGHT_SPACES}| ${END}\n${TURQUOISE} +${BORDER_LINE}+ ${END}"
 
 }
 
