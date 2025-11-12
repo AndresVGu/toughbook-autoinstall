@@ -174,6 +174,8 @@ check_neofetch() {
 	#serial & part number
     serial=$(sudo dmidecode -s system-serial-number 2>/dev/null)
     part_number=$(sudo dmidecode -s system-sku-number 2>/dev/null)
+	#Procesor
+    cpu=$(lscpu | grep "BIOS Model name:" | sed 's/BIOS Model name:\s*//')
 
 	# --- Bloque de Validación y Modificación de la variable 'brand' ---
 	case "$model" in
@@ -183,8 +185,9 @@ check_neofetch() {
         	;;
     	# Si la salida es g1-1a (la validación es sensible a mayúsculas y minúsculas por defecto)
     	"FZ-G1A"*)
-        	model="G1 MK1"
+        	model="FZ-G1 MK1"
 			part_number=$(sudo dmidecode -s system-product-name | sed -r 's/([A-Z]{2})([0-9]{2})-([0-9])/\1-\2 MK\3/' 2>/dev/null)
+			cpu=$(lscpu | grep "Model name:" | sed 's/Model name:\s*//')
         	;;
     	# Caso por defecto (*): si no coincide con ninguno de los anteriores,
     	# no se ejecuta nada, y la variable 'brand' mantiene su valor original.
@@ -197,9 +200,6 @@ check_neofetch() {
     #hours
     hours=$(sudo dmidecode -t 22 2>/dev/null | grep "Hours" | awk '{print $2}')
     [ -z "$hours" ] && hours=$(uptime -p)
-
-    #Procesor
-    cpu=$(lscpu | grep "BIOS Model name:" | sed 's/BIOS Model name:\s*//')
 
     #RAM
     ram_gb=$(free -h | awk '/Mem:/ {sub(/[a-zA-Z]/,"",$2); print int($2+0.5)}')
