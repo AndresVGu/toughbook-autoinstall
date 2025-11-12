@@ -85,6 +85,8 @@ lsusb
 ```
 If you do not see the device required in the list: This means the computer has not detected. This could be because the device is not working properly, it is not compatible, or it is not properly connected.
 
+![lsusb](assets/1.png)
+
 How to Test Bluetooth & Wi-Fi:
 ---
 To test the Wi-Fi and Bluetooth, you don’t need to use the terminal. You can use the UI.
