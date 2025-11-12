@@ -287,8 +287,3 @@ sudo shutdown -h now
 
 
 
-![image_qUmopwlnZAMuIE3+N/4rag==](./image_qUmopwlnZAMuIE3+N/4rag==.png)
-![image_9km1ejTDhZRX/IdJKW5swA==](./image_9km1ejTDhZRX/IdJKW5swA==.png)
-![image_fTiOAOOz0KOsAgbmfmu/CQ==](./image_fTiOAOOz0KOsAgbmfmu/CQ==.png)
-![image_SLKwMDuQR64znT0XK0JaoA==](./image_SLKwMDuQR64znT0XK0JaoA==.png)
-![image_UHbaOrFlWu/firAggGqb4Q==](./image_UHbaOrFlWu/firAggGqb4Q==.png)
