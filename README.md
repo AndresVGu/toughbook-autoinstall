@@ -42,6 +42,26 @@ Choose the language and keyboard layout
 6. Begin the Installation
 7. Restart
 
+---
+# Auto-Install Script 
+---
+This Script automates the process of **scanning detected devices, installing the necessary drivers and packages** for testing, and performing an **OEM reset (Sysprep)**. 
+
+---
+**NOTE:**
+While the script streamlines these tasks, it’s still highly recommended to manually test each device to verify its proper function.
+
+---
+### Clone the repository
+1. Make sure you are connected to Wi-Fi
+```bash
+cd Downloads
+Sudo apt install git –y #(in case that you did not install before)
+git clone https://github.com/AndresVGu/toughbook-autoinstall
+cd Toughbook-autoinstall
+chmod +x autoinstall.sh
+./autoinstall.sh
+```
 # Ubuntu configuration
 
 1. Connect to Wi-fi
@@ -54,11 +74,6 @@ sudo apt install git -y
 ```
 3.Check drives (Super + Software & updates)
 Go to Additional drivers tab and make sure that says **“No additional drivers available”**
-
----
-# Auto-Install Script 
----
-
 
 How to Check Your Connected Devices: 
 ---
@@ -239,25 +254,33 @@ Follow the on-screen instructions to test the fans. This will show you the curre
 
 Delete Test Profile and Prepare unit: 
 ---
+---
+**NOTE:**
+In case you are using Ubuntu 22.04, it is not necessary to perform this step, as there is a program embedded in the desktop.
+
+---
 To prepare the device for distribution as an (OEM) Original Equipment Manufacturer use the following commands:
-Update and Upgrade the System:
+
+1. Update and Upgrade the System:
+```bash
 sudo apt update && sudo apt full-upgrade -y
-Install OEM packages:
+```
+2. Install OEM packages:
+```bash
 sudo apt install -y oem-config-gtk oem-config-slideshow-ubuntu
-Prepare the System for the End-User:
+```
+3.Prepare the System for the End-User:
+
 This is the most critical step. The oem-config-prepare command cleans up the system and sets it to a state where end-user can create their own account
+```bash
 sudo oem-config-prepare
-Shutdown the device
+```
+
+4. Shutdown the device
+```bash
 sudo shutdown -h now
-# Auto installation: This Script automates the process of scanning detected devices, installing the necessary drivers and packages for testing, and performing an OEM reset. While the script streamlines these tasks, it’s still highly recommended to manually test each device to verify its proper function.
-Clone the repository
-Make sure you are connected to Wi-Fi
-cd Downloads
-Sudo apt install git –y (in case that you did not install before)
-git clone https://github.com/AndresVGu/toughbook-autoinstall
-cd Toughbook-autoinstall
-chmod +x autoinstall.sh
-./autoinstall.sh
+```
+
 
 
 
