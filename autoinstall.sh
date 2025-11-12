@@ -484,6 +484,29 @@ keyboard_test(){
 	gnome-terminal -- bash -c "python3 \"$KEYBOARD_PATH\""
 }
 
+#--------------
+#Documentation
+#---------------
+open_doc() {
+    local url="$1"
+    
+    # 1. Verifica si se proporcionó una URL
+    if [ -z "$url" ]; then
+        echo "Error: Debes proporcionar una URL."
+        echo "Uso: abrir_web https://ejemplo.com"
+        return 1
+    fi
+
+    # 2. Abre Firefox con la URL
+    echo "Abriendo la URL: $url en Mozilla Firefox..."
+    
+    # El comando 'firefox' con la URL la abre en una nueva ventana/pestaña.
+    # El '2>/dev/null' es opcional y suprime cualquier mensaje de error o salida
+    # de Firefox en la terminal, manteniendo el entorno limpio.
+    firefox "$url" 2>/dev/null &
+    
+    # El '&' al final ejecuta Firefox en segundo plano, liberando tu terminal.
+}
 #-------------------------------------------
 # Prepares the system for OEM distribution
 #-------------------------------------------
@@ -541,15 +564,19 @@ main_menu() {
 
         case "$choice" in
             1)
+				URL_DOC="https://github.com/AndresVGu/toughbook-autoinstall/blob/main/README.md"
+                open_doc "$URL_DOC"
+                ;;
+			2)
                 device_detection
                 ;;
-            2)
+            3)
                 install_drivers
                 ;;
-            3)
+            4)
                 keyboard_test
                 ;;
-            4)
+            5)
                 prepare_environment
                 ;;
             [qQ])
