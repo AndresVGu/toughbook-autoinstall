@@ -20,10 +20,15 @@ The following table displays various units models and the corresponding **Ubuntu
 
 --- 
 1. Boot from the USB drive
+---
+**NOTE:**
+In case you are installing **Ubuntu 22.04 or an earlier version**, select the option **'Install OEM only for manufacturers'** instead of just 'Install Ubuntu.' This will enable the Sysprep (System Preparation) process.
+
+---
 Choose the language and keyboard layout
-2. Connect to a network: It is recommended to connect to the internet during installation. **This allows the installer to download updates and third-party drivers**
-3. Select the Installation type: Enable third-party drivers.
-4. Create user account **with the following credentials**:\
+3. Connect to a network: It is recommended to connect to the internet during installation. **This allows the installer to download updates and third-party drivers**
+4. Select the Installation type: Enable third-party drivers.
+5. Create user account **with the following credentials**:\
    It is important to use these credentials because when performing a **factory reset (sysprep)**, the system needs to identify a user named **'oem'**; otherwise, the reset will fail.
    | <!--> | <!--> |
    |:-----:|:------|
