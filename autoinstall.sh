@@ -488,24 +488,24 @@ keyboard_test(){
 #Documentation
 #---------------
 open_doc() {
-    local url="$1"
+  	local url="$1"
     
-    # 1. Verifica si se proporcionó una URL
+    # 1. Validación de la URL
     if [ -z "$url" ]; then
         echo "Error: Debes proporcionar una URL."
-        echo "Uso: abrir_web https://ejemplo.com"
+        echo "Uso: abrir_web_en_nueva_terminal https://ejemplo.com"
         return 1
     fi
 
-    # 2. Abre Firefox con la URL
-    echo "Abriendo la URL: $url en Mozilla Firefox..."
+    echo "Abriendo la URL: $url en una nueva ventana de terminal..."
     
-    # El comando 'firefox' con la URL la abre en una nueva ventana/pestaña.
-    # El '2>/dev/null' es opcional y suprime cualquier mensaje de error o salida
-    # de Firefox en la terminal, manteniendo el entorno limpio.
-    firefox "$url" 2>/dev/null &
+    # 2. Comando para abrir la terminal y ejecutar Firefox
+    # -e o --command: Ejecuta el comando especificado.
+    # El comando interno es: firefox [URL]
+    gnome-terminal -- /bin/bash -c "firefox \"$url\" ; echo 'Firefox iniciado. Cierre esta terminal para terminar.' ; exec bash"
     
-    # El '&' al final ejecuta Firefox en segundo plano, liberando tu terminal.
+    # NOTA: Si usas KDE, reemplaza 'gnome-terminal --' por 'konsole -e'
+    # o si usas XFCE, usa 'xfce4-terminal --command'
 }
 #-------------------------------------------
 # Prepares the system for OEM distribution
