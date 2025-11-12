@@ -18,7 +18,9 @@ The following table displays various units models and the corresponding **Ubuntu
 
 
 
---- 
+---
+Installation Guide
+---
 1. Boot from the USB drive
 ---
 **NOTE:**
@@ -26,6 +28,7 @@ In case you are installing **Ubuntu 22.04 or an earlier version**, select the op
 
 ---
 Choose the language and keyboard layout
+
 3. Connect to a network: It is recommended to connect to the internet during installation. **This allows the installer to download updates and third-party drivers**
 4. Select the Installation type: Enable third-party drivers.
 5. Create user account **with the following credentials**:\
@@ -39,7 +42,8 @@ Choose the language and keyboard layout
 6. Begin the Installation
 7. Restart
 
-## Ubuntu configuration
+# Ubuntu configuration
+
 1. Connect to Wi-fi
 2. Open the ubuntu terminal ( Super + terminal) and perform the following commands as **root**:\
    Use the password for this case **&rarr; 1234**
@@ -55,10 +59,9 @@ Go to Additional drivers tab and make sure that says **“No additional drivers 
 # AutoInstall Script 
 ---
 
+
+How to Check Your Connected Devices: 
 ---
-## Ubuntu Manual testing Step by Step
----
-### How to Check Your Connected Devices: 
 This method will show you how to check if the computer is detecting connected devices such as Webcam, 4G Modem, GPSd, Fingerprint, Touch Screen, or Smart Card Reader
 Open the terminal and use the following commands
 
@@ -67,12 +70,14 @@ lsusb
 ```
 If you do not see the device required in the list: This means the computer has not detected. This could be because the device is not working properly, it is not compatible, or it is not properly connected.
 
-### How to Test Bluetooth & Wi-Fi: 
+How to Test Bluetooth & Wi-Fi:
+---
 To test the Wi-Fi and Bluetooth, you don’t need to use the terminal. You can use the UI.
 
 **Settings &rarr; Networks or Bluetooth**
 
-### How to Set Up and Test the 4G Modem: 
+How to Set Up and Test the 4G Modem:
+---
 Most of the time the **Sierra Wireless EM7455 Modem** works on Ubuntu 24.0, these devices are automatically detected and should work with the built-in drivers. However, you need to configurate the Access Point Name (APN) to connect your mobile data network.
 
 1. Insert the SIM Card: You will not see the **“Mobile Network Configuration”** option in the UI until a SIM Card is detected.
@@ -93,7 +98,8 @@ Most of the time the **Sierra Wireless EM7455 Modem** works on Ubuntu 24.0, thes
 ping 8.8.8.8
 ```
 
-### How to Test GPS dedicated: 
+How to Test GPS dedicated:
+---
 To test the GPS module, you will use a service called gpsd and its related tools.  This service manages data from the GPS receiver and makes it available for other applications.
 
 1. Install gpsd and its tools: use the following commands:
@@ -125,39 +131,86 @@ If the applications don’t show any data, it might be because you are in a spac
 sudo systemctl status gpsd
 ```
 --- 
-## WebCam Configuration: The Camera is usually detected and ready to go automatically. All you need to do is install a simple application to test it
+WebCam Configuration: 
+---
+The Camera is usually detected and ready to go automatically. All you need to do is install a simple application to test it
+```bash
 sudo apt install cheese
-### How to Calibrate the Touch Screen: You can calibrate the touchscreen using a command-line tool called xinput-calibrator. This tool is effective when you’re using the X Window System, which is the default display server on Ubuntu.
-Install xinput-calibrator
-sudo apt install xinput-calibrator
-Run the Calibrator
-Run the calibrator from the terminal. This will launch a simple graphical interface.
-xinput_calibrator
+sudo apt -y install kamoso
+```
+---
+**NOTE:**
+On some units, such as **DELL devices**, the application CHEESE may present errors or bugs. For this reason, instead of using Cheese, we will use KAMOSO
 
-Make the calibration permanent: After tapped all four points in the UI, the terminal will show the calibration data as a “snippet”. This snippet contains the values needed to make the calibration persistent across reboots.
-Copy the entire output from the terminal (ctrl + shift + c)
+```bash
+sudo apt remove cheese
+```
+---
+How to Calibrate the Touch Screen:
+---
+You can calibrate the touchscreen using a command-line tool called xinput-calibrator. This tool is effective when you’re using the X Window System, which is the default display server on Ubuntu.
+
+1. Install xinput-calibrator
+```bash
+sudo apt install xinput-calibrator
+```
+2. Run the Calibrator
+Run the calibrator from the terminal. This will launch a simple graphical interface.
+```bash
+xinput_calibrator
+```
+
+### Make the calibration permanent:
+
+After tapped all four points in the UI, the terminal will show the calibration data as a **“snippet”**. This snippet contains the values needed to make the calibration persistent across reboots.
+
+1. Run the calibrator 
+2. Copy the entire output from the terminal (ctrl + shift + c)
+```bash
 sudo nano /etc/X11/xorg.conf.d/99-calibration.conf
-Past the snippet into this file (ctrl + s) => save, (ctrl + x) => exit
+#Paste the snippet into this file (ctrl + s) => save, (ctrl + x) => exit
 reboot now
-### How to Set up the Fingerprint Sensor: To test your fingerprint sensor, you will use a command-line tool called fprintd
-Install fprintd
+```
+
+How to Set up the Fingerprint Sensor:
+---
+To test your fingerprint sensor, you will use a command-line tool called fprintd
+1. Install fprintd
+```bash
 sudo apt install fprintd
-Enroll a Fingerprint: If the sensor is detected, you can use fprintd to enroll a fingerprint.
-fprintd-enroll
-Follow the onscreen instructions, you’ll see a success message
+```
+2. Enroll a Fingerprint: If the sensor is detected, you can use fprintd to enroll a fingerprint.
+```bash
+fprintd-enroll #Follow the onscreen instructions, you’ll see a success message
 fprint-verify
-### How to set up the Smart Card Reader: To test the smart card reader, you can use command-line tools from pcsc-tools or opensc
-Install the tools:
+```
+How to set up the Smart Card Reader: 
+---
+To test the smart card reader, you can use command-line tools from pcsc-tools or opensc
+1. Install the tools:
+```bash
 sudo apt install pcscd pcsc-tools
+```
 ### Check is the Reader is detected
+```bash
 pscc_scan
+```
 The command will tell you if a reader is detected. Look for a line that says “Reader 0: <reader_name>…”. This means the system
 recognizes the reader.
 ### Test with a card
-Insert the smart card
+1. Insert the smart card
+```bash
 pcsc_scan
+```
 The command will provide information about the card
-Configure Computer Fan and Temperature: To diagnose a fan, you can use command-line tools to monitor your CPU temperature and fan speed.
+
+Configure Computer Fan and Temperature:
+---
+---
+**NOTE:**
+
+---
+To diagnose a fan, you can use command-line tools to monitor your CPU temperature and fan speed.
 Monitor CPU temperature: Install lm-sensors
 sudo apt install lm-sensors
 After installing, run the following command to have the system find all your hardware sensors. Press Enter at each question to accept the default options
