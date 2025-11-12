@@ -55,12 +55,12 @@ While the script streamlines these tasks, it’s still highly recommended to man
 ### Clone the repository
 1. Make sure you are connected to Wi-Fi
 ```bash
-cd Downloads
-Sudo apt install git –y #(in case that you did not install before)
-git clone https://github.com/AndresVGu/toughbook-autoinstall
-cd Toughbook-autoinstall
-chmod +x autoinstall.sh
-./autoinstall.sh
+ cd Downloads
+ sudo apt install git –y #(in case that you did not install before)
+ git clone https://github.com/AndresVGu/toughbook-autoinstall
+ cd Toughbook-autoinstall
+ chmod +x autoinstall.sh #gives execution permission to the script
+ ./autoinstall.sh #executes the script
 ```
 # Ubuntu configuration
 
