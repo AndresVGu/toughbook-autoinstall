@@ -75,6 +75,8 @@ sudo apt install git -y
 3.Check drives (Super + Software & updates)
 Go to Additional drivers tab and make sure that says **“No additional drivers available”**
 
+![Addditional drivers](/assets/drivers.png)
+
 How to Check Your Connected Devices: 
 ---
 This method will show you how to check if the computer is detecting connected devices such as Webcam, 4G Modem, GPSd, Fingerprint, Touch Screen, or Smart Card Reader
@@ -107,6 +109,8 @@ Most of the time the **Sierra Wireless EM7455 Modem** works on Ubuntu 24.0, thes
 
 (remember you need to use the APN for the data provider) 
 
+![!network configuration](/assets/mobile_network.png)
+
 3. Save changes and make sure to select this APN as the default
    
 4. Activate the Mobile data & Test:
@@ -138,6 +142,8 @@ cgps #with this command you will see the data in console (text-based)
 xgps #is a visual tool that shows the same information
 ```
 It can take a few minutes to get a “fix” on the satellites.
+
+![gps example](/assets/gps_ui.png)
 
 ---
 **NOTE**
@@ -176,6 +182,7 @@ Run the calibrator from the terminal. This will launch a simple graphical interf
 ```bash
 xinput_calibrator
 ```
+![Touch calibator](/assets/touch_calibrator.png)
 
 ### Make the calibration permanent:
 
