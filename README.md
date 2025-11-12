@@ -1,6 +1,24 @@
 ---
-# Ubuntu 24.0 installation for Panasonic CF-53 mk4 & CF-54 mk2
+# Ubuntu Installation & Configuration For ToughBooks
 ---
+
+Recommended Ubuntu Versions by Model
+---
+When preparing to install or use an operating system, it's crucial to consider the version based on the specific hardware you intend to use. Different machine models often perform optimally with particular operating system releases.
+
+**NOTE:**
+The following table displays various units models and the corresponding **Ubuntu versions** that are recommendedn for their **correct and optimal functioning.**
+
+ | Model | Ubuntu Version |
+   |:-----:|:------|
+   | CF-53 MK  |  Ubuntu **24.04** LTS (Noble Numbat)  |
+   | CF-54 MK2  |  Ubuntu **24.04** LTS (Noble Numbat)  |
+   | FZ-G1 MK1 | Ubuntu **20.04** LTS (Focal Fossa) |
+   | FZ-G1 MK4 | Ubuntu **20.04** LTS (Focal Fossa) |
+
+
+
+--- 
 1. Boot from the USB drive
 Choose the language and keyboard layout
 2. Connect to a network: It is recommended to connect to the internet during installation. **This allows the installer to download updates and third-party drivers**
@@ -53,14 +71,14 @@ To test the Wi-Fi and Bluetooth, you don’t need to use the terminal. You can u
 Most of the time the **Sierra Wireless EM7455 Modem** works on Ubuntu 24.0, these devices are automatically detected and should work with the built-in drivers. However, you need to configurate the Access Point Name (APN) to connect your mobile data network.
 
 1. Insert the SIM Card: You will not see the **“Mobile Network Configuration”** option in the UI until a SIM Card is detected.
-2. Go to Mobile Network Settings and configure the APN: Access Point Names => add new APN and you will need to fill these fields:
+2. Go to Mobile Network Settings and configure the APN: Access Point Names &rarr; add new APN and you will need to fill these fields:
    
    | <!--> | <!--> |
    |:-----:|:------|
    | Name  |  internet |
    | APN  |  sp.telus.com  |
 
-(remember you need to use the APN for the data provider) \
+(remember you need to use the APN for the data provider) 
 
 3. Save changes and make sure to select this APN as the default
    
@@ -93,8 +111,15 @@ xgps #is a visual tool that shows the same information
 ```
 It can take a few minutes to get a “fix” on the satellites.
 
-### Troubleshooting: If the applications don’t show any data, it might be because you are in a space where the GPS doesn’t detect the satellites, or a problem with the gpsd service. You can check its status with:
+---
+**NOTE**
+
+If the applications don’t show any data, it might be because you are in a space where the GPS doesn’t detect the satellites, or a problem with the gpsd service. You can check its status with:
+
+```bash
 sudo systemctl status gpsd
+```
+--- 
 ## WebCam Configuration: The Camera is usually detected and ready to go automatically. All you need to do is install a simple application to test it
 sudo apt install cheese
 ### How to Calibrate the Touch Screen: You can calibrate the touchscreen using a command-line tool called xinput-calibrator. This tool is effective when you’re using the X Window System, which is the default display server on Ubuntu.
