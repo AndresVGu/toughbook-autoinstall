@@ -47,7 +47,7 @@ If you do not see the device required in the list: This means the computer has n
 ### How to Test Bluetooth & Wi-Fi: 
 To test the Wi-Fi and Bluetooth, you don’t need to use the terminal. You can use the UI.
 
-Settings => Networks || Bluetooth
+**Settings &rarr; Networks or Bluetooth**
 
 ### How to Set Up and Test the 4G Modem: 
 Most of the time the **Sierra Wireless EM7455 Modem** works on Ubuntu 24.0, these devices are automatically detected and should work with the built-in drivers. However, you need to configurate the Access Point Name (APN) to connect your mobile data network.
@@ -70,18 +70,28 @@ Most of the time the **Sierra Wireless EM7455 Modem** works on Ubuntu 24.0, thes
 ping 8.8.8.8
 ```
 
-### How to Test GPS dedicated: To test the GPS module, you will use a service called gpsd and its related tools.  This service manages data from the GPS receiver and makes it available for other applications
-Install gpsd and its tools: use the following command
-sudo apt install gpsd gpsd-clients -y
-Verify the GPS connection
-lsusb | grep “U-Blox”
-you will see the name of the device U-Blox AG [u-blox 8]
-### Run GPS test with the following commands:
+### How to Test GPS dedicated: 
+To test the GPS module, you will use a service called gpsd and its related tools.  This service manages data from the GPS receiver and makes it available for other applications.
 
-cgps
-with this command you will see the data in console (text-based)
-xgps
-is a visual tool that shows the same information, it can take a few minutes to get a “fix” on the satellites.
+1. Install gpsd and its tools: use the following commands:
+
+```bash
+sudo apt install gpsd gpsd-clients -y
+```
+
+2. Verify the GPS connection
+```bash
+lsusb | grep “U-Blox”
+```
+you will see the name of the device U-Blox AG [u-blox 8]
+
+3. Run GPS test with the following commands:
+
+```bash
+cgps #with this command you will see the data in console (text-based)
+xgps #is a visual tool that shows the same information
+```
+It can take a few minutes to get a “fix” on the satellites.
 
 ### Troubleshooting: If the applications don’t show any data, it might be because you are in a space where the GPS doesn’t detect the satellites, or a problem with the gpsd service. You can check its status with:
 sudo systemctl status gpsd
