@@ -558,20 +558,20 @@ prepare_environment() {
 main_menu() {
     while true; do
         echo -e "\n${BLUE}--- Main Menu ---${END}"
-        echo -e "[1] 🔎 Configuration & Testing Guide"
-		echo -e "[2] 🔎 Device Detection"
-        echo -e "[3] ⚙️  Device & Driver Configuration"
-        echo -e "[4] ⌨️  Test Keyboard"
-        echo -e "[5] 💻 OEM Environment Setup ✨(SYSPREP)✨"
+       # echo -e "[1] 🔎 Configuration & Testing Guide"
+		echo -e "[1] 🔎 Device Detection"
+        echo -e "[2] ⚙️  Device & Driver Configuration"
+        echo -e "[3] ⌨️  Test Keyboard"
+        echo -e "[4] 💻 OEM Environment Setup ✨(SYSPREP)✨"
         echo -e "[q|Q] ↩️  Exit"
         read -rp "Select an option: " choice
 
         case "$choice" in
-            1)
-				URL_DOC="https://github.com/AndresVGu/toughbook-autoinstall/blob/main/README.md"
-                open_doc "$URL_DOC"
-                ;;
-			2)
+            #1)
+				#URL_DOC="https://github.com/AndresVGu/toughbook-autoinstall/blob/main/README.md"
+              #  open_doc "$URL_DOC"
+             #   ;;
+			1)
                 device_detection
                 ;;
             3)
