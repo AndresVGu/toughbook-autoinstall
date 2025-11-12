@@ -56,7 +56,7 @@ sudo apt install git -y
 Go to Additional drivers tab and make sure that says **“No additional drivers available”**
 
 ---
-# AutoInstall Script 
+# Auto-Install Script 
 ---
 
 
@@ -208,22 +208,38 @@ Configure Computer Fan and Temperature:
 ---
 ---
 **NOTE:**
+This step is only necessary if a unit failure is noticed when making the order or if it is specifically required.
 
 ---
 To diagnose a fan, you can use command-line tools to monitor your CPU temperature and fan speed.
-Monitor CPU temperature: Install lm-sensors
+
+### Monitor CPU temperature: 
+
+1. Install lm-sensors
+```bash
 sudo apt install lm-sensors
+```
 After installing, run the following command to have the system find all your hardware sensors. Press Enter at each question to accept the default options
+```bash
 sudo sensors-detect
 sersors
+```
 With sensors command you can see the temperature of your CPU,GPU, and other parts.
-Monitor Fan Speed: you can use lm-sensors along with fancontrol
-Install fancontrol:
+Monitor Fan Speed: you can use **lm-sensors** along with fancontrol
+
+2. Install fancontrol:
+```bash
 sudo apt install fancontrol
-Configure fancontrol:
+```
+3. Configure fancontrol:
+```bash
 Sudo pwmconfig
-### Follow the on-screen instructions to test the fans. This will show you the current speed in RPM
-### Delete Test Profile and Prepare unit: To prepare the device for distribution as an (OEM) Original Equipment Manufacturer use the following commands:
+```
+Follow the on-screen instructions to test the fans. This will show you the current speed in RPM
+
+Delete Test Profile and Prepare unit: 
+---
+To prepare the device for distribution as an (OEM) Original Equipment Manufacturer use the following commands:
 Update and Upgrade the System:
 sudo apt update && sudo apt full-upgrade -y
 Install OEM packages:
