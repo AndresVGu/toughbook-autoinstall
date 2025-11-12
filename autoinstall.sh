@@ -489,23 +489,26 @@ keyboard_test(){
 #---------------
 open_doc() {
   	local url="$1"
-    
-    # 1. Validación de la URL
+    local usuario="$SUDO_USER"  # <--- ¡REEMPLAZA ESTO!
+
     if [ -z "$url" ]; then
         echo "Error: Debes proporcionar una URL."
-        echo "Uso: abrir_web_en_nueva_terminal https://ejemplo.com"
+        echo "Uso: ejecutar_firefox_como_usuario https://ejemplo.com"
         return 1
     fi
 
-    echo "Abriendo la URL: $url en una nueva ventana de terminal..."
+    echo "Ejecutando Firefox como el usuario '$usuario' en segundo plano..."
     
-    # 2. Comando para abrir la terminal y ejecutar Firefox
-    # -e o --command: Ejecuta el comando especificado.
-    # El comando interno es: firefox [URL]
-    gnome-terminal -- /bin/bash -c "firefox \"$url\" ; echo 'Firefox iniciado. Cierre esta terminal para terminar.' ; exec bash"
+    # El 'xhost' es crucial: permite que el usuario 'TU_NOMBRE_DE_USUARIO'
+    # se conecte al servidor gráfico que está siendo usado por root.
+    xhost +si:localuser:"$usuario" > /dev/null
     
-    # NOTA: Si usas KDE, reemplaza 'gnome-terminal --' por 'konsole -e'
-    # o si usas XFCE, usa 'xfce4-terminal --command'
+    # 'sudo -u' ejecuta el comando como el usuario especificado.
+    # El '&' al final lo ejecuta en segundo plano.
+    sudo -u "$usuario" firefox "$url" &
+    
+    # Se remueven los permisos después de la ejecución por seguridad.
+    xhost -si:localuser:"$usuario" > /dev/null
 }
 #-------------------------------------------
 # Prepares the system for OEM distribution
