@@ -192,6 +192,9 @@ check_neofetch() {
         	;;
     	# Caso por defecto (*): si no coincide con ninguno de los anteriores,
     	# no se ejecuta nada, y la variable 'brand' mantiene su valor original.
+		"CF-53 MK4")
+			cpu=$(lscpu | grep "Model name:" | sed 's/Model name:\s*//')
+			;;
     	*)
 			cpu=$(lscpu | grep "BIOS Model name:" | sed 's/BIOS Model name:\s*//')
         	# Opcional: puedes añadir un 'echo' para debug aquí si quieres
