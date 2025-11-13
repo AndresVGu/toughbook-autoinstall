@@ -182,6 +182,7 @@ check_neofetch() {
     	# Si la salida es exactamente CF-54-2
     	"CF-54-2")
         	model="CF-54 Mk2"
+			cpu=$(lscpu | grep "BIOS Model name:" | sed 's/BIOS Model name:\s*//')
         	;;
     	# Si la salida es g1-1a (la validación es sensible a mayúsculas y minúsculas por defecto)
     	"FZ-G1A"*)
@@ -192,6 +193,7 @@ check_neofetch() {
     	# Caso por defecto (*): si no coincide con ninguno de los anteriores,
     	# no se ejecuta nada, y la variable 'brand' mantiene su valor original.
     	*)
+			cpu=$(lscpu | grep "BIOS Model name:" | sed 's/BIOS Model name:\s*//')
         	# Opcional: puedes añadir un 'echo' para debug aquí si quieres
         	;;
 	esac
@@ -574,13 +576,13 @@ main_menu() {
 			1)
                 device_detection
                 ;;
-            3)
+            2)
                 install_drivers
                 ;;
-            4)
+            3)
                 keyboard_test
                 ;;
-            5)
+            4)
                 prepare_environment
                 ;;
             [qQ])
