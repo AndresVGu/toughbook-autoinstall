@@ -384,18 +384,21 @@ g1_detection(){
 	V4L_OUTPUT=$(v4l2-ctl --list-devices 2>/dev/null)
 	# 1. Verificar la Cámara Frontal (asumiendo /dev/video0)
 	# Buscamos la línea que contenga "/dev/video0" en la salida.
+	FRONT_CAM="Front Camera"
+	REAR_CAM="Front Camera"
+	
 	if echo "$V4L_OUTPUT" | grep -q "/dev/video0"; then
-    	printf "${GREEN}%-25s${END} | ${GREEN}%s${END}\n" Front Camera "✅ Detected"
+    	printf "${GREEN}%-25s${END} | ${GREEN}%s${END}\n" "$FRONT_CAM" "✅ Detected"
 	else
-    	printf "${RED}%-25s${END} | ${RED}%s${END}\n" Front Camera "❌  Not Detected"
+    	printf "${RED}%-25s${END} | ${RED}%s${END}\n" "$FRONT_CAM" "❌  Not Detected"
 	fi
 
 	# 2. Verificar la Cámara Trasera (asumiendo /dev/video1)
 	# Buscamos la línea que contenga "/dev/video1" en la salida.
 	if echo "$V4L_OUTPUT" | grep -q "/dev/video1"; then
-    	printf "${GREEN}%-25s${END} | ${GREEN}%s${END}\n" Rear Camera "✅ Detected"
+    	printf "${GREEN}%-25s${END} | ${GREEN}%s${END}\n" "$REAR_CAM" "✅ Detected"
 	else
-    	printf "${RED}%-25s${END} | ${RED}%s${END}\n" Rear Camera "❌  Not Detected"
+    	printf "${RED}%-25s${END} | ${RED}%s${END}\n" "$REAR_CAM" "❌  Not Detected"
 	fi
 	
 
