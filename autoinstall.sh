@@ -270,7 +270,7 @@ check_neofetch() {
     echo -e "${TURQUOISE}=================================================${END}"
     echo -e "${TURQUOISE}================ BATTERY INFO ===================${END}"
     echo -e "Power Status: $bat_status"
-    echo -e "Battery Health: ${bat_health}   ||   ${bat_message}    "
+    echo -e "Battery Health: ${BLUE}${bat_health}${END}  ||   ${bat_message}    "
 }
 
 # ==================== Core Functions ====================
@@ -374,18 +374,6 @@ g1_detection(){
     	 printf "${RED}%-25s${END} | ${RED}%s${END}\n" "$BLUE_name" "❌  Not Detected"
 	fi
 
-	#-------------
-	#-OPTICAL DRIVE
-	#--------------
-
-	OPTICAL_STATUS=$(dmesg | grep -i 'dvd\|cdrom\|optical')
-	OP_ALIAS="Optical Drive(DVD)"
-
-	if [ "$OPTICAL_STATUS" ]; then
-    	printf "${GREEN}%-25s${END} | ${GREEN}%s${END}\n" "$OP_ALIAS" "✅ Detected"
-	else
-    	 printf "${RED}%-25s${END} | ${RED}%s${END}\n" "$OP_ALIAS" "❌  Not Detected"
-	fi
 
     #----------
     #---NETWORK
