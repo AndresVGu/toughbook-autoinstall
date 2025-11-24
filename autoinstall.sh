@@ -23,6 +23,19 @@ ctrl_c() {
     exit 1
 }
 
+#Check Version
+check_version() {
+/usr/bin/git pull
+
+if [ $? -eq 0 ]
+	echo "[+] Script updated."
+else
+	echo "[!] Fail updating the script"
+fi
+
+}
+
+
 # Displays the script's banner
 show_banner() {
     echo -e "\n${TURQUOISE}              _____            ______"
@@ -764,6 +777,7 @@ g1_main_menu() {
 
 check_root
 show_banner
+check_version
 check_neofetch
 
 #------------------------
