@@ -518,18 +518,7 @@ device_detection() {
         printf "${RED}%-25s${END} | ${RED}%s${END}\n" "Touch Screen" "❌ Not Detected"
     fi
 
-	#-------------
-	#-OPTICAL DRIVE
-	#--------------
-
-	OPTICAL_STATUS=$(dmesg)
-	OP_ALIAS="OPTICAL DRIVE(DVD)"
-
-	if echo "$OPTICAL_STATUS" | grep -i 'dvd\|cdrom\|optical'"; then
-    	printf "${GREEN}%-25s${END} | ${GREEN}%s${END}\n" "$OP_ALIAS" "✅ Detected"
-	else
-    	 printf "${RED}%-25s${END} | ${RED}%s${END}\n" "$OP_ALIAS" "❌  Not Detected"
-	fi
+	
 
     echo -e "${GREEN}[!] Scan completed.${END}"
 }
