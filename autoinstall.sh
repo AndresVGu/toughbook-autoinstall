@@ -489,10 +489,10 @@ device_detection() {
 	#-OPTICAL DRIVE
 	#--------------
 
-	OPTICAL_STATUS=$(dmesg)
+	OPTICAL_STATUS=$(dmesg | grep -i 'dvd\|cdrom\|optical')
 	OP_ALIAS="OPTICAL DRIVE(DVD)"
 
-	if [ "$OPTICAL_STATUS" | grep -i 'dvd\|cdrom\|optical' ]; then
+	if [ "$OPTICAL_STATUS" ]; then
     	printf "${GREEN}%-25s${END} | ${GREEN}%s${END}\n" "$OP_ALIAS" "✅ Detected"
 	else
     	 printf "${RED}%-25s${END} | ${RED}%s${END}\n" "$OP_ALIAS" "❌  Not Detected"
