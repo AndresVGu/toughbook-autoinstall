@@ -673,7 +673,6 @@ main_menu() {
         echo -e "[2] ⚙️  Device & Driver Configuration"
         echo -e "[3] ⌨️  Test Keyboard"
         echo -e "[4] 💻 OEM Environment Setup ✨(SYSPREP)✨"
-		echo -e "[5] ⌨️  G1 MK1 Devices detection (temporary)"
         echo -e "[q|Q] ↩️  Exit"
         read -rp "Select an option: " choice
 
@@ -694,9 +693,6 @@ main_menu() {
             4)
                 prepare_environment
                 ;;
-			5)
-				g1_detection
-				;;
             [qQ])
                 echo -e "${RED}[*] Closing script...${END}"
                 exit 0
@@ -715,7 +711,7 @@ g1_main_menu() {
         echo -e "\n${BLUE}--- Main Menu ---${END}"
 		echo -e "[1] 🔎 Device Detection"
         echo -e "[2] ⚙️  Device & Driver Configuration"
-		echo -e "⚠️${YELLOW}For SYSPREP use Prepare For Shipping To End User located on the Desktop${END}⚠️"
+		echo -e "⚠️ ${YELLOW}For SYSPREP use Prepare For Shipping To End User located on the Desktop${END} ⚠️"
         echo -e "[q|Q] ↩️  Exit"
         read -rp "Select an option: " choice
 
