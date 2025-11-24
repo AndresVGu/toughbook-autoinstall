@@ -715,6 +715,7 @@ g1_main_menu() {
         echo -e "\n${BLUE}--- Main Menu ---${END}"
 		echo -e "[1] 🔎 Device Detection"
         echo -e "[2] ⚙️  Device & Driver Configuration"
+		echo -e "⚠️${YELLOW}For SYSPREP use Prepare For Shipping To End User located on the Desktop${END}⚠️"
         echo -e "[q|Q] ↩️  Exit"
         read -rp "Select an option: " choice
 
