@@ -241,13 +241,14 @@ check_neofetch() {
     #Status
     bat_status=$(acpi -V | grep "Battery" | grep -o "[0-9]\+%" | sed -n '1p')
     clean_value=${bat_health%\%}
+	clean_value_int=$((clean_value))
     bat_message=""
     
-    if [ "$clean_value" -gt 85 ]; then
+    if [ "$clean_value_int" -gt 85 ]; then
         bat_message="✅${GREEN} Recomended for Amazon Orders ${END}"
-    elif [ "$clean_value" -gt 80 ]; then
+    elif [ "$clean_value_int" -gt 80 ]; then
         bat_message="✅${GREEN} Recomended for Shopify ${END}"
-    elif [ "$clean_value" -gt 1 ]; then
+    elif [ "$clean_value_int" -gt 1 ]; then
         bat_message="⚠️${YELLOW} Battery Health lower than 80% ${END}" 
     else
         bat_message="❌${RED} No Battery Detected ${END}"
