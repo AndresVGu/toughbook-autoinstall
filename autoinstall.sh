@@ -336,7 +336,7 @@ g1_detection(){
 
     # Array of device names to look for
     #Add eGalaxTouch
-    local devices_to_check=( "Fingerprint"  "Bluetooth" "Smart Card Reader")
+    local devices_to_check=( "Fingerprint" "Smart Card Reader")
     local touch_devices=("Touch Panel" "eGalaxTouch")
     local usb_devices=$(lsusb)
     local touch_detected=false
@@ -362,6 +362,17 @@ g1_detection(){
             printf "${RED}%-25s${END} | ${RED}%s${END}\n" "$device_name" "❌  Not Detected"
         fi
     done
+
+	#---------
+	#--Bluetooth
+	#---------
+	BLUETOOTH_STATUS=$(sudo systemctl status bluetooth 2>/dev/null)
+	BLUE_name="Bluetooth"
+	if echo "$BLUETOOTH_STATUS" | grep -q "Active: active (running)"; then
+    	printf "${GREEN}%-25s${END} | ${GREEN}%s${END}\n" "$BLUE_name" "✅ Detected"
+	else
+    	 printf "${RED}%-25s${END} | ${RED}%s${END}\n" "$BLUE_name" "❌  Not Detected"
+	fi
 
     #----------
     #---NETWORK
