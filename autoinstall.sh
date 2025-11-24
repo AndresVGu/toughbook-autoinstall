@@ -320,6 +320,107 @@ draw_box(){
 }
 
 # Detects connected USB devices
+
+g1_detection(){
+	echo -e "${GREEN}[+] Starting device detection...${END}"
+
+	if command -v v4l-utils &> /dev/null; then
+        echo "[+] v4l-utils already Installed."
+    else    
+        echo "[!] Installing v4l-utils ..."
+        sudo apt install v4l-utils -y
+    fi
+    echo -e "${YELLOW}[!] Make sure that each device is properly connected.${END}"
+    sleep 1.5
+
+    # Array of device names to look for
+    #Add eGalaxTouch
+    local devices_to_check=( "Fingerprint"  "Bluetooth" "Smart Card Reader")
+    local touch_devices=("Touch Panel" "eGalaxTouch")
+    local usb_devices=$(lsusb)
+    local touch_detected=false
+    local cameras=(
+    	"Webcam:Front Camera" 
+    	"Camera:Rear Camera")
+    local modemg=$(lsusb | grep "Sierra Wireless" | awk -F 'Inc. ' '{print $2}')
+    local network_devices=(
+    "Sierra Wireless:Sierra Wireless(${modemg})"
+    "U-Blox:GPS Dedicated")
+
+	UNIT_TITLE="You are working on a ${brand} ${model}"
+    draw_box "$UNIT_TITLE"
+
+
+    printf "%-25s | %s\n" "Device" "Status"
+    printf "%-25s | %s\n" "-------------------------" "------------"
+
+    for device_name in "${devices_to_check[@]}"; do
+        if echo "$usb_devices" | grep -qi "$device_name"; then
+            printf "${GREEN}%-25s${END} | ${GREEN}%s${END}\n" "$device_name" "✅ Detected"
+        else
+            printf "${RED}%-25s${END} | ${RED}%s${END}\n" "$device_name" "❌  Not Detected"
+        fi
+    done
+
+    #----------
+    #---NETWORK
+    #----------
+    for item in "${network_devices[@]}";do
+        local search_pattern="${item%%:*}"
+        local output_alias="${item##*:}"
+
+        if echo "$usb_devices" | grep -qi "$search_pattern"; then
+            printf "${GREEN}%-25s${END} | ${GREEN}%s${END}\n" "$output_alias" "✅ Detected"
+
+        else
+            printf "${RED}%-25s${END} | ${RED}%s${END}\n" "$output_alias" "❌  Not Detected"
+        fi
+    done
+
+    #--------
+    #Cameras
+    #--------
+
+	V4L_OUTPUT=$(v4l2-ctl --list-devices 2>/dev/null)
+	# 1. Verificar la Cámara Frontal (asumiendo /dev/video0)
+	# Buscamos la línea que contenga "/dev/video0" en la salida.
+	if echo "$V4L_OUTPUT" | grep -q "/dev/video0"; then
+    	printf "${GREEN}%-25s${END} | ${GREEN}%s${END}\n" Front Camera "✅ Detected"
+	else
+    	printf "${RED}%-25s${END} | ${RED}%s${END}\n" Rear Camera "❌  Not Detected"
+	fi
+
+	# 2. Verificar la Cámara Trasera (asumiendo /dev/video1)
+	# Buscamos la línea que contenga "/dev/video1" en la salida.
+	if echo "$V4L_OUTPUT" | grep -q "/dev/video1"; then
+    	printf "${GREEN}%-25s${END} | ${GREEN}%s${END}\n" Rear Camera "✅ Detected"
+	else
+    	printf "${RED}%-25s${END} | ${RED}%s${END}\n" Rear Camera "❌  Not Detected"
+	fi
+	
+
+
+    #-------------
+    #Touch panels
+    #-------------
+    for touch in "${touch_devices[@]}"; do
+        if echo "$usb_devices" | grep -qi "$touch"; then
+            touch_detected=true
+            break
+       fi
+    done
+    
+    # Touch Screen Input
+    if $touch_detected; then
+        printf "${GREEN}%-25s${END} | ${GREEN}%s${END}\n" "Touch Screen" "✅ Detected"
+    else
+        printf "${RED}%-25s${END} | ${RED}%s${END}\n" "Touch Screen" "❌ Not Detected"
+    fi
+
+    echo -e "${GREEN}[!] Scan completed.${END}"
+}
+
+
 device_detection() {
     echo -e "${GREEN}[+] Starting device detection...${END}"
     echo -e "${YELLOW}[!] Make sure that each device is properly connected.${END}"
@@ -588,6 +689,9 @@ main_menu() {
             4)
                 prepare_environment
                 ;;
+			5)
+				g1_detection
+				;;
             [qQ])
                 echo -e "${RED}[*] Closing script...${END}"
                 exit 0
