@@ -27,7 +27,7 @@ ctrl_c() {
 check_version() {
 	/usr/bin/git pull
 
-	if [ $? -eq 0 ]
+	if [ $? -eq 0 ]; then
 		echo "[+] Script updated."
 	else
 		echo "[!] Fail updating the script"
