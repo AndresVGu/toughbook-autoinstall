@@ -25,13 +25,13 @@ ctrl_c() {
 
 #Check Version
 check_version() {
-/usr/bin/git pull
+	/usr/bin/git pull
 
-if [ $? -eq 0 ]
-	echo "[+] Script updated."
-else
-	echo "[!] Fail updating the script"
-fi
+	if [ $? -eq 0 ]
+		echo "[+] Script updated."
+	else
+		echo "[!] Fail updating the script"
+	fi
 
 }
 
