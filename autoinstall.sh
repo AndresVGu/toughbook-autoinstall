@@ -385,7 +385,7 @@ g1_detection(){
 	# 1. Verificar la Cámara Frontal (asumiendo /dev/video0)
 	# Buscamos la línea que contenga "/dev/video0" en la salida.
 	FRONT_CAM="Front Camera"
-	REAR_CAM="Front Camera"
+	REAR_CAM="Rear Camera"
 	
 	if echo "$V4L_OUTPUT" | grep -q "/dev/video0"; then
     	printf "${GREEN}%-25s${END} | ${GREEN}%s${END}\n" "$FRONT_CAM" "✅ Detected"
