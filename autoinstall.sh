@@ -387,7 +387,7 @@ g1_detection(){
 	if echo "$V4L_OUTPUT" | grep -q "/dev/video0"; then
     	printf "${GREEN}%-25s${END} | ${GREEN}%s${END}\n" Front Camera "✅ Detected"
 	else
-    	printf "${RED}%-25s${END} | ${RED}%s${END}\n" Rear Camera "❌  Not Detected"
+    	printf "${RED}%-25s${END} | ${RED}%s${END}\n" Front Camera "❌  Not Detected"
 	fi
 
 	# 2. Verificar la Cámara Trasera (asumiendo /dev/video1)
@@ -669,6 +669,7 @@ main_menu() {
         echo -e "[2] ⚙️  Device & Driver Configuration"
         echo -e "[3] ⌨️  Test Keyboard"
         echo -e "[4] 💻 OEM Environment Setup ✨(SYSPREP)✨"
+		echo -e "[5] ⌨️  G1 MK1 Devices detection (temporary)"
         echo -e "[q|Q] ↩️  Exit"
         read -rp "Select an option: " choice
 
