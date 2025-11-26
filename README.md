@@ -14,7 +14,7 @@ The following table displays various units models and the corresponding **Ubuntu
    | CF-53 MK  |  Ubuntu **24.04** LTS (Noble Numbat)  |
    | CF-54 MK2  |  Ubuntu **24.04** LTS (Noble Numbat)  |
    | FZ-G1 MK1 | Ubuntu **20.04** LTS (Focal Fossa) |
-   | FZ-G1 MK4 | Ubuntu **20.04** LTS (Focal Fossa) |
+   | FZ-G1 MK4 | Ubuntu **22.04** LTS (Jammy Jellyfish) |
 
 
 
@@ -189,12 +189,28 @@ xinput_calibrator
 After tapped all four points in the UI, the terminal will show the calibration data as a **“snippet”**. This snippet contains the values needed to make the calibration persistent across reboots.
 
 1. Run the calibrator 
-2. Copy the entire output from the terminal (ctrl + shift + c)
+2. Copy the entire output from the terminal (ctrl + shift + c), and replace the name of the specific touch device 
 ```bash
 sudo nano /etc/X11/xorg.conf.d/99-calibration.conf
 #Paste the snippet into this file (ctrl + s) => save, (ctrl + x) => exit
 reboot now
 ```
+###In case xinput_calibrator doesn't work 
+1. log out and use the **Gnome Xorg** option in the authentication panel
+2. open the terminal and authenticate as root
+3. go to **/usr/local/bin** directory\
+4. Create a bash script with the following content (the values of the coordinate transformation Matrix may vary depending the unit)
+
+```bash
+#!/bin/sh
+
+#Coordinate touch panel to screen
+#representations:
+#Touch_area_width,0,touch_x_offset,0,touch_area_height,touch_y_offset,0,0,1
+xinput set-prop "Fujitsu Component USB Touch Panel" --type=float "Coordinate Transformation Matrix" 1.115 0 -0.0709 0 1.14 -0.108 0 0 1
+```
+5. save and give execution permisions.
+6. then set up this script in the auto execute panel 
 
 How to Set up the Fingerprint Sensor:
 ---
