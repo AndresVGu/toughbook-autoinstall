@@ -118,6 +118,31 @@ Most of the time the **Sierra Wireless EM7455 Modem** works on Ubuntu 24.0, thes
 ```bash
 ping 8.8.8.8
 ```
+Setting Up 4G Mobile Internet on Ubuntu 20.04
+---
+You must find the correct APN for the company that provide your SIM card (e.g., Verizon, T-Mobile, Telus). You can search online for your provider APN name.
+
+- Some examples
+  
+  | <!--> | <!--> |
+   |:-----:|:------|
+   | Verizon (USA)  |  vzwinternet |
+   | Telus (Canada) |  sp.telus.com  |
+   | T-Mobile (USA) | fast.t-mobile.com |
+
+  1. Find your 4G Device's Name
+     **What to look for:** Look for a line where the **TYPE** is listed as **gsm, wwan or something different to ethernet, wifi or loopback". The name in the fisrt column (e.g., cdc-wdm0, ttyACM0) is your device name. write this down
+     ```bash
+     nmcli device
+     ```
+     | DEVICE | TYPE | STATE | CONNECTION \
+   |:-----:|:------|
+   | **cdc-wdm0**  |  **gsm**  | **disconnected** | -- |
+   | CF-54 MK2  |  Ubuntu **24.04** LTS (Noble Numbat)  |
+   | FZ-G1 MK1 | Ubuntu **20.04** LTS (Focal Fossa) |
+   | FZ-G1 MK4 | Ubuntu **22.04** LTS (Jammy Jellyfish) |
+
+
 
 How to Test GPS dedicated:
 ---
