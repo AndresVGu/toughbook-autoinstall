@@ -195,7 +195,7 @@ sudo nano /etc/X11/xorg.conf.d/99-calibration.conf
 #Paste the snippet into this file (ctrl + s) => save, (ctrl + x) => exit
 reboot now
 ```
-###In case xinput_calibrator doesn't work 
+### In case xinput_calibrator doesn't work 
 1. log out and use the **Gnome Xorg** option in the authentication panel
 2. open the terminal and authenticate as root
 3. go to **/usr/local/bin** directory\
