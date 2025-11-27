@@ -135,12 +135,11 @@ You must find the correct APN for the company that provide your SIM card (e.g., 
      ```bash
      nmcli device
      ```
-     | DEVICE | TYPE | STATE | CONNECTION \
-   |:-----:|:------|
+     | DEVICE | TYPE | STATE | CONNECTION |
+   |:-----:|:------:||:-----:|:------:|
    | **cdc-wdm0**  |  **gsm**  | **disconnected** | -- |
-   | CF-54 MK2  |  Ubuntu **24.04** LTS (Noble Numbat)  |
-   | FZ-G1 MK1 | Ubuntu **20.04** LTS (Focal Fossa) |
-   | FZ-G1 MK4 | Ubuntu **22.04** LTS (Jammy Jellyfish) |
+   | eth0  | ethernet | connected | Wired Connection 1 |
+ 
 
 
 
