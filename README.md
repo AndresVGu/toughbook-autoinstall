@@ -131,7 +131,7 @@ You must find the correct APN for the company that provide your SIM card (e.g., 
    | T-Mobile (USA) | fast.t-mobile.com |
 
   1. Find your 4G Device's Name
-     **What to look for:** Look for a line where the **TYPE** is listed as **gsm, wwan or something different to ethernet, wifi or loopback". The name in the fisrt column (e.g., cdc-wdm0, ttyACM0) is your device name. write this down
+     **What to look for:** Look for a line where the **TYPE** is listed as **gsm, wwan or something different to ethernet, wifi or loopback"**. The name in the fisrt column (e.g., cdc-wdm0, ttyACM0) is your device name. write this down
      ```bash
      nmcli device
      ```
