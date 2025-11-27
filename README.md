@@ -135,10 +135,13 @@ You must find the correct APN for the company that provide your SIM card (e.g., 
      ```bash
      nmcli device
      ```
-     | DEVICE | TYPE | STATE | CONNECTION |
-   |:-----:|:------:||:-----:|:------:|
-   | **cdc-wdm0**  |  **gsm**  | **disconnected** | -- |
+     
+   | DEVICE | TYPE | STATE | CONNECTION |
+   | :-----: | :------: | :-----: | :------: |
+   | **cdc-wdm0**  |  **gsm**  | **disconnected** | **--**  |
    | eth0  | ethernet | connected | Wired Connection 1 |
+   | wlp2s0 | wifi | unavialable | -- |
+   | lo | loopcabk | unmanaged | -- |
  
 
 
