@@ -2,7 +2,9 @@
 # Ubuntu Installation & Configuration For ToughBooks
 ---
 # Index
+* [Recommended Ubuntu Versions by Model](#Recommended-Ubuntu-Versions-by-Model)
 * [Auto-Install Script](#Auto-Install-Script)
+* [Installation Guide](#Installation-Guide)
 
 Recommended Ubuntu Versions by Model
 ---
