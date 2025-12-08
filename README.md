@@ -64,6 +64,7 @@ While the script streamlines these tasks, it’s still highly recommended to man
  chmod +x autoinstall.sh #gives execution permission to the script
  ./autoinstall.sh #executes the script
 ```
+[⬆️ Go to Index](#Index)
 # Ubuntu configuration
 
 1. Connect to Wi-fi
