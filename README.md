@@ -29,7 +29,8 @@ The following table displays various units models and the corresponding **Ubuntu
 
  | Model | Ubuntu Version |
    |:-----:|:------|
-   | CF-53 MK  |  Ubuntu **24.04** LTS (Noble Numbat)  |
+   | CF-31 MK5  |  Ubuntu **24.04** LTS (Noble Numbat)  |
+   | CF-53 MK4  |  Ubuntu **24.04** LTS (Noble Numbat)  |
    | CF-54 MK2  |  Ubuntu **24.04** LTS (Noble Numbat)  |
    | FZ-G1 MK1 | Ubuntu **20.04** LTS (Focal Fossa) |
    | FZ-G1 MK4 | Ubuntu **22.04** LTS (Jammy Jellyfish) |
