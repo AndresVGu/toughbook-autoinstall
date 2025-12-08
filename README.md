@@ -6,7 +6,8 @@
 * [Installation Guide](#Installation-Guide)
 * [Auto-Install Script](#Auto-Install-Script)
 * [Ubuntu configuration](#Ubuntu-configuration)
-* * [Ubuntu configuration](#Ubuntu-configuration)
+  * [How to Check Your Connected Devices](#How-to-Check-Your-Connected-Devices)
+  * 
 
 Recommended Ubuntu Versions by Model
 ---
