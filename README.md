@@ -3,8 +3,10 @@
 ---
 # Index
 * [Recommended Ubuntu Versions by Model](#Recommended-Ubuntu-Versions-by-Model)
-* [Auto-Install Script](#Auto-Install-Script)
 * [Installation Guide](#Installation-Guide)
+* [Auto-Install Script](#Auto-Install-Script)
+* [Ubuntu configuration](#Ubuntu-configuration)
+* * [Ubuntu configuration](#Ubuntu-configuration)
 
 Recommended Ubuntu Versions by Model
 ---
