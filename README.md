@@ -19,6 +19,7 @@ The following table displays various units models and the corresponding **Ubuntu
    | FZ-G1 MK4 | Ubuntu **22.04** LTS (Jammy Jellyfish) |
 
 
+[⬆️ Go to Index](#Index)
 
 ---
 Installation Guide
@@ -43,6 +44,8 @@ Choose the language and keyboard layout
 
 6. Begin the Installation
 7. Restart
+   
+[⬆️ Go to Index](#Index)
 
 ---
 # Auto-Install Script 
@@ -65,6 +68,8 @@ While the script streamlines these tasks, it’s still highly recommended to man
  ./autoinstall.sh #executes the script
 ```
 [⬆️ Go to Index](#Index)
+
+
 # Ubuntu configuration
 
 1. Connect to Wi-fi
@@ -199,6 +204,8 @@ nmcli connection up "your_preferred_connection_name"
 nmcli connection up "My Verizon Internet"
 ```
 
+[⬆️ Go to Index](#Index)
+
 How to Test GPS dedicated:
 ---
 To test the GPS module, you will use a service called gpsd and its related tools.  This service manages data from the GPS receiver and makes it available for other applications.
@@ -234,6 +241,8 @@ If the applications don’t show any data, it might be because you are in a spac
 sudo systemctl status gpsd
 ```
 --- 
+[⬆️ Go to Index](#Index)
+
 WebCam Configuration: 
 ---
 The Camera is usually detected and ready to go automatically. All you need to do is install a simple application to test it
@@ -290,7 +299,9 @@ reboot now
 xinput set-prop "Fujitsu Component USB Touch Panel" --type=float "Coordinate Transformation Matrix" 1.115 0 -0.0709 0 1.14 -0.108 0 0 1
 ```
 5. save and give execution permisions.
-6. then set up this script in the auto execute panel 
+6. then set up this script in the auto execute panel
+
+[⬆️ Go to Index](#Index)
 
 How to Set up the Fingerprint Sensor:
 ---
@@ -304,6 +315,8 @@ sudo apt install fprintd
 fprintd-enroll #Follow the onscreen instructions, you’ll see a success message
 fprint-verify
 ```
+[⬆️ Go to Index](#Index)
+
 How to set up the Smart Card Reader: 
 ---
 To test the smart card reader, you can use command-line tools from pcsc-tools or opensc
@@ -323,6 +336,8 @@ recognizes the reader.
 pcsc_scan
 ```
 The command will provide information about the card
+
+[⬆️ Go to Index](#Index)
 
 Configure Computer Fan and Temperature:
 ---
@@ -357,6 +372,8 @@ Sudo pwmconfig
 ```
 Follow the on-screen instructions to test the fans. This will show you the current speed in RPM
 
+[⬆️ Go to Index](#Index)
+
 Delete Test Profile and Prepare unit: 
 ---
 ---
@@ -385,7 +402,7 @@ sudo oem-config-prepare
 ```bash
 sudo shutdown -h now
 ```
-
+[⬆️ Go to Index](#Index)
 
 
 
