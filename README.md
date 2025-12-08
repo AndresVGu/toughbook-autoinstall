@@ -160,7 +160,7 @@ look for any connection names you don't need, especially those with type **gsm o
 
 **Delete any unwanted connections** by replacing "connection name" with the actual name of the list
 
-``bash
+```bash
  nmcli connection show  #see allexisting connections
  nmcli connection delete "connection name"
 ``
