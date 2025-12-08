@@ -133,7 +133,7 @@ Most of the time the **Sierra Wireless EM7455 Modem** works on Ubuntu 24.0, thes
 ```bash
 ping 8.8.8.8
 ```
-Setting Up 4G Mobile Internet on Ubuntu 20.04
+Setting Up 4G Mobile Internet on Ubuntu 20.04:
 ---
 You must find the correct APN for the company that provide your SIM card (e.g., Verizon, T-Mobile, Telus). You can search online for your provider APN name.
 
