@@ -163,7 +163,7 @@ look for any connection names you don't need, especially those with type **gsm o
 ```bash
  nmcli connection show  #see allexisting connections
  nmcli connection delete "connection name"
-``
+```
 
 4. Create Your new 4G connection
 Now we put all pieces together: Device Name (from step 2), your desired connection name, and your specific APN
