@@ -2,6 +2,8 @@
 # Ubuntu Installation & Configuration For ToughBooks
 ---
 
+* [Auto-Install Script](#Auto-Install-Script)
+
 Recommended Ubuntu Versions by Model
 ---
 When preparing to install or use an operating system, it's crucial to consider the version based on the specific hardware you intend to use. Different machine models often perform optimally with particular operating system releases.
