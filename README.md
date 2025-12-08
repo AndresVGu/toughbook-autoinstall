@@ -9,12 +9,16 @@
   * [How to Check Your Connected Devices](#How-to-Check-Your-Connected-Devices)
   * [How to Test Bluetooth & Wi-Fi](#How-to-Test-Bluetooth-&-Wi-Fi)
   * [How to Set Up and Test the 4G Modem](#How-to-Set-Up-and-Test-the-4G-Modem)
-  * [Setting Up 4G Mobile Internet on Ubuntu 20.04](#Setting-Up-4G-Mobile-Internet-on-Ubuntu-20.04)
+    * [Setting Up 4G Mobile Internet on Ubuntu 20.04](#Setting-Up-4G-Mobile-Internet-on-Ubuntu-20.04)
   * [How to Test GPS dedicated](#How-to-Test-GPS-dedicated)
   * [WebCam Configuration](#WebCam-Configuration)
   * [How to Calibrate the Touch Screen](#How-to-Calibrate-the-Touch-Screen)
     * [Make the calibration permanent](#Make-the-calibration-permanent)
     * [In case xinput_calibrator doesn't work ](#In-case-xinput_calibrator-doesn't-work)
+  * [How to Set up the Fingerprint Sensor](#How-to-Set-up-the-Fingerprint-Sensor)
+  * [How to set up the Smart Card Reader](#How-to-set-up-the-Smart-Card-Reader)
+  * [Configure Computer Fan and Temperature](#Configure-Computer-Fan-and-Temperature)
+* [Delete Test Profile and Prepare unit](#Delete-Test-Profile-and-Prepare-unit) 
 
 Recommended Ubuntu Versions by Model
 ---
