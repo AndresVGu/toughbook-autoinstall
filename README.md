@@ -143,8 +143,58 @@ You must find the correct APN for the company that provide your SIM card (e.g., 
    | wlp2s0 | wifi | unavialable | -- |
    | lo | loopcabk | unmanaged | -- |
  
+**(in the example above, your **Device Name is cdc-wdm0**)*
 
+2. Confirm the System sees the SIM card
+This step confrims that your computer recognizes the SIM card and its modem.
 
+```bash
+ mmcli -L
+```
+-**what to look:** If it shows a list, and you see something like **/org/freedesktop/ModemManager1/Modem/0**, it means the system has found your 4G device and SIM card.
+
+3. Removing old connections
+Old, unused connection settings can sometimes cause problems. It's best to remove any previous mobile connection to prevent interference.
+
+look for any connection names you don't need, especially those with type **gsm or cdma**
+
+**Delete any unwanted connections** by replacing "connection name" with the actual name of the list
+
+``bash
+ nmcli connection show  #see allexisting connections
+ nmcli connection delete "connection name"
+``
+
+4. Create Your new 4G connection
+Now we put all pieces together: Device Name (from step 2), your desired connection name, and your specific APN
+
+```bash
+ nmcli connection add type gsm ifname "your_device_name" con-name "your_preferred_connection_name" apn "your_provider_apn"
+```
+**Example using the information from the previous steps:**
+- Device Name: cdc-wdm0
+- Connection Name: My Verizon Internet
+- APN: vzwinternet
+
+  ```bash
+   nmcli connection add type gsm ifname cdc-wdm0 con-name "My Verizon Internet" apn vzwinternet
+  ```
+
+5. Activate
+You have two ways to activate the new connection you just created
+
+**OPTION A: Using the setting menu:**
+- Go to your main **setings** menu
+- Find the **Mobile Network** or **wireless** settings
+- Toggle the mobile network switch **ON**
+- Your new connection should be listed and automatically connect.
+
+**OPTION B: using the Terminal Command:**
+```bash
+nmcli connection up "your_preferred_connection_name"
+#Example:
+nmcli connection up "My Verizon Internet"
+```
 
 How to Test GPS dedicated:
 ---
