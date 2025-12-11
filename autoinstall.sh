@@ -591,7 +591,7 @@ install_drivers() {
                     ;;
                 "Smart Card Reader")
                     echo "  -> Installing smart card reader packages..."
-                    sudo apt install -y pcsc-tools pcscd opensc
+                    sudo apt install -y pcsc-tools pcscd opensc libccid
                     sleep 1
                     ;;
                 "Touch Panel")
