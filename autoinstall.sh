@@ -756,7 +756,8 @@ main_menu() {
 				echo "Terminal=true" >> touch-calibration.desktop
 				echo "Type=Application" >> touch-calibration.desktop
 				echo "X-GNOME-Autostart-enabled=true" >> touch-calibration.desktop
-
+				
+				sudo cp touch-calibration.desktop /etc/xdg/autostart/
 				echo "[!] AutoStart Configuration Done.."
 				sleep 2
 				;;
