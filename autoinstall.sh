@@ -748,7 +748,7 @@ main_menu() {
 				sleep 0.5
 				echo -e "${BLUE}Saving Calibration...${END}"
 				
-				TOUCHCAL_PATH="/usr/local/bin/touch-calibration.sh"
+				TOUCHCAL_PATH="/usr/local/bin/touch-calibrator.sh"
 				echo "[Desktop Entry]" > touch-calibration.desktop
 				echo "Name=AutoCalibrate Fujitsu" >> touch-calibration.desktop
 				echo "Comment=Executes Touch Screen Calibration Script" >> touch-calibration.desktop
