@@ -713,7 +713,7 @@ main_menu() {
         echo -e "[2] ⚙️  Device & Driver Configuration"
         echo -e "[3] ⌨️  Test Keyboard"
         echo -e "[4] 💻 OEM Environment Setup ✨(SYSPREP)✨"
-		echo -e "[5]  Copy touch-calibration in (/usr/local/bin) only for cf-54 mk4"
+		echo -e "[5]  Copy touch-calibration in (/usr/local/bin) (TEMPORARY) only for cf-54 mk4"
         echo -e "[q|Q] ↩️  Exit"
         read -rp "Select an option: " choice
 
