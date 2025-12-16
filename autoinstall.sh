@@ -746,7 +746,18 @@ main_menu() {
 				sleep 1
 				echo -e "${GREEN}[!]Sript copied successfully${END}"
 				sleep 0.5
-				echo -e "${YELLOW}⚠️Do not forget set up this script in the initiation apps, using the user interface${END}"
+				echo -e "${BLUE}Saving Calibration...${END}"
+				
+				TOUCHCAL_PATH="/usr/local/bin/touch-calibration.sh"
+				echo "[Desktop Entry]" > touch-calibration.desktop
+				echo "Name=AutoCalibrate Fujitsu" >> touch-calibration.desktop
+				echo "Comment=Executes Touch Screen Calibration Script" >> touch-calibration.desktop
+				echo "Exec=$TOUCHCAL_PATH" >> touch-calibration.desktop
+				echo "Terminal=true" >> touch-calibration.desktop
+				echo "Type=Application" >> touch-calibration.desktop
+				echo "X-GNOME-Autostart-enabled=true" >> touch-calibration.desktop
+
+				echo "[!] AutoStart Configuration Done.."
 				sleep 2
 				;;
             [qQ])
