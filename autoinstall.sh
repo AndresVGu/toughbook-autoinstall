@@ -713,6 +713,7 @@ main_menu() {
         echo -e "[2] ⚙️  Device & Driver Configuration"
         echo -e "[3] ⌨️  Test Keyboard"
         echo -e "[4] 💻 OEM Environment Setup ✨(SYSPREP)✨"
+		echo -e "[5]  touch calibration"
         echo -e "[q|Q] ↩️  Exit"
         read -rp "Select an option: " choice
 
@@ -733,6 +734,11 @@ main_menu() {
             4)
                 prepare_environment
                 ;;
+			5)
+				chmod +x touch-calibrator.sh
+				./touch-calibrator.sh
+				cp touch-calibrator.sh /usr/local/bin
+				;;
             [qQ])
                 echo -e "${RED}[*] Closing script...${END}"
                 exit 0
