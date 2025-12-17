@@ -676,7 +676,7 @@ open_doc() {
 # Prepares the system for OEM distribution
 #-------------------------------------------
 
-#prepare_environment() {
+prepare_environment() {
     echo -e "\n${YELLOW}⚠️ WARNING: This action will prepare the system for OEM distribution.${END}"
     echo -e "It will delete the current user and perform a factory reset."
     read -rp "[y|Y] Continue | [n|N] Cancel: " choice
