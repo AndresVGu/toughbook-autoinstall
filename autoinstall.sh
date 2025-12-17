@@ -664,42 +664,115 @@ open_doc() {
 # Prepares the system for OEM distribution
 #-------------------------------------------
 
+#prepare_environment() {
+  #  echo -e "\n${YELLOW}⚠️ WARNING: This action will prepare the system for OEM distribution.${END}"
+  #  echo -e "It will delete the current user and perform a factory reset."
+  #  read -rp "[y|Y] Continue | [n|N] Cancel: " choice
+
+ #   case "$choice" in
+  #      [yY])
+    #        echo -e "${BLUE}[*] Installing OEM dependencies...${END}"
+    #        if ! sudo apt install -y oem-config-gtk oem-config-slideshow-ubuntu; then
+     #           echo -e "${RED}[-] Failed to install dependencies.${END}"
+    #            exit 1
+    #        fi
+
+     #       echo -e "${GREEN}[+] Dependencies installed successfully.${END}"
+    #        echo -e "${PURPLE}[*] Initializing system preparation...${END}"
+     #       sleep 2
+
+     #       if ! sudo oem-config-prepare; then
+      #          echo -e "${RED}[-] OEM system initialization failed.${END}"
+     #           exit 1
+      #      fi
+
+      #      echo -e "👍 ${GREEN}System preparation is ready.${END}"
+     #       echo -e "✨✨  ${YELLOW}Shutting down system in 5 seconds...${END}✨✨"
+     #       for i in {5..1}; do
+      #          echo "$i seconds..."
+      #          sleep 1
+      #      done
+
+        #    sudo shutdown -h now
+      #      ;;
+      #  [nN])
+       #     echo -e "${BLUE}[*] Action canceled.${END}"
+      #      ;;
+     #   *)
+      #      echo -e "${RED}🚫 Invalid option. Returning to the main menu.${END}"
+    #        ;;
+  #  esac
+#}
 prepare_environment() {
-    echo -e "\n${YELLOW}⚠️ WARNING: This action will prepare the system for OEM distribution.${END}"
-    echo -e "It will delete the current user and perform a factory reset."
+
+    echo -e "\n${YELLOW}⚠️  WARNING: OEM SYSTEM PREPARATION (UBUNTU GNOME ONLY)${END}"
+    echo -e "${RED}This will REMOVE the current user and reset the system for final customer setup.${END}"
+    echo -e "${RED}GNOME on Xorg will be enforced as default session.${END}\n"
+
     read -rp "[y|Y] Continue | [n|N] Cancel: " choice
 
     case "$choice" in
         [yY])
-            echo -e "${BLUE}[*] Installing OEM dependencies...${END}"
-            if ! sudo apt install -y oem-config-gtk oem-config-slideshow-ubuntu; then
-                echo -e "${RED}[-] Failed to install dependencies.${END}"
-                exit 1
+            echo -e "${BLUE}[*] Verifying OS...${END}"
+
+            if ! grep -qi "ubuntu" /etc/os-release; then
+                echo -e "${RED}[-] This OEM reset is supported ONLY on Ubuntu GNOME.${END}"
+                return 1
             fi
 
-            echo -e "${GREEN}[+] Dependencies installed successfully.${END}"
-            echo -e "${PURPLE}[*] Initializing system preparation...${END}"
+            echo -e "${GREEN}[+] Ubuntu detected.${END}"
+
+            echo -e "${BLUE}[*] Ensuring GNOME + GDM environment...${END}"
+            apt update
+
+            # GNOME base (safe even if already installed)
+            apt install -y ubuntu-desktop gdm3 \
+                           oem-config-gtk \
+                           oem-config-slideshow-ubuntu
+
+            echo -e "${BLUE}[*] Removing Plasma / SDDM if present...${END}"
+            apt purge -y sddm plasma-desktop kde-standard kde-full 2>/dev/null
+            apt autoremove -y --purge
+
+            echo -e "${BLUE}[*] Forcing GDM as display manager...${END}"
+            echo "gdm3" > /etc/X11/default-display-manager
+            systemctl enable gdm3
+            systemctl disable sddm 2>/dev/null
+
+            echo -e "${BLUE}[*] Enforcing GNOME on Xorg...${END}"
+
+            mkdir -p /etc/gdm3
+            cat <<EOF > /etc/gdm3/custom.conf
+[daemon]
+WaylandEnable=false
+DefaultSession=gnome-xorg.desktop
+EOF
+
+            echo -e "${GREEN}[+] GNOME on Xorg configured successfully.${END}"
+
+            echo -e "${PURPLE}[*] Running OEM system preparation...${END}"
             sleep 2
 
-            if ! sudo oem-config-prepare; then
+            if ! oem-config-prepare; then
                 echo -e "${RED}[-] OEM system initialization failed.${END}"
                 exit 1
             fi
 
-            echo -e "👍 ${GREEN}System preparation is ready.${END}"
-            echo -e "✨✨  ${YELLOW}Shutting down system in 5 seconds...${END}✨✨"
+            echo -e "\n👍 ${GREEN}OEM preparation completed successfully.${END}"
+            echo -e "✨✨ ${YELLOW}System will power off in 5 seconds...${END} ✨✨"
+
             for i in {5..1}; do
-                echo "$i seconds..."
+                echo "$i..."
                 sleep 1
             done
 
-            sudo shutdown -h now
+            shutdown -h now
             ;;
         [nN])
-            echo -e "${BLUE}[*] Action canceled.${END}"
+            echo -e "${BLUE}[*] OEM preparation canceled.${END}"
             ;;
         *)
-            echo -e "${RED}🚫 Invalid option. Returning to the main menu.${END}"
+            echo -e "${RED}[!] Invalid option. Returning to menu.${END}"
             ;;
     esac
 }
