@@ -671,7 +671,7 @@ open_doc() {
     
     # Se remueven los permisos después de la ejecución por seguridad.
     xhost -si:localuser:"$usuario" > /dev/null
-}
+} 
 #-------------------------------------------
 # Prepares the system for OEM distribution
 #-------------------------------------------
