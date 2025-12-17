@@ -37,17 +37,39 @@ check_version() {
 
 
 # Displays the script's banner
-show_banner() {
-    echo -e "\n${TURQUOISE}              _____            ______"
-    echo -e "______ ____  ___  /______      ___   /_____________  /_______ __   /__    /_______"
-    echo -e "_  __ \`/  / / /  __/  __ \\     __/  / _  \\_  ___// __/_/ __ \`/ /  /__ /  /__ __"
-    echo -e "/ /_/ // /_/ // /_ / /_/ /     _/  / / / /(__  ) / /_ / /_/ / /  /__ /  /____"
-    echo -e "\\__,_/ \\__,_/ \\__/ \\____/      /__/_/ /_//____/_ \\__/ \\__,_/ /_____//_____/ __"
-    echo -e "${END}${YELLOW}(${END}${GRAY}By Andres V. ${END}${PURPLE}a.k.a. 4vs3c${END}${YELLOW})${END}${TURQUOISE}"
-    echo -e "✨✨ For Ubuntu 24 & Panasonic Toughbooks${END} ✨✨"
-    sleep 1.5
-}
+#show_banner() {
+   # echo -e "\n${TURQUOISE}              _____            ______"
+  #  echo -e "______ ____  ___  /______      ___   /_____________  /_______ __   /__    /_______"
+   # echo -e "_  __ \`/  / / /  __/  __ \\     __/  / _  \\_  ___// __/_/ __ \`/ /  /__ /  /__ __"
+   # echo -e "/ /_/ // /_/ // /_ / /_/ /     _/  / / / /(__  ) / /_ / /_/ / /  /__ /  /____"
+   # echo -e "\\__,_/ \\__,_/ \\__/ \\____/      /__/_/ /_//____/_ \\__/ \\__,_/ /_____//_____/ __"
+   # echo -e "${END}${YELLOW}(${END}${GRAY}By Andres V. ${END}${PURPLE}a.k.a. 4vs3c${END}${YELLOW})${END}${TURQUOISE}"
+   # echo -e "✨✨ For Ubuntu 24 & Panasonic Toughbooks${END} ✨✨"
+   # sleep 1.5
+#}
 
+show_banner() {
+    clear
+    echo -e "${TURQUOISE}"
+    echo "╔════════════════════════════════════════════════════════════╗"
+    echo "║                                                            ║"
+    echo "║   ████████╗ ██████╗ ██╗   ██╗ ██████╗ ██╗  ██╗             ║"
+    echo "║   ╚══██╔══╝██╔═══██╗██║   ██║██╔════╝ ██║ ██╔╝             ║"
+    echo "║      ██║   ██║   ██║██║   ██║██║  ███╗█████╔╝              ║"
+    echo "║      ██║   ██║   ██║██║   ██║██║   ██║██╔═██╗              ║"
+    echo "║      ██║   ╚██████╔╝╚██████╔╝╚██████╔╝██║  ██╗             ║"
+    echo "║      ╚═╝    ╚═════╝  ╚═════╝  ╚═════╝ ╚═╝  ╚═╝             ║"
+    echo "║                                                            ║"
+    echo "║        Panasonic Toughbook OEM Utility                     ║"
+    echo "║        Ubuntu 24.04 LTS  •  GNOME (Xorg)                   ║"
+    echo "║                                                            ║"
+    echo "║        Author: Andres Villarreal (@4vs3c)                  ║"
+    echo "║                                                            ║"
+    echo "╚════════════════════════════════════════════════════════════╝"
+    echo -e "${END}"
+    echo -e "${GRAY}🔧 Refurb • QA • OEM Preparation • Device Validation${END}\n"
+    sleep 1.2
+}
 
 
 # Checks if the script is run with root privileges
