@@ -95,6 +95,10 @@ Solution Change label
 Edit /etc/fstab
 
 ```bash
+sudo nano /etc/fstab
+```
+
+```bash
 #change
 #UUID=xxxx / ext4 defaults 0 1
 #UUID=yyyy /boot ext4 defaults 0 2
