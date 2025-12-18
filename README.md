@@ -4,6 +4,7 @@
 # Index
 * [Recommended Ubuntu Versions by Model](#Recommended-Ubuntu-Versions-by-Model)
 * [Installation Guide](#Installation-Guide)
+* [Prepare Source for cloning](#Prepare-Hard-Drive-(source)-for-cloning)
 * [Auto-Install Script](#Auto-Install-Script)
 * [Ubuntu configuration](#Ubuntu-configuration)
   * [How to Check Your Connected Devices](#How-to-Check-Your-Connected-Devices)
@@ -62,6 +63,50 @@ Choose the language and keyboard layout
 6. Begin the Installation
 7. Restart
    
+[⬆️ Go to Index](#Index)
+
+---
+
+Prepare Hard Drive (source) for cloning
+---
+When a Linux system is cloned, the exact disk configuration is copied to all target machines.
+If the source disk is not prepared, the cloned systems may contain hardware-specific or disk-specific identifiers that can cause boot problems.
+
+Linux relies on things like UUIDs, initramfs configuration, and system identifiers that are generated for the original machine.
+After cloning, these identifiers may:
+
+* Not match the target hardware
+* Appear duplicated across multiple machines
+* Be detected at the wrong time during boot
+* This can lead to intermittent boot failures, such as the system entering emergency mode.
+
+Solution Change label 
+
+```bash
+  #in the source, go to the therminal
+  lsblk
+  # Depending of the output you can get sda1 /boot, sda2
+
+  #Assign labels
+  sudo e2label /dev/sda2 ROOT
+  sudo e2label /dev/sda1 BOOT
+
+```
+Edit /etc/fstab
+
+```bash
+#change
+#UUID=xxxx / ext4 defaults 0 1
+#UUID=yyyy /boot ext4 defaults 0 2
+
+#for:
+LABEL=ROOT / ext4 defaults 0 1
+LABEL=BOOT /boot ext4 defaults 0 2
+
+#regenerate boot
+sudo update-initramfs -u
+sudo update-grub
+```
 [⬆️ Go to Index](#Index)
 
 ---
