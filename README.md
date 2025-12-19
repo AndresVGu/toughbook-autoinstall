@@ -8,7 +8,7 @@
 * [Auto-Install Script](#Auto-Install-Script)
 * [Ubuntu configuration](#Ubuntu-configuration)
   * [How to Check Your Connected Devices](#How-to-Check-Your-Connected-Devices)
-  * [How to Test Bluetooth & Wi-Fi](#how-to-test-bluetooth-wi-fi)
+  * [How to Test Bluetooth and WiFi](#how-to-test-bluetooth-and-wifi)
   * [How to Set Up and Test the 4G Modem](#How-to-Set-Up-and-Test-the-4G-Modem)
     * [Setting Up 4G Mobile Internet on Ubuntu 20.04](#Setting-Up-4G-Mobile-Internet-on-Ubuntu-20.04)
   * [How to Test GPS dedicated](#How-to-Test-GPS-dedicated)
