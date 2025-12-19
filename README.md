@@ -4,7 +4,7 @@
 # Index
 * [Recommended Ubuntu Versions by Model](#Recommended-Ubuntu-Versions-by-Model)
 * [Installation Guide](#Installation-Guide)
-* [Prepare Source for cloning](#Prepare-Hard-Drive-(source)-for-cloning)
+* [Prepare Source for cloning](#Prepare-Hard-Drive-source-for-cloning)
 * [Auto-Install Script](#Auto-Install-Script)
 * [Ubuntu configuration](#Ubuntu-configuration)
   * [How to Check Your Connected Devices](#How-to-Check-Your-Connected-Devices)
