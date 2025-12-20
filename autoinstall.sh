@@ -51,7 +51,7 @@ show_banner() {
     echo "║      ╚═╝    ╚═════╝  ╚═════╝  ╚═════╝ ╚═╝  ╚═╝             ║"
     echo "║                                                            ║"
     echo "║        Panasonic Toughbook OEM Utility                     ║"
-    echo "║        Ubuntu LTS  • AutoInstall		                   ║"
+    echo "║        Ubuntu LTS  • AutoInstall		                ║"
     echo "║                                                            ║"
     echo "║        Author: Andres Villarreal (@4vs3c)                  ║"
     echo "║                                                            ║"
@@ -743,6 +743,7 @@ main_menu() {
         echo -e "[3] ⌨️  Test Keyboard"
         echo -e "[4] 💻 OEM Environment Setup ✨(SYSPREP)✨"
 		echo -e "[5] ✎ Default Touch-Screen-AutoCalibration (ONLY FOR CF-53)"
+		echo -e "[6] ✎ CF-31"
         echo -e "[q|Q] ↩️  Exit"
         read -rp "Select an option: " choice
 
@@ -787,6 +788,20 @@ main_menu() {
 				echo "X-GNOME-Autostart-enabled=true" >> touch-calibration.desktop
 				
 				sudo cp touch-calibration.desktop /etc/xdg/autostart/
+				echo "[!] AutoStart Configuration Done.."
+				sleep 2
+				;;
+			6)
+				TOUCHCAL_PATH="/usr/local/bin/touch-calibrator.sh"
+				echo "[Desktop Entry]" > touch-calibrationcf31.desktop
+				echo "Name=CF-31 MK5 Automatic-Calibration" >> touch-calibrationcf31.desktop
+				echo "Comment=Executes Touch Screen Calibration Script" >> touch-calibrationcf31.desktop
+				echo "Exec=$TOUCHCAL_PATH" >> touch-calibrationcf31.desktop
+				echo "Terminal=true" >> touch-calibrationcf31.desktop
+				echo "Type=Application" >> touch-calibrationcf31.desktop
+				echo "X-GNOME-Autostart-enabled=true" >> touch-calibrationcf31.desktop
+				
+				sudo cp touch-calibrationcf31.desktop /etc/xdg/autostart/
 				echo "[!] AutoStart Configuration Done.."
 				sleep 2
 				;;
