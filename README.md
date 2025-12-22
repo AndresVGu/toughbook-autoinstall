@@ -370,6 +370,9 @@ xinput set-prop "Fujitsu Component USB Touch Panel" --type=float "Coordinate Tra
 ### Calibration values for CF-31 MK5 (temporary)
 modify the /usr/local/bin and replace:
 
+SCALE_X=1.10
+SCALE_Y=1.10
+
 OFFSET X = -0.042
 OFFSET Y = -0.07
 
