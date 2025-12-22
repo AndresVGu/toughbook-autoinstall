@@ -367,6 +367,14 @@ xinput set-prop "Fujitsu Component USB Touch Panel" --type=float "Coordinate Tra
 5. save and give execution permisions.
 6. then set up this script in the auto execute panel
 
+### Calibration values for CF-31 MK5 (temporary)
+modify the /usr/local/bin and replace:
+
+OFFSET X = -0.042
+OFFSET Y = -0.07
+
+then, git pull to toughbook repository, press option [6] after that delete the old starup script.
+
 [⬆️ Go to Index](#Index)
 
 How to Set up the Fingerprint Sensor:
