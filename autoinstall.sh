@@ -743,7 +743,7 @@ main_menu() {
         echo -e "[3] ⌨️  Test Keyboard"
         echo -e "[4] 💻 OEM Environment Setup ✨(SYSPREP)✨"
 		echo -e "[5] ✎ Default Touch-Screen-AutoCalibration (ONLY FOR CF-53)"
-		echo -e "[6] ✎ CF-31"
+		echo -e "[6] ✎ CF-31 Touch-Screen-AutoCaliration"
         echo -e "[q|Q] ↩️  Exit"
         read -rp "Select an option: " choice
 
