@@ -187,6 +187,7 @@ check_neofetch() {
            echo "❌ ¡Error! Verify Internet connection and credentials"
        fi
     fi
+#--END
 
     sleep 0.5
     echo -e "${YELLOW}[!] Collecting Device Information. ${END}"
@@ -823,6 +824,7 @@ g1_main_menu() {
         echo -e "\n${BLUE}--- Main Menu ---${END}"
 		echo -e "[1] 🔎 Device Detection"
         echo -e "[2] ⚙️  Device & Driver Configuration"
+		echo -e "[3]  Sound Activation"
 		echo -e "⚠️ ${YELLOW}For SYSPREP use Prepare For Shipping To End User located on the Desktop${END} ⚠️"
         echo -e "[q|Q] ↩️  Exit"
         read -rp "Select an option: " choice
@@ -834,6 +836,33 @@ g1_main_menu() {
             2)
                 install_drivers
                 ;;
+			3)
+				echo "[+]Adding execution Permission to the script..."
+				chmod 755 alsamixerconf.sh
+				sleep 1
+				echo -e "${BLUE}Executing  Default calibration... ${END}"
+				./alsamixerconf.sh
+				sleep 1
+				echo -e "${BLUE}Copying  Default calibration in [usr/local/bin]... ${END}"
+				cp alsamixerconf.sh /usr/local/bin
+				sleep 1
+				echo -e "${GREEN}[!]Sript copied successfully${END}"
+				sleep 0.5
+				echo -e "${BLUE}Saving Script...${END}"
+			
+				SOUND_PATH="/usr/local/bin/alsamixerconf.sh"
+				echo "[Desktop Entry]" > sound-activation.desktop
+				echo "Name=Sound Activation" >> sound-activation.desktop
+				echo "Comment=Executes SOUND activation" >> sound-activation.desktop
+				echo "Exec=$SOUND_PATH" >> sound-activation.desktop
+				echo "Terminal=true" >> sound-activation.desktop
+				echo "Type=Application" >> sound-activation.desktop
+				echo "X-GNOME-Autostart-enabled=true" >> sound-activation.desktop
+				
+				sudo cp sound-activation.desktop /etc/xdg/autostart/
+				echo "[!] AutoStart Configuration Done.."
+				sleep 2
+				;;
             [qQ])
                 echo -e "${RED}[*] Closing script...${END}"
                 exit 0
