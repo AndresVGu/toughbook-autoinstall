@@ -840,15 +840,15 @@ g1_main_menu() {
 				echo "[+]Adding execution Permission to the script..."
 				chmod 755 alsamixerconf.sh
 				sleep 1
-				echo -e "${BLUE}Executing  Default calibration... ${END}"
-				./alsamixerconf.sh
-				sleep 1
 				echo -e "${BLUE}Copying  Default calibration in [usr/local/bin]... ${END}"
 				cp alsamixerconf.sh /usr/local/bin
 				sleep 1
 				echo -e "${GREEN}[!]Sript copied successfully${END}"
 				sleep 0.5
 				echo -e "${BLUE}Saving Script...${END}"
+				sleep 1
+				echo -e "${BLUE}Executing  Default Script... ${END}"
+				/usr/local/bin/alsamixerconf.sh
 			
 				SOUND_PATH="/usr/local/bin/alsamixerconf.sh"
 				echo "[Desktop Entry]" > sound-activation.desktop
