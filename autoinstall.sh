@@ -793,6 +793,19 @@ main_menu() {
 				sleep 2
 				;;
 			6)
+				echo "[+]Adding execution Permission to the script..."
+				chmod +x touch-calibrator-cf31.sh
+				sleep 1
+				echo -e "${BLUE}Executing  Default calibration... ${END}"
+				./touch-calibrator-cf31.sh
+				sleep 1
+				echo -e "${BLUE}Copying  Default calibration in [usr/local/bin]... ${END}"
+				cp touch-calibrator-cf31.sh /usr/local/bin
+				sleep 1
+				echo -e "${GREEN}[!]Sript copied successfully${END}"
+				sleep 0.5
+				
+				echo -e "${BLUE}Saving Calibration...${END}"
 				TOUCHCAL_PATH="/usr/local/bin/touch-calibrator.sh"
 				echo "[Desktop Entry]" > touch-calibrationcf31.desktop
 				echo "Name=CF-31 MK5 Automatic-Calibration" >> touch-calibrationcf31.desktop
