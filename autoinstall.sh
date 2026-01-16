@@ -806,7 +806,7 @@ main_menu() {
 				sleep 0.5
 				
 				echo -e "${BLUE}Saving Calibration...${END}"
-				TOUCHCAL_PATH="/usr/local/bin/touch-calibrator.sh"
+				TOUCHCAL_PATH="/usr/local/bin/touch-calibrator-cf31.sh"
 				echo "[Desktop Entry]" > touch-calibrationcf31.desktop
 				echo "Name=CF-31 MK5 Automatic-Calibration" >> touch-calibrationcf31.desktop
 				echo "Comment=Executes Touch Screen Calibration Script" >> touch-calibrationcf31.desktop
