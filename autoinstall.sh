@@ -745,6 +745,7 @@ main_menu() {
         echo -e "[4] 💻 OEM Environment Setup ✨(SYSPREP)✨"
 		echo -e "[5] ✎ Default Touch-Screen-AutoCalibration (ONLY FOR CF-53)"
 		echo -e "[6] ✎ CF-31 Touch-Screen-AutoCaliration"
+		echo -e "[7]   CF-C2 Sound Activation"
         echo -e "[q|Q] ↩️  Exit"
         read -rp "Select an option: " choice
 
@@ -816,6 +817,33 @@ main_menu() {
 				echo "X-GNOME-Autostart-enabled=true" >> touch-calibrationcf31.desktop
 				
 				sudo cp touch-calibrationcf31.desktop /etc/xdg/autostart/
+				echo "[!] AutoStart Configuration Done.."
+				sleep 2
+				;;
+			7)
+				echo "[+]Adding execution Permission to the script..."
+				chmod 755 alsamixerconf.sh
+				sleep 1
+				echo -e "${BLUE}Copying  Default calibration in [usr/local/bin]... ${END}"
+				cp alsamixerconf.sh /usr/local/bin
+				sleep 1
+				echo -e "${GREEN}[!]Sript copied successfully${END}"
+				sleep 0.5
+				echo -e "${BLUE}Saving Script...${END}"
+				sleep 1
+				echo -e "${BLUE}Executing  Default Script... ${END}"
+				/usr/local/bin/alsamixerconf.sh
+			
+				SOUND_PATH="/usr/local/bin/alsamixerconf.sh"
+				echo "[Desktop Entry]" > sound-activation.desktop
+				echo "Name=Sound Activation" >> sound-activation.desktop
+				echo "Comment=Executes SOUND activation" >> sound-activation.desktop
+				echo "Exec=$SOUND_PATH" >> sound-activation.desktop
+				echo "Terminal=true" >> sound-activation.desktop
+				echo "Type=Application" >> sound-activation.desktop
+				echo "X-GNOME-Autostart-enabled=true" >> sound-activation.desktop
+				
+				sudo cp sound-activation.desktop /etc/xdg/autostart/
 				echo "[!] AutoStart Configuration Done.."
 				sleep 2
 				;;
