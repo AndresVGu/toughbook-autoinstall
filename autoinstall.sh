@@ -432,15 +432,6 @@ echo -e "${GREEN}[+] Starting device detection...${END}"
     	printf "${RED}%-25s${END} | ${RED}%s${END}\n" "$FRONT_CAM" "❌  Not Detected"
 	fi
 
-	# 2. Verificar la Cámara Trasera (asumiendo /dev/video1)
-	# Buscamos la línea que contenga "/dev/video1" en la salida.
-	if echo "$V4L_OUTPUT" | grep -q "/dev/video1"; then
-    	printf "${GREEN}%-25s${END} | ${GREEN}%s${END}\n" "$REAR_CAM" "✅ Detected"
-	else
-    	printf "${RED}%-25s${END} | ${RED}%s${END}\n" "$REAR_CAM" "❌  Not Detected"
-	fi
-	
-
 
     #-------------
     #Touch panels
