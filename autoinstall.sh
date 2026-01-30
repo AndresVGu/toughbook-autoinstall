@@ -733,6 +733,51 @@ EOF
    esac
 }
 
+#==============Sound Activation=====================
+install_sound_autostart() {
+
+    set -e
+
+    local SCRIPT_NAME="alsamixerconf.sh"
+    local INSTALL_PATH="/usr/local/bin/$SCRIPT_NAME"
+    local AUTOSTART_FILE="sound-activation.desktop"
+    local AUTOSTART_SYSTEM="/etc/xdg/autostart/$AUTOSTART_FILE"
+
+    echo "[+] Adding execution permission to the script..."
+
+    if [[ ! -f "$SCRIPT_NAME" ]]; then
+        echo "[ERROR] $SCRIPT_NAME not found"
+        return 1
+    fi
+
+    chmod 755 "$SCRIPT_NAME"
+
+    echo "[+] Copying script to /usr/local/bin..."
+    sudo cp "$SCRIPT_NAME" "$INSTALL_PATH"
+
+    echo "[✓] Script copied successfully"
+
+    echo "[+] Executing default script..."
+    "$INSTALL_PATH"
+
+    echo "[+] Creating autostart entry..."
+
+    cat <<EOF > "$AUTOSTART_FILE"
+[Desktop Entry]
+Type=Application
+Name=Sound Activation
+Comment=Executes sound activation script
+Exec=/bin/bash $INSTALL_PATH
+Terminal=false
+X-GNOME-Autostart-enabled=true
+NoDisplay=true
+EOF
+
+    sudo cp "$AUTOSTART_FILE" "$AUTOSTART_SYSTEM"
+
+    echo "[✓] Autostart configuration done"
+}
+
 
 # ==================== Main Menu ====================
 main_menu() {
@@ -746,6 +791,7 @@ main_menu() {
 		echo -e "[5] ✎ Default Touch-Screen-AutoCalibration (ONLY FOR CF-53)"
 		echo -e "[6] ✎ CF-31 Touch-Screen-AutoCaliration"
 		echo -e "[7]   CF-C2 Sound Activation"
+		echo -e "[8] Temporary sound Activation"
         echo -e "[q|Q] ↩️  Exit"
         read -rp "Select an option: " choice
 
@@ -846,6 +892,10 @@ main_menu() {
 				sudo cp sound-activation.desktop /etc/xdg/autostart/
 				echo "[!] AutoStart Configuration Done.."
 				sleep 2
+				;;
+			8)
+				install_sound_autostart
+				sleep 1
 				;;
             [qQ])
                 echo -e "${RED}[*] Closing script...${END}"
