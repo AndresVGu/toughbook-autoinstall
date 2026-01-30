@@ -23,16 +23,26 @@ ctrl_c() {
     exit 1
 }
 
-#Check Version
 check_version() {
-	/usr/bin/git pull
 
-	if [ $? -eq 0 ]; then
-		echo "[+] Script updated."
-	else
-		echo "[!] Fail updating the script"
-	fi
+    echo "🔄 Checking for updates..."
 
+    git fetch origin >/dev/null 2>&1
+
+    LOCAL_HASH=$(git rev-parse HEAD)
+    REMOTE_HASH=$(git rev-parse @{u})
+
+    if [[ "$LOCAL_HASH" != "$REMOTE_HASH" ]]; then
+        echo "⬆️ Update found. Updating script..."
+        git pull --quiet
+
+        echo "🔁 Script updated. Restarting..."
+        sleep 1
+
+        exec "$0" "$@"
+    else
+        echo "✅ Script is already up to date."
+    fi
 }
 
 
