@@ -348,6 +348,122 @@ draw_box(){
 
 # Detects connected USB devices
 
+c2_detection(){
+echo -e "${GREEN}[+] Starting device detection...${END}"
+
+	if command -v v4l-utils &> /dev/null; then
+        echo "[+] v4l-utils already Installed."
+    else    
+        echo "[!] Installing v4l-utils ..."
+        sudo apt install v4l-utils -y
+    fi
+    echo -e "${YELLOW}[!] Make sure that each device is properly connected.${END}"
+    sleep 1.5
+
+    # Array of device names to look for
+    #Add eGalaxTouch
+    local devices_to_check=( "Fingerprint" "SmartCard Reader")
+    local touch_devices=("MultiTouch" "eGalaxTouch")
+    local usb_devices=$(lsusb)
+    local touch_detected=false
+    local cameras=(
+    	"Webcam:Front Camera" 
+    	"Camera:Rear Camera")
+    local modemg=$(lsusb | grep "Sierra Wireless" | awk -F 'Inc. ' '{print $2}')
+    local network_devices=(
+    "Sierra Wireless:Sierra Wireless(${modemg})"
+    "U-Blox:GPS Dedicated")
+
+	UNIT_TITLE="You are working on a ${brand} ${model}"
+    draw_box "$UNIT_TITLE"
+
+
+    printf "%-25s | %s\n" "Device" "Status"
+    printf "%-25s | %s\n" "-------------------------" "------------"
+
+    for device_name in "${devices_to_check[@]}"; do
+        if echo "$usb_devices" | grep -qi "$device_name"; then
+            printf "${GREEN}%-25s${END} | ${GREEN}%s${END}\n" "$device_name" "✅ Detected"
+        else
+            printf "${RED}%-25s${END} | ${RED}%s${END}\n" "$device_name" "❌  Not Detected"
+        fi
+    done
+
+	#---------
+	#--Bluetooth
+	#---------
+	BLUETOOTH_STATUS=$(sudo systemctl status bluetooth 2>/dev/null)
+	BLUE_name="Bluetooth"
+	if echo "$BLUETOOTH_STATUS" | grep -q "Active: active (running)"; then
+    	printf "${GREEN}%-25s${END} | ${GREEN}%s${END}\n" "$BLUE_name" "✅ Detected"
+	else
+    	 printf "${RED}%-25s${END} | ${RED}%s${END}\n" "$BLUE_name" "❌  Not Detected"
+	fi
+
+
+    #----------
+    #---NETWORK
+    #----------
+    for item in "${network_devices[@]}";do
+        local search_pattern="${item%%:*}"
+        local output_alias="${item##*:}"
+
+        if echo "$usb_devices" | grep -qi "$search_pattern"; then
+            printf "${GREEN}%-25s${END} | ${GREEN}%s${END}\n" "$output_alias" "✅ Detected"
+
+        else
+            printf "${RED}%-25s${END} | ${RED}%s${END}\n" "$output_alias" "❌  Not Detected"
+        fi
+    done
+
+    #--------
+    #Cameras
+    #--------
+
+	V4L_OUTPUT=$(v4l2-ctl --list-devices 2>/dev/null)
+	# 1. Verificar la Cámara Frontal (asumiendo /dev/video0)
+	# Buscamos la línea que contenga "/dev/video0" en la salida.
+	FRONT_CAM="Front Camera"
+	REAR_CAM="Rear Camera"
+	
+	if echo "$V4L_OUTPUT" | grep -q "/dev/video0"; then
+    	printf "${GREEN}%-25s${END} | ${GREEN}%s${END}\n" "$FRONT_CAM" "✅ Detected"
+	else
+    	printf "${RED}%-25s${END} | ${RED}%s${END}\n" "$FRONT_CAM" "❌  Not Detected"
+	fi
+
+	# 2. Verificar la Cámara Trasera (asumiendo /dev/video1)
+	# Buscamos la línea que contenga "/dev/video1" en la salida.
+	if echo "$V4L_OUTPUT" | grep -q "/dev/video1"; then
+    	printf "${GREEN}%-25s${END} | ${GREEN}%s${END}\n" "$REAR_CAM" "✅ Detected"
+	else
+    	printf "${RED}%-25s${END} | ${RED}%s${END}\n" "$REAR_CAM" "❌  Not Detected"
+	fi
+	
+
+
+    #-------------
+    #Touch panels
+    #-------------
+    for touch in "${touch_devices[@]}"; do
+        if echo "$usb_devices" | grep -qi "$touch"; then
+            touch_detected=true
+            break
+       fi
+    done
+    
+    # Touch Screen Input
+    if $touch_detected; then
+        printf "${GREEN}%-25s${END} | ${GREEN}%s${END}\n" "Touch Screen" "✅ Detected"
+    else
+        printf "${RED}%-25s${END} | ${RED}%s${END}\n" "Touch Screen" "❌ Not Detected"
+    fi
+
+    echo -e "${GREEN}[!] Scan completed.${END}"
+}
+
+
+
 g1_detection(){
 	echo -e "${GREEN}[+] Starting device detection...${END}"
 
@@ -908,6 +1024,46 @@ main_menu() {
     done
 }
 
+# ====================  C2 Main MENU ==============
+c2_main_menu() {
+    while true; do
+        echo -e "\n${BLUE}--- Main Menu ---${END}"
+		echo -e "[1] 🔎 Device Detection"
+        echo -e "[2] ⚙️  Device & Driver Configuration"
+        echo -e "[3] ⌨️  Test Keyboard"
+		echo -e "[4] 🔊 Sound Activation"
+        echo -e "[5] 💻 OEM Environment Setup ✨(SYSPREP)✨"
+        echo -e "[q|Q] ↩️  Exit"
+        read -rp "Select an option: " choice
+
+        case "$choice" in
+			1)
+                c2_detection
+                ;;
+            2)
+                install_drivers
+                ;;
+            3)
+                keyboard_test
+                ;;
+			4)
+				install_sound_autostart
+				sleep 1
+				;;
+            5)
+                prepare_environment
+                ;;
+            [qQ])
+                echo -e "${RED}[*] Closing script...${END}"
+                exit 0
+                ;;
+            *)
+                echo -e "${RED}[!] Invalid option. Please try again.${END}"
+                ;;
+        esac
+    done
+}
+
 # ====================  G1 Main Menu ====================
 g1_main_menu() {
 	
@@ -995,6 +1151,10 @@ menu_model=$(sudo dmidecode -s system-product-name | sed -r 's/([A-Z]{2})([0-9]{
         	;;
     	# Caso por defecto (*): si no coincide con ninguno de los anteriores,
     	# no se ejecuta nada, y la variable 'brand' mantiene su valor original.
+		"CF-C2C"*)
+			menu_model="CF-C2 MK2"
+			c2_main_menu
+			;;
 		"CF-53 MK4")
 			cpu=$(lscpu | grep "Model name:" | sed 's/Model name:\s*//')
 			main_menu
