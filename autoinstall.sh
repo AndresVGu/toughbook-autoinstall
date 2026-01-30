@@ -844,6 +844,62 @@ EOF
    esac
 }
 
+prepare_environment_c2() {
+    echo -e "\n${YELLOW}⚠️ WARNING: This action will prepare the system for OEM distribution.${END}"
+    echo -e "It will delete the current user and perform a factory reset."
+    read -rp "[y|Y] Continue | [n|N] Cancel: " choice
+
+    case "$choice" in
+        [yY])
+            echo -e "${BLUE}[*] Installing OEM dependencies...${END}"
+            if ! sudo apt install -y oem-config-gtk oem-config-slideshow-ubuntu; then
+                echo -e "${RED}[-] Failed to install dependencies.${END}"
+                exit 1
+            fi
+
+            echo -e "${GREEN}[+] Dependencies installed successfully.${END}"
+            echo -e "${PURPLE}[*] Initializing system preparation...${END}"
+#start	
+	 		echo -e "${BLUE}[*] Forcing GDM as display manager...${END}"
+            echo "gdm3" > /etc/X11/default-display-manager
+            #systemctl enable gdm3
+            #systemctl disable sddm 2>/dev/null
+
+            echo -e "${BLUE}[*] Enforcing GNOME on Xorg...${END}"
+
+            #mkdir -p /etc/gdm3
+            #cat <<EOF > /etc/gdm3/custom.conf
+#[daemon]
+#WaylandEnable=false
+#DefaultSession=gnome-xorg.desktop
+#EOF
+
+            #echo -e "${GREEN}[+] GNOME on Xorg configured successfully.${END}"
+            #sleep 2
+#end
+            if ! sudo oem-config-prepare; then
+		         echo -e "${RED}[-] OEM system initialization failed.${END}"
+                exit 1
+            fi
+
+            echo -e "👍 ${GREEN}System preparation is ready.${END}"
+            echo -e "✨✨  ${YELLOW}Shutting down system in 5 seconds...${END}✨✨"
+            for i in {5..1}; do
+                echo "$i seconds..."
+                sleep 1
+            done
+
+            sudo shutdown -h now
+            ;;
+        [nN])
+            echo -e "${BLUE}[*] Action canceled.${END}"
+            ;;
+        *)
+            echo -e "${RED}🚫 Invalid option. Returning to the main menu.${END}"
+            ;;
+   esac
+}
+
 #==============Sound Activation=====================
 install_sound_autostart() {
 
@@ -1014,7 +1070,7 @@ c2_main_menu() {
 				sleep 1
 				;;
             5)
-                prepare_environment
+                prepare_environment_c2
                 ;;
             [qQ])
                 echo -e "${RED}[*] Closing script...${END}"
