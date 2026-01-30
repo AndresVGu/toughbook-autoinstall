@@ -75,13 +75,18 @@ check_root() {
 check_neofetch() {
     echo -e "${PURPLE}[!] Checking Dependencies...${END}"
     sleep 1
+	
+	#Upgrade & Update
+	set -e
+	echo "🔄 Updating package lists..."
+	sudo apt-get update -qq
+    UPGRADABLE=$(apt-get -s upgrade | grep -P '^\d+ upgraded' | cut -d' ' -f1)
 
-    sudo apt update -y
-    sleep 0.5
-    sudo apt upgrade -y
-
-    sleep 1
-    #Confirm dmidecode
+	if [[ "$UPGRADABLE" -gt 0 ]]; then
+    	sudo apt-get upgrade -y
+	fi
+    
+	#Confirm dmidecode
     if command -v dmidecode &> /dev/null; then
         echo "[+] dmidecode alredy Installed."
     else
@@ -89,7 +94,7 @@ check_neofetch() {
         sudo apt install dmidecode -y
     fi
 
-    sleep 0.5
+    
 
 	if command -v neofetch &> /dev/null; then
 		echo "[+] Neofetch already Installed."
@@ -98,7 +103,7 @@ check_neofetch() {
 		sudo apt install neofetch -y
 	fi
 
-	sleep 0.5
+	
     #---------
     #nettools
     #---------
@@ -108,7 +113,6 @@ check_neofetch() {
     else
         echo "[!] Installing net-tools"
         sudo apt install net-tools -y
-        sleep 1
         echo "export PATH=$PATH:/sbin" >> ~/.bashrc
     fi
 
@@ -158,7 +162,7 @@ check_neofetch() {
 #-KeyTest-
 #---------
     # Define la ruta completa de la carpeta Downloads
-    sleep 1
+    
     USER_DIR=$SUDO_USER
     DOWNLOADS_DIR="/home/$USER_DIR/Downloads"
     # Define el nombre de la carpeta de destino que crea git clone
@@ -189,9 +193,9 @@ check_neofetch() {
     fi
 #--END
 
-    sleep 0.5
+    
     echo -e "${YELLOW}[!] Collecting Device Information. ${END}"
-    sleep 1
+    
 
     #brand & model
     brand=$(sudo dmidecode -s system-manufacturer | awk '{print $1}' 2>/dev/null)
@@ -351,7 +355,7 @@ draw_box(){
 c2_detection(){
 echo -e "${GREEN}[+] Starting device detection...${END}"
 
-	if command -v v4l-utils &> /dev/null; then
+	if command -v v4l2-ctl &> /dev/null; then
         echo "[+] v4l-utils already Installed."
     else    
         echo "[!] Installing v4l-utils ..."
@@ -458,7 +462,7 @@ echo -e "${GREEN}[+] Starting device detection...${END}"
 g1_detection(){
 	echo -e "${GREEN}[+] Starting device detection...${END}"
 
-	if command -v v4l-utils &> /dev/null; then
+	if command -v v4l2-ctl &> /dev/null; then
         echo "[+] v4l-utils already Installed."
     else    
         echo "[!] Installing v4l-utils ..."
