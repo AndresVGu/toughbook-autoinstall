@@ -1,4 +1,8 @@
+
 #!/usr/bin/env bash
+set -Eeuo pipefail
+IFS=$'\n\t'
+
 
 #
 # Configuration script for Panasonic Toughbooks on Ubuntu 24
