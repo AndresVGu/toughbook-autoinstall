@@ -61,7 +61,7 @@ show_banner() {
     echo "║      ╚═╝    ╚═════╝  ╚═════╝  ╚═════╝ ╚═╝  ╚═╝             ║"
     echo "║                                                            ║"
     echo "║        Panasonic Toughbook OEM Utility                     ║"
-    echo "║        Ubuntu LTS  • AutoInstall		                ║"
+    echo "║        Ubuntu LTS   AutoInstall                            ║"
     echo "║                                                            ║"
     echo "║        Author: Andres Villarreal (@4vs3c)                  ║"
     echo "║                                                            ║"
