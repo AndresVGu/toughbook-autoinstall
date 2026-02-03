@@ -1,8 +1,4 @@
-
 #!/usr/bin/env bash
-set -Eeuo pipefail
-IFS=$'\n\t'
-
 
 #
 # Configuration script for Panasonic Toughbooks on Ubuntu 24
@@ -812,38 +808,36 @@ prepare_environment() {
             echo -e "${BLUE}[*] Installing OEM dependencies...${END}"
             if ! sudo apt install -y oem-config-gtk oem-config-slideshow-ubuntu; then
                 echo -e "${RED}[-] Failed to install dependencies.${END}"
-                return 1
+                exit 1
             fi
 
             echo -e "${GREEN}[+] Dependencies installed successfully.${END}"
             echo -e "${PURPLE}[*] Initializing system preparation...${END}"
+#start	
+	 		echo -e "${BLUE}[*] Forcing GDM as display manager...${END}"
+            echo "gdm3" > /etc/X11/default-display-manager
+            systemctl enable gdm3
+            systemctl disable sddm 2>/dev/null
 
-            # Force GDM as display manager
-            echo -e "${BLUE}[*] Forcing GDM as display manager...${END}"
-            echo "gdm3" | sudo tee /etc/X11/default-display-manager >/dev/null
-            sudo systemctl enable gdm3
-            sudo systemctl disable sddm 2>/dev/null || true
-
-            # Enforce GNOME on Xorg
             echo -e "${BLUE}[*] Enforcing GNOME on Xorg...${END}"
-            sudo mkdir -p /etc/gdm3
-            sudo tee /etc/gdm3/custom.conf >/dev/null <<EOF
+
+            mkdir -p /etc/gdm3
+            cat <<EOF > /etc/gdm3/custom.conf
 [daemon]
 WaylandEnable=false
 DefaultSession=gnome-xorg.desktop
 EOF
+
             echo -e "${GREEN}[+] GNOME on Xorg configured successfully.${END}"
             sleep 2
-
-            # Prepare OEM system
-            echo -e "${BLUE}[*] Running OEM system preparation...${END}"
+#end
             if ! sudo oem-config-prepare; then
-                echo -e "${RED}[-] OEM system initialization failed.${END}"
-                return 1
+		         echo -e "${RED}[-] OEM system initialization failed.${END}"
+                exit 1
             fi
 
             echo -e "👍 ${GREEN}System preparation is ready.${END}"
-            echo -e "✨✨  ${YELLOW}Shutting down system in 5 seconds...${END} ✨✨"
+            echo -e "✨✨  ${YELLOW}Shutting down system in 5 seconds...${END}✨✨"
             for i in {5..1}; do
                 echo "$i seconds..."
                 sleep 1
@@ -857,9 +851,8 @@ EOF
         *)
             echo -e "${RED}🚫 Invalid option. Returning to the main menu.${END}"
             ;;
-    esac
+   esac
 }
-
 
 prepare_environment_c2() {
     echo -e "\n${YELLOW}⚠️ WARNING: This action will prepare the system for OEM distribution.${END}"
@@ -1178,5 +1171,4 @@ menu_model=$(sudo dmidecode -s system-product-name | sed -r 's/([A-Z]{2})([0-9]{
         	;;
 	esac
 trap ctrl_c INT
-
 
