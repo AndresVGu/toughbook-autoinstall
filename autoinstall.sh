@@ -227,7 +227,7 @@ check_neofetch() {
     	# Si la salida es g1-1a (la validación es sensible a mayúsculas y minúsculas por defecto)
     	"FZ-G1A"*)
         	model="FZ-G1 MK1"
-			part_number=$(sudo dmidecode -s system-product-name | sed -r 's/([A-Z]{2})([0-9]{2})-([0-9])/\1-\2 MK\3/' 2>/dev/null)
+			#part_number=$(sudo dmidecode -s system-product-name | sed -r 's/([A-Z]{2})([0-9]{2})-([0-9])/\1-\2 MK\3/' 2>/dev/null)
 			cpu=$(lscpu | grep "Model name:" | sed 's/Model name:\s*//')
         	;;
     	# Caso por defecto (*): si no coincide con ninguno de los anteriores,
