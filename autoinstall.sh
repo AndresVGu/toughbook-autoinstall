@@ -927,20 +927,23 @@ prepare_environment() {
 #start	
 	 		echo -e "${BLUE}[*] Forcing GDM as display manager...${END}"
             echo "gdm3" > /etc/X11/default-display-manager
-            systemctl enable gdm3
-            systemctl disable sddm 2>/dev/null
+			######################
+			# fallo
+			#####################
+           # systemctl enable gdm3
+           # systemctl disable sddm 2>/dev/null
 
-            echo -e "${BLUE}[*] Enforcing GNOME on Xorg...${END}"
+         #   echo -e "${BLUE}[*] Enforcing GNOME on Xorg...${END}"
 
-            mkdir -p /etc/gdm3
-            cat <<EOF > /etc/gdm3/custom.conf
-[daemon]
-WaylandEnable=false
-DefaultSession=gnome-xorg.desktop
-EOF
+          #  mkdir -p /etc/gdm3
+          #  cat <<EOF > /etc/gdm3/custom.conf
+#[daemon]
+#WaylandEnable=false
+##DefaultSession=gnome-xorg.desktop
+#EOF
 
-            echo -e "${GREEN}[+] GNOME on Xorg configured successfully.${END}"
-            sleep 2
+       #     echo -e "${GREEN}[+] GNOME on Xorg configured successfully.${END}"
+       #     sleep 2
 #end
             if ! sudo oem-config-prepare; then
 		         echo -e "${RED}[-] OEM system initialization failed.${END}"
