@@ -313,9 +313,9 @@ collect_info(){
     fi
 
     #Information chart
-	echo -e "${TURQUOISE}╔════════════════════════════════════════════════════════════╗${END}"
-	echo -e "${TURQUOISE}║${END}                    ${GREEN}SYSTEM INFORMATION${END}                      ${TURQUOISE}║${END}"
-	echo -e "${TURQUOISE}╚════════════════════════════════════════════════════════════╝${END}"
+	echo -e "	${TURQUOISE}╔════════════════════════════════════════════════════════════╗${END}"
+	echo -e "	${TURQUOISE}║${END}                    ${GREEN}SYSTEM INFORMATION${END}                      ${TURQUOISE}║${END}"
+	echo -e "	${TURQUOISE}╚════════════════════════════════════════════════════════════╝${END}"
     echo -e "Brand:             $brand"
     echo -e "Model:             $model"
     echo -e "Part Number:       $part_number"
