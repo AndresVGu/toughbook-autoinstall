@@ -1156,16 +1156,6 @@ show_banner
 check_version
 
 
-try() {
-  "$@"
-}
-
-catch() {
-  echo "Error collecting info."
-}
-
-# ---------- ejecución ----------
-collect_info || catch
 
 
 #------------------------
@@ -1178,12 +1168,32 @@ menu_model=$(sudo dmidecode -s system-product-name | sed -r 's/([A-Z]{2})([0-9]{
 	case "$menu_model" in
     	# Si la salida es exactamente CF-54-2
     	"CF-54-2")
+			try() {
+			  "$@"
+			}
+			
+			catch() {
+			  echo "Error collecting info."
+			}
+			
+			# ---------- ejecución ----------
+			collect_info || catch
         	menu_model="CF-54 Mk2"
 			cpu=$(lscpu | grep "BIOS Model name:" | sed 's/BIOS Model name:\s*//')
 			main_menu
         	;;
     	# Si la salida es g1-1a (la validación es sensible a mayúsculas y minúsculas por defecto)
     	"FZ-G1A"*)
+			try() {
+			  "$@"
+			}
+			
+			catch() {
+			  echo "Error collecting info."
+			}
+			
+			# ---------- ejecución ----------
+			collect_info || catch
         	menu_model="FZ-G1 MK1"
 			part_number=$(sudo dmidecode -s system-product-name | sed -r 's/([A-Z]{2})([0-9]{2})-([0-9])/\1-\2 MK\3/' 2>/dev/null)
 			cpu=$(lscpu | grep "Model name:" | sed 's/Model name:\s*//')
@@ -1192,14 +1202,44 @@ menu_model=$(sudo dmidecode -s system-product-name | sed -r 's/([A-Z]{2})([0-9]{
     	# Caso por defecto (*): si no coincide con ninguno de los anteriores,
     	# no se ejecuta nada, y la variable 'brand' mantiene su valor original.
 		"CF-C2C"*)
+			try() {
+			  "$@"
+			}
+			
+			catch() {
+			  echo "Error collecting info."
+			}
+			
+			# ---------- ejecución ----------
+			collect_info || catch
 			menu_model="CF-C2 MK2"
 			c2_main_menu
 			;;
 		"CF-53 MK4")
+			try() {
+			  "$@"
+			}
+			
+			catch() {
+			  echo "Error collecting info."
+			}
+			
+			# ---------- ejecución ----------
+			collect_info || catch
 			cpu=$(lscpu | grep "Model name:" | sed 's/Model name:\s*//')
 			main_menu
 			;;
     	*)
+			try() {
+			  "$@"
+			}
+			
+			catch() {
+			  echo "Error collecting info."
+			}
+			
+			# ---------- ejecución ----------
+			collect_info || catch
 			cpu=$(lscpu | grep "BIOS Model name:" | sed 's/BIOS Model name:\s*//')
 			main_menu
         	# Opcional: puedes añadir un 'echo' para debug aquí si quieres
