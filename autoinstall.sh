@@ -326,6 +326,12 @@ collect_info(){
     brand=$(sudo dmidecode -s system-manufacturer | awk '{print $1}' 2>/dev/null)
     model=$(sudo dmidecode -s system-product-name | sed -r 's/([A-Z]{2})([0-9]{2})-([0-9])/\1-\2 MK\3/' 2>/dev/null)
 
+	#serial & part number
+    serial=$(sudo dmidecode -s system-serial-number 2>/dev/null)
+    part_number=$(sudo dmidecode -s system-sku-number 2>/dev/null)
+	#Procesor
+    cpu=$(lscpu | grep "BIOS Model name:" | sed 's/BIOS Model name:\s*//')
+
 	case "$model" in
     	# Si la salida es exactamente CF-54-2
     	"CF-54-2")
@@ -353,11 +359,7 @@ collect_info(){
         	# Opcional: puedes añadir un 'echo' para debug aquí si quieres
         	;;
 	esac
-	#serial & part number
-    serial=$(sudo dmidecode -s system-serial-number 2>/dev/null)
-    part_number=$(sudo dmidecode -s system-sku-number 2>/dev/null)
-	#Procesor
-    cpu=$(lscpu | grep "BIOS Model name:" | sed 's/BIOS Model name:\s*//')
+	
 
     #hours
     hours=$(sudo dmidecode -t 22 2>/dev/null | grep "Hours" | awk '{print $2}')
