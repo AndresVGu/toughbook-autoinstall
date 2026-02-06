@@ -984,7 +984,7 @@ main_menu() {
        # echo -e "[1] 🔎 Configuration & Testing Guide"
 		echo -e "[1] 🔎 Device Information"
 		echo -e "[2] 🩺 Device Detection"
-        echo -e "[3] ⚙️ Update Device"
+        echo -e "[3] ⚙️  Update Device"
         echo -e "[4] ⌨️  Test Keyboard"
         echo -e "[5] 💻 OEM Environment Setup ✨(SYSPREP)✨"
 		#echo -e "[6] ✎ Default Touch-Screen-AutoCalibration (ONLY FOR CF-53)"
@@ -1094,7 +1094,7 @@ c2_main_menu() {
         echo -e "\n${BLUE}--- Main Menu ---${END}"
 		echo -e "[1] 🔎 Device Information"
 		echo -e "[2] 🩺 Device Detection"
-        echo -e "[3] ⚙️ Update Device"
+        echo -e "[3] ⚙️  Update Device"
         echo -e "[4] ⌨️  Test Keyboard"
 		echo -e "[5] 🔊 Sound Activation"
         echo -e "[6] 💻 OEM Environment Setup ✨(SYSPREP)✨"
@@ -1149,7 +1149,7 @@ g1_main_menu() {
 		echo -e "\n${BLUE}--- Main Menu ---${END}"
 		echo -e "[1] 🔎 Device Information"
 		echo -e "[2] 🩺 Device Detection"
-        echo -e "[3] ⚙️ Update Device"
+        echo -e "[3] ⚙️  Update Device"
 		echo -e "[4] 🔊 Sound Activation"
 		echo -e "⚠️ ${YELLOW}For SYSPREP use Prepare For Shipping To End User located on the Desktop${END} ⚠️"
         echo -e "[q|Q] ↩️  Exit"
@@ -1194,19 +1194,6 @@ g1_main_menu() {
 check_root
 show_banner
 check_version
-
-try() {
-	"$@"
-	   }
-				
-catch() {
-	echo "Error collecting info."
-		}
-				
-# ---------- ejecución ----------
-collect_info || catch			  
-
-
 #------------------------
 #-------MENU-----------
 #----------------------
