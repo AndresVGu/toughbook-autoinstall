@@ -999,6 +999,7 @@ main_menu() {
                 device_detection
                 ;;
             2)
+				check_neofetch
                 install_drivers
                 ;;
             3)
@@ -1090,6 +1091,7 @@ c2_main_menu() {
                 c2_detection
                 ;;
             2)
+				check_neofetch
                 install_drivers
                 ;;
             3)
@@ -1130,6 +1132,7 @@ g1_main_menu() {
                 g1_detection
                 ;;
             2)
+				check_neofetch
                 install_drivers
                 ;;
 			3)
@@ -1151,7 +1154,7 @@ g1_main_menu() {
 check_root
 show_banner
 check_version
-check_neofetch
+
 
 try() {
   "$@"
