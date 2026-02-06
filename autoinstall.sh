@@ -334,6 +334,7 @@ collect_info(){
         	;;
 		"CF-54-3")
         	model="CF-54 Mk3"
+			part_number="UNKNOWN"
 			cpu=$(lscpu | grep "BIOS Model name:" | sed 's/BIOS Model name:\s*//')
         	;;
     	# Si la salida es g1-1a (la validación es sensible a mayúsculas y minúsculas por defecto)
