@@ -212,10 +212,10 @@ check_neofetch() {
     model=$(sudo dmidecode -s system-product-name | sed -r 's/([A-Z]{2})([0-9]{2})-([0-9])/\1-\2 MK\3/' 2>/dev/null)
 
 	#serial & part number
-    serial=$(sudo dmidecode -s system-serial-number 2>/dev/null)
-    part_number=$(sudo dmidecode -s system-sku-number 2>/dev/null)
+   # serial=$(sudo dmidecode -s system-serial-number 2>/dev/null)
+   # part_number=$(sudo dmidecode -s system-sku-number 2>/dev/null)
 	#Procesor
-    cpu=$(lscpu | grep "BIOS Model name:" | sed 's/BIOS Model name:\s*//')
+   # cpu=$(lscpu | grep "BIOS Model name:" | sed 's/BIOS Model name:\s*//')
 
 	# --- Bloque de Validación y Modificación de la variable 'brand' ---
 	case "$model" in
@@ -241,6 +241,118 @@ check_neofetch() {
         	;;
 	esac
 	# -----------------------------------------------------------------
+
+    #hours
+  #  hours=$(sudo dmidecode -t 22 2>/dev/null | grep "Hours" | awk '{print $2}')
+   # [ -z "$hours" ] && hours=$(uptime -p)
+
+    #RAM
+   # ram_gb=$(free -h | awk '/Mem:/ {sub(/[a-zA-Z]/,"",$2); print int($2+0.5)}')
+   # ram_type=$(sudo dmidecode -t memory | grep -E "Type:.*DDR" | awk '{print $2}' | head -n1)
+
+    #slot 1
+   # ram_slot_a=$(sudo dmidecode -t memory | grep -E "Handle" | sed -n '3p' | awk '{print $2}' | cut -c1-6)
+   # [ -z "$ram_slot_a" ] && ram_slot_a=$(echo "Empty")
+
+   # ram_size_a=$(sudo dmidecode -t memory | grep -E "Size:" | sed -n '1p')
+  #  [ -z "$ram_size_a" ] && ram_size_a=$(echo " ")
+
+   # ram_speed_a=$(sudo dmidecode -t memory 2>/dev/null | grep -E "Speed:" | head -n1 | awk '{print $2}')
+   # [ -z "$ram_speed_a" ] && ram_speed_a=$(echo " ")
+#
+    #slot 2
+   # ram_slot_b=$(sudo dmidecode -t memory | grep -E "Handle" | sed -n '6p' | awk '{print $2}' | cut -c1-6)
+   # [ -z "$ram_slot_b" ] && ram_slot_b=$(echo "Empty")
+
+   # ram_size_b=$(sudo dmidecode -t memory | grep -E "Size:" | sed -n '2p')
+   # [ -z "$ram_size_b" ] && ram_size_b=$(echo " ")
+
+   # ram_speed_b=$(sudo dmidecode -t memory 2>/dev/null | grep  -E "Speed:" | sed -n '3p' | awk '{print $2}')
+  #  [ -z "$ram_speed_b" ] && ram_speed_b=$(echo " ")
+
+    #Disks
+   # disks=$(lsblk -d -o TYPE,SIZE,SERIAL | grep "disk")
+   # [ -z "$disks" ] && disks=$(echo "Empty")
+ 
+    #Battery
+    
+    #Healt
+   # bat_health=$(acpi -V | grep "mAh" | grep -o "[0-9]\+%")
+    #Status
+   # bat_status=$(acpi -V | grep "Battery" | grep -o "[0-9]\+%" | sed -n '1p')
+   # clean_value=${bat_health%\%}
+	#clean_value_int=$((clean_value))
+  #  bat_message=""
+    
+  #  if [ "$clean_value_int" -gt 85 ]; then
+  #      bat_message="✅${GREEN} Recomended for Amazon Orders ${END}"
+  #  elif [ "$clean_value_int" -gt 80 ]; then
+   #     bat_message="✅${GREEN} Recomended for Shopify ${END}"
+  #  elif [ "$clean_value_int" -gt 1 ]; then
+ #       bat_message="⚠️${YELLOW} Battery Health lower than 80% ${END}" 
+ #   else
+ #       bat_message="❌${RED} No Battery Detected ${END}"
+ #   fi
+
+ #  #Information chart
+  #  echo -e "${TURQUOISE}==================== PC INFO ====================${END}"
+   # echo -e "Brand:             $brand"
+  #  echo -e "Model:             $model"
+ #   echo -e "Part Number:       $part_number"
+ #   echo -e "Serial Number      $serial"
+ #   echo -e "Processor:         $cpu"
+  #  echo -e "${TURQUOISE}-------------------- MEMORY ---------------------${END}"
+  #  echo -e "RAM Total:  ${ram_gb} GB (${ram_type})"
+  #  echo -e "Slot 1: ${ram_slot_a} ${ram_size_a}         Speed: ${ram_speed_a} MT/s"
+ #   echo -e "Slot 2: ${ram_slot_b} ${ram_size_b}         Speed: ${ram_speed_b} MT/s"
+  #  echo -e "${TURQUOISE}-------------------- Disks ----------------------${END}"
+ #   echo "$disks"
+ #   echo -e "${TURQUOISE}=================================================${END}"
+ #   echo -e "${TURQUOISE}================ BATTERY INFO ===================${END}"
+ #   echo -e "Power Status: $bat_status"
+ #   echo -e "Battery Health: ${BLUE}${bat_health}${END}  ||   ${bat_message}    "
+}
+
+
+
+
+# ==================== Core Functions ====================
+########################################
+#  COLLECT INFO TEMPORARY
+################################
+
+collect_info(){
+ #brand & model
+    brand=$(sudo dmidecode -s system-manufacturer | awk '{print $1}' 2>/dev/null)
+    model=$(sudo dmidecode -s system-product-name | sed -r 's/([A-Z]{2})([0-9]{2})-([0-9])/\1-\2 MK\3/' 2>/dev/null)
+
+	case "$model" in
+    	# Si la salida es exactamente CF-54-2
+    	"CF-54-2")
+        	model="CF-54 Mk2"
+			cpu=$(lscpu | grep "BIOS Model name:" | sed 's/BIOS Model name:\s*//')
+        	;;
+    	# Si la salida es g1-1a (la validación es sensible a mayúsculas y minúsculas por defecto)
+    	"FZ-G1A"*)
+        	model="FZ-G1 MK1"
+			#part_number=$(sudo dmidecode -s system-product-name | sed -r 's/([A-Z]{2})([0-9]{2})-([0-9])/\1-\2 MK\3/' 2>/dev/null)
+			cpu=$(lscpu | grep "Model name:" | sed 's/Model name:\s*//')
+        	;;
+    	# Caso por defecto (*): si no coincide con ninguno de los anteriores,
+    	# no se ejecuta nada, y la variable 'brand' mantiene su valor original.
+		"CF-53 MK4")
+			cpu=$(lscpu | grep "Model name:" | sed 's/Model name:\s*//')
+			;;
+    	*)
+			cpu=$(lscpu | grep "BIOS Model name:" | sed 's/BIOS Model name:\s*//')
+        	# Opcional: puedes añadir un 'echo' para debug aquí si quieres
+        	;;
+	esac
+	#serial & part number
+    serial=$(sudo dmidecode -s system-serial-number 2>/dev/null)
+    part_number=$(sudo dmidecode -s system-sku-number 2>/dev/null)
+	#Procesor
+    cpu=$(lscpu | grep "BIOS Model name:" | sed 's/BIOS Model name:\s*//')
 
     #hours
     hours=$(sudo dmidecode -t 22 2>/dev/null | grep "Hours" | awk '{print $2}')
@@ -311,9 +423,8 @@ check_neofetch() {
     echo -e "${TURQUOISE}================ BATTERY INFO ===================${END}"
     echo -e "Power Status: $bat_status"
     echo -e "Battery Health: ${BLUE}${bat_health}${END}  ||   ${bat_message}    "
-}
 
-# ==================== Core Functions ====================
+}
 #Draw Title
 draw_box(){
 
@@ -1132,6 +1243,18 @@ check_root
 show_banner
 check_version
 check_neofetch
+
+try() {
+  "$@"
+}
+
+catch() {
+  echo "Error collecting info."
+}
+
+# ---------- ejecución ----------
+collect_info || catch
+
 
 #------------------------
 #-------MENU-----------
