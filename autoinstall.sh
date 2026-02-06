@@ -313,7 +313,9 @@ collect_info(){
     fi
 
     #Information chart
-    echo -e "${TURQUOISE}==================== PC INFO ====================${END}"
+	echo "${TURQUOISE}╔════════════════════════════════════════════════════════════╗${END}"
+	echo "${TURQUOISE}║                    SYSTEM INFORMATION                      ║${END}"
+	echo "${TURQUOISE}╚════════════════════════════════════════════════════════════╝${END}"
     echo -e "Brand:             $brand"
     echo -e "Model:             $model"
     echo -e "Part Number:       $part_number"
