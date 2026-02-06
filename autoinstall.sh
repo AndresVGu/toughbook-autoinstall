@@ -223,7 +223,7 @@ check_neofetch() {
     	#"CF-54-2")
         #	model="CF-54 Mk2"
 		#	cpu=$(lscpu | grep "BIOS Model name:" | sed 's/BIOS Model name:\s*//')
-        	;;
+       # 	;;
     	# Si la salida es g1-1a (la validación es sensible a mayúsculas y minúsculas por defecto)
     	#"FZ-G1A"*)
         #	model="FZ-G1 MK1"
