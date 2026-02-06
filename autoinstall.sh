@@ -979,25 +979,16 @@ EOF
 # ==================== Main Menu ====================
 main_menu() {
     while true; do
-			try() {
-			"$@"
-	   		}
-				
-		catch() {
-			echo "Error collecting info."
-			}
-				
-		# ---------- ejecución ----------
-		collect_info || catch
-		
+	
         echo -e "\n${BLUE}--- Main Menu ---${END}"
        # echo -e "[1] 🔎 Configuration & Testing Guide"
-		echo -e "[1] 🔎 Device Detection"
-        echo -e "[2] ⚙️  Device & Driver Configuration"
-        echo -e "[3] ⌨️  Test Keyboard"
-        echo -e "[4] 💻 OEM Environment Setup ✨(SYSPREP)✨"
-		echo -e "[5] ✎ Default Touch-Screen-AutoCalibration (ONLY FOR CF-53)"
-		echo -e "[6] ✎ CF-31 Touch-Screen-AutoCaliration"
+		echo -e "[1] 🔎 Device Information"
+		echo -e "[2] 🩺 Device Detection"
+        echo -e "[3] ⚙️ Update Device"
+        echo -e "[4] ⌨️  Test Keyboard"
+        echo -e "[5] 💻 OEM Environment Setup ✨(SYSPREP)✨"
+		#echo -e "[6] ✎ Default Touch-Screen-AutoCalibration (ONLY FOR CF-53)"
+		#echo -e "[7] ✎ CF-31 Touch-Screen-AutoCaliration"
         echo -e "[q|Q] ↩️  Exit"
         read -rp "Select an option: " choice
 
@@ -1006,20 +997,32 @@ main_menu() {
 				#URL_DOC="https://github.com/AndresVGu/toughbook-autoinstall/blob/main/README.md"
               #  open_doc "$URL_DOC"
              #   ;;
-			1)
+			 1)
+				try() {
+					"$@"
+	   			}
+				
+				catch() {
+					echo "Error collecting info."
+				}
+				
+				# ---------- ejecución ----------
+				collect_info || catch
+				;;
+			2)
                 device_detection
                 ;;
-            2)
+            3)
 				check_neofetch
                 install_drivers
                 ;;
-            3)
+            4)
                 keyboard_test
                 ;;
-            4)
+            5)
                 prepare_environment
                 ;;
-			5)
+			6)
 				echo "[+]Adding execution Permission to the script..."
 				chmod +x touch-calibrator.sh
 				sleep 1
@@ -1046,7 +1049,7 @@ main_menu() {
 				echo "[!] AutoStart Configuration Done.."
 				sleep 2
 				;;
-			6)
+			7)
 				echo "[+]Adding execution Permission to the script..."
 				chmod +x touch-calibrator-cf31.sh
 				sleep 1
@@ -1088,42 +1091,44 @@ main_menu() {
 # ====================  C2 Main MENU ==============
 c2_main_menu() {
     while true; do
-			try() {
-			"$@"
-	   		}
-				
-		catch() {
-			echo "Error collecting info."
-			}
-				
-		# ---------- ejecución ----------
-		collect_info || catch
-		
         echo -e "\n${BLUE}--- Main Menu ---${END}"
-		echo -e "[1] 🔎 Device Detection"
-        echo -e "[2] ⚙️  Device & Driver Configuration"
-        echo -e "[3] ⌨️  Test Keyboard"
-		echo -e "[4] 🔊 Sound Activation"
-        echo -e "[5] 💻 OEM Environment Setup ✨(SYSPREP)✨"
+		echo -e "[1] 🔎 Device Information"
+		echo -e "[2] 🩺 Device Detection"
+        echo -e "[3] ⚙️ Update Device"
+        echo -e "[4] ⌨️  Test Keyboard"
+		echo -e "[5] 🔊 Sound Activation"
+        echo -e "[6] 💻 OEM Environment Setup ✨(SYSPREP)✨"
         echo -e "[q|Q] ↩️  Exit"
         read -rp "Select an option: " choice
 
         case "$choice" in
 			1)
+				try() {
+					"$@"
+	   			}
+				
+				catch() {
+					echo "Error collecting info."
+				}
+				
+				# ---------- ejecución ----------
+				collect_info || catch
+				;;
+			2)
                 c2_detection
                 ;;
-            2)
+            3)
 				check_neofetch
                 install_drivers
                 ;;
-            3)
+            4)
                 keyboard_test
                 ;;
-			4)
+			5)
 				install_sound_autostart
 				sleep 1
 				;;
-            5)
+            6)
                 prepare_environment_c2
                 ;;
             [qQ])
@@ -1141,34 +1146,36 @@ c2_main_menu() {
 g1_main_menu() {
 	
     while true; do
-		try() {
-			"$@"
-	   		}
-				
-		catch() {
-			echo "Error collecting info."
-			}
-				
-		# ---------- ejecución ----------
-		collect_info || catch
-		
-        echo -e "\n${BLUE}--- Main Menu ---${END}"
-		echo -e "[1] 🔎 Device Detection"
-        echo -e "[2] ⚙️  Device & Driver Configuration"
-		echo -e "[3] 🔊 Sound Activation"
+		echo -e "\n${BLUE}--- Main Menu ---${END}"
+		echo -e "[1] 🔎 Device Information"
+		echo -e "[2] 🩺 Device Detection"
+        echo -e "[3] ⚙️ Update Device"
+		echo -e "[4] 🔊 Sound Activation"
 		echo -e "⚠️ ${YELLOW}For SYSPREP use Prepare For Shipping To End User located on the Desktop${END} ⚠️"
         echo -e "[q|Q] ↩️  Exit"
         read -rp "Select an option: " choice
 
         case "$choice" in
 			1)
+				try() {
+					"$@"
+	   			}
+				
+				catch() {
+					echo "Error collecting info."
+				}
+				
+				# ---------- ejecución ----------
+				collect_info || catch
+				;;
+			2)
                 g1_detection
                 ;;
-            2)
+            3)
 				check_neofetch
                 install_drivers
                 ;;
-			3)
+			4)
 				install_sound_autostart
 				;;
             [qQ])
