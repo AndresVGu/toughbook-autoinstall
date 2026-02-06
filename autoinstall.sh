@@ -316,7 +316,7 @@ collect_info(){
 	echo -e "	${TURQUOISE}╔════════════════════════════════════════════════════════════╗${END}"
 	echo -e "	${TURQUOISE}║${END}                    ${GREEN}SYSTEM INFORMATION${END}                      ${TURQUOISE}║${END}"
 	echo -e "	${TURQUOISE}╚════════════════════════════════════════════════════════════╝${END}"
-	echo -e "	${TURQUOISE}║${END}                          Brand:             $brand                     ${TURQUOISE}║${END}"
+	echo -e "	${TURQUOISE}║${END}Brand               :             $brand                ${TURQUOISE}║${END}"
 	echo -e "	${TURQUOISE}╚════════════════════════════════════════════════════════════╝${END}"
     echo -e "Brand:             $brand"
     echo -e "Model:             $model"
