@@ -983,7 +983,7 @@ main_menu() {
         echo -e "\n${BLUE}--- Main Menu ---${END}"
        # echo -e "[1] 🔎 Configuration & Testing Guide"
 		echo -e "[1] 🔎 Device Information"
-		echo -e "[2] 🩺 Device Detection"
+		echo -e "[2] 🩺 Hardware Detection"
         echo -e "[3] ⚙️  Update Device"
         echo -e "[4] ⌨️  Test Keyboard"
         echo -e "[5] 💻 OEM Environment Setup ✨(SYSPREP)✨"
@@ -1093,7 +1093,7 @@ c2_main_menu() {
     while true; do
         echo -e "\n${BLUE}--- Main Menu ---${END}"
 		echo -e "[1] 🔎 Device Information"
-		echo -e "[2] 🩺 Device Detection"
+		echo -e "[2] 🩺 Hardware Detection"
         echo -e "[3] ⚙️  Update Device"
         echo -e "[4] ⌨️  Test Keyboard"
 		echo -e "[5] 🔊 Sound Activation"
@@ -1148,7 +1148,7 @@ g1_main_menu() {
     while true; do
 		echo -e "\n${BLUE}--- Main Menu ---${END}"
 		echo -e "[1] 🔎 Device Information"
-		echo -e "[2] 🩺 Device Detection"
+		echo -e "[2] 🩺 Hardware Detection"
         echo -e "[3] ⚙️  Update Device"
 		echo -e "[4] 🔊 Sound Activation"
 		echo -e "⚠️ ${YELLOW}For SYSPREP use Prepare For Shipping To End User located on the Desktop${END} ⚠️"
