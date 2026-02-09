@@ -313,14 +313,48 @@ collect_info(){
     fi
 
     #Information chart
+	if [[ $cpu =~ (i[0-9]-[0-9A-Z]+) ]]; then
+        cpu_short="Intel ${BASH_REMATCH[1]}"
+    else
+	cpu_short=$cpu
+    fi
+
 	echo -e "	${TURQUOISE}╔════════════════════════════════════════════════════════════╗${END}"
 	echo -e "	${TURQUOISE}║${END}                    SYSTEM INFORMATION                      ${TURQUOISE}║${END}"
+	echo -e "        ${TURQUOISE}║                                                            ║${END}"
 	echo -e "	${TURQUOISE}║${END} Brand                           : ${GREEN}$brand${END}                ${TURQUOISE}║${END}"
 	echo -e "	${TURQUOISE}║${END} Model                           : ${GREEN}$model${END}                ${TURQUOISE}║${END}"
-	echo -e "	${TURQUOISE}║${END} Part Number                     : ${GREEN}$part_number${END}              ${TURQUOISE}║${END}"
+	echo -e "	${TURQUOISE}║${END} Part Number                     : ${GREEN}$part_number${END}             ${TURQUOISE}║${END}"
 	echo -e "	${TURQUOISE}║${END} Serial Number                   : ${GREEN}$serial${END}               ${TURQUOISE}║${END}"
-	echo -e "	${TURQUOISE}║${END} CPU                             : ${GREEN}$cpu${END}                ${TURQUOISE}║${END}"	
+	echo -e "	${TURQUOISE}║${END} CPU                             : ${GREEN}$cpu_short${END}           ${TURQUOISE}║${END}"	
 	echo -e "	${TURQUOISE}╚════════════════════════════════════════════════════════════╝${END}"
+
+	echo -e "        ${TURQUOISE}╔════════════════════════════════════════════════════════════╗${END}"
+        echo -e "        ${TURQUOISE}║${END}                   BATTERY INFORMATION                      ${TURQUOISE}║${END}"
+        echo -e "        ${TURQUOISE}║                                                            ║${END}"
+        echo -e "        ${TURQUOISE}║${END} Status                           : ${GREEN}$brand${END}║" 
+	echo -e "        ${TURQUOISE}║${END} Health                           : ${GREEN}$brand${END}║"
+	echo -e "        ${TURQUOISE}║${END} Recommendation                           : ${GREEN}$brand${END}║"
+	echo -e "        ${TURQUOISE}╚════════════════════════════════════════════════════════════╝${END}"
+	
+	echo -e "        ${TURQUOISE}╔════════════════════════════════════════════════════════════╗${END}"
+        echo -e "        ${TURQUOISE}║${END}                   STORAGE INFORMATION                      ${TURQUOISE}║${END}"
+        echo -e "        ${TURQUOISE}║                                                            ║${END}"
+        echo -e "        ${TURQUOISE}║${END} Device, Size, Serial, Model                           : ${GREEN}$brand${END}║" 
+        echo -e "        ${TURQUOISE}║${END} Health                           : ${GREEN}$brand${END}║"
+        echo -e "        ${TURQUOISE}║${END} Recommendation                           : ${GREEN}$brand${END}║"
+        echo -e "        ${TURQUOISE}╚════════════════════════════════════════════════════════════╝${END}"       
+
+	echo -e "        ${TURQUOISE}╔════════════════════════════════════════════════════════════╗${END}"
+        echo -e "        ${TURQUOISE}║${END}                   MEMORY INFORMATION                       ${TURQUOISE}║${END}"
+        echo -e "        ${TURQUOISE}║                                                            ║${END}"
+        echo -e "        ${TURQUOISE}║${END} RAM Total                           : ${GREEN}$brand${END}║" 
+        echo -e "        ${TURQUOISE}║${END} RAM Type                           : ${GREEN}$brand${END}║"
+        echo -e "        ${TURQUOISE}║${END} Slot [1]                           : ${GREEN}$brand${END}║"
+	echo -e "        ${TURQUOISE}║${END} Slot [2]                           : ${GREEN}$brand${END}║"
+        echo -e "        ${TURQUOISE}╚════════════════════════════════════════════════════════════╝${END}"
+
+	#----------------------------------
     echo -e "Brand:             $brand"
     echo -e "Model:             $model"
     echo -e "Part Number:       $part_number"
