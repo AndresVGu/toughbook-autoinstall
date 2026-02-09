@@ -376,9 +376,9 @@ fi
 	echo -e "        ${TURQUOISE}╔════════════════════════════════════════════════════════════╗${END}"
         echo -e "        ${TURQUOISE}║${END}                   STORAGE INFORMATION                      ${TURQUOISE}║${END}"
         echo -e "        ${TURQUOISE}║                                                            ║${END}"
-        echo -e "        ${TURQUOISE}║${END} Device, Size, Serial, Model                           : ${GREEN}$brand${END}║" 
-        echo -e "        ${TURQUOISE}║${END} Health                           : ${GREEN}$brand${END}║"
-        echo -e "        ${TURQUOISE}║${END} Recommendation                           : ${GREEN}$brand${END}║"
+        echo -e "        ${TURQUOISE}║${END} Device, Size, Serial, Model                           : ${GREEN}---${END}║" 
+        echo -e "        ${TURQUOISE}║${END} ---                           : ${GREEN}---${END}║"
+        echo -e "        ${TURQUOISE}║${END} ---                           : ${GREEN}---${END}║"
         echo -e "        ${TURQUOISE}╚════════════════════════════════════════════════════════════╝${END}"       
 
 	echo -e "        ${TURQUOISE}╔════════════════════════════════════════════════════════════╗${END}"
@@ -390,22 +390,10 @@ fi
 	echo -e "        ${TURQUOISE}║${END} Slot [2]                           : ${GREEN}${ram_slot_b} ${ram_size_b}         Speed: ${ram_speed_b} MT/s${END}║"
         echo -e "        ${TURQUOISE}╚════════════════════════════════════════════════════════════╝${END}"
 
-	#----------------------------------
-    echo -e "Brand:             $brand"
-    echo -e "Model:             $model"
-    echo -e "Part Number:       $part_number"
-    echo -e "Serial Number      $serial"
-    echo -e "Processor:         $cpu"
-    echo -e "${TURQUOISE}-------------------- MEMORY ---------------------${END}"
-    echo -e "RAM Total:  ${ram_gb} GB (${ram_type})"
-    echo -e "Slot 1: ${ram_slot_a} ${ram_size_a}         Speed: ${ram_speed_a} MT/s"
-    echo -e "Slot 2: ${ram_slot_b} ${ram_size_b}         Speed: ${ram_speed_b} MT/s"
+
     echo -e "${TURQUOISE}-------------------- Disks ----------------------${END}"
     echo "$disks"
-    echo -e "${TURQUOISE}=================================================${END}"
-    echo -e "${TURQUOISE}================ BATTERY INFO ===================${END}"
-    echo -e "Power Status: $bat_status"
-    echo -e "Battery Health: ${BLUE}${bat_health}${END}  ||   ${bat_message}    "
+
 
 }
 #Draw Title
