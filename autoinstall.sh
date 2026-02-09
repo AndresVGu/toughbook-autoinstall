@@ -303,14 +303,16 @@ collect_info(){
     bat_message=""
     
     if [ "$clean_value_int" -gt 85 ]; then
-        bat_message="✅${GREEN} Recomended for Amazon Orders ${END}"
+        bat_message="✅${GREEN} OK - Suitable for Amazon Orders ${END}"
     elif [ "$clean_value_int" -gt 80 ]; then
-        bat_message="✅${GREEN} Recomended for Shopify ${END}"
+        bat_message="✅${GREEN} OK - Suitable for Shopify ${END}"
     elif [ "$clean_value_int" -gt 1 ]; then
-        bat_message="⚠️${YELLOW} Battery Health lower than 80% ${END}" 
+        bat_message="⚠️${YELLOW} [!] Battery Health lower than 80% ${END}" 
     else
-        bat_message="❌${RED} No Battery Detected ${END}"
+        bat_message="❌${RED} [!] No Battery Detected ${END}"
     fi
+
+	bat_status_1=$(acpi -V 2>/dev/null | awk -F, '/Battery/{print $2; exit}' | xargs)
 
     #Information chart
 	if [[ $cpu =~ (i[0-9]-[0-9A-Z]+) ]]; then
@@ -332,9 +334,9 @@ collect_info(){
 	echo -e "        ${TURQUOISE}╔════════════════════════════════════════════════════════════╗${END}"
         echo -e "        ${TURQUOISE}║${END}                   BATTERY INFORMATION                      ${TURQUOISE}║${END}"
         echo -e "        ${TURQUOISE}║                                                            ║${END}"
-        echo -e "        ${TURQUOISE}║${END} Status                           : ${GREEN}$brand${END}║" 
-	echo -e "        ${TURQUOISE}║${END} Health                           : ${GREEN}$brand${END}║"
-	echo -e "        ${TURQUOISE}║${END} Recommendation                           : ${GREEN}$brand${END}║"
+        echo -e "        ${TURQUOISE}║${END} Status                           : ${GREEN}$bat_status_1${END}║" 
+	echo -e "        ${TURQUOISE}║${END} Health                           : ${GREEN}$bat_health${END}║"
+	echo -e "        ${TURQUOISE}║${END} Recommendation                           : ${GREEN}$bat_message${END}║"
 	echo -e "        ${TURQUOISE}╚════════════════════════════════════════════════════════════╝${END}"
 	
 	echo -e "        ${TURQUOISE}╔════════════════════════════════════════════════════════════╗${END}"
