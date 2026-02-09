@@ -315,9 +315,11 @@ collect_info(){
     #Information chart
 	echo -e "	${TURQUOISE}╔════════════════════════════════════════════════════════════╗${END}"
 	echo -e "	${TURQUOISE}║${END}                    SYSTEM INFORMATION                      ${TURQUOISE}║${END}"
-	echo -e "	${TURQUOISE}╚------------------------------------------------------------╝${END}"
-	#echo -e "	${TURQUOISE}╚════════════════════════════════════════════════════════════╝${END}"
 	echo -e "	${TURQUOISE}║${END} Brand                           : ${GREEN}$brand${END}                ${TURQUOISE}║${END}"
+	echo -e "	${TURQUOISE}║${END} Model                           : ${GREEN}$model${END}                ${TURQUOISE}║${END}"
+	echo -e "	${TURQUOISE}║${END} Part Number                     : ${GREEN}$part_number${END}                ${TURQUOISE}║${END}"
+	echo -e "	${TURQUOISE}║${END} Serial Number                   : ${GREEN}$serial${END}                ${TURQUOISE}║${END}"
+	echo -e "	${TURQUOISE}║${END} CPU                             : ${GREEN}$cpu${END}                ${TURQUOISE}║${END}"	
 	echo -e "	${TURQUOISE}╚════════════════════════════════════════════════════════════╝${END}"
     echo -e "Brand:             $brand"
     echo -e "Model:             $model"
