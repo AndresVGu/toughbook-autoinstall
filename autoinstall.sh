@@ -357,6 +357,7 @@ fi
 
 	echo -e "	${TURQUOISE}╔════════════════════════════════════════════════════════════╗${END}"
 	echo -e "	${TURQUOISE}║${END}                    SYSTEM INFORMATION                      ${TURQUOISE}║${END}"
+	printf "        ${TURQUOISE}║${END}%-18s %s\n" "Model:"			 "$model                                                           ${TURQUOISE}║${END}"
 	echo -e "        ${TURQUOISE}║                                                            ║${END}"
 	echo -e "	${TURQUOISE}║${END} Brand                           : ${GREEN}$brand${END}                ${TURQUOISE}║${END}"
 	echo -e "	${TURQUOISE}║${END} Model                           : ${GREEN}$model${END}                ${TURQUOISE}║${END}"
