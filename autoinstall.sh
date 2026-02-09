@@ -384,10 +384,10 @@ fi
 	echo -e "        ${TURQUOISE}╔════════════════════════════════════════════════════════════╗${END}"
         echo -e "        ${TURQUOISE}║${END}                   MEMORY INFORMATION                       ${TURQUOISE}║${END}"
         echo -e "        ${TURQUOISE}║                                                            ║${END}"
-        echo -e "        ${TURQUOISE}║${END} RAM Total                           : ${GREEN}$brand${END}║" 
-        echo -e "        ${TURQUOISE}║${END} RAM Type                           : ${GREEN}$brand${END}║"
-        echo -e "        ${TURQUOISE}║${END} Slot [1]                           : ${GREEN}$brand${END}║"
-	echo -e "        ${TURQUOISE}║${END} Slot [2]                           : ${GREEN}$brand${END}║"
+        echo -e "        ${TURQUOISE}║${END} RAM Total                           : ${GREEN}$ram_gb GB         ${END}║" 
+        echo -e "        ${TURQUOISE}║${END} RAM Type                           : ${GREEN}$ram_type${END}║"
+        echo -e "        ${TURQUOISE}║${END} Slot [1]                           : ${GREEN}${ram_slot_a} ${ram_size_a}         Speed: ${ram_speed_a} MT/s${END}║"
+	echo -e "        ${TURQUOISE}║${END} Slot [2]                           : ${GREEN}${ram_slot_b} ${ram_size_b}         Speed: ${ram_speed_b} MT/s${END}║"
         echo -e "        ${TURQUOISE}╚════════════════════════════════════════════════════════════╝${END}"
 
 	#----------------------------------
