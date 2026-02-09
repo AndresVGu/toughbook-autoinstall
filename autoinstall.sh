@@ -312,6 +312,40 @@ collect_info(){
         bat_message="❌${RED} [!] No Battery Detected ${END}"
     fi
 
+	# ===================== BATTERY =====================
+
+BAT_INFO=$(acpi -b 2>/dev/null)
+
+bat_present=false
+bat_state="Unknown"
+bat_percent="N/A"
+bat_charging_icon="❓"
+
+if [[ -n "$BAT_INFO" ]]; then
+    bat_present=true
+
+    # Estado: Charging / Discharging / Full
+    bat_state=$(echo "$BAT_INFO" | awk -F': ' '{print $2}' | awk -F',' '{print $1}')
+
+    # Porcentaje
+    bat_percent=$(echo "$BAT_INFO" | grep -o '[0-9]\+%' | tr -d '%')
+
+    case "$bat_state" in
+        Charging)
+            bat_charging_icon="🔌⚡"
+            ;;
+        Discharging)
+            bat_charging_icon="🔋"
+            ;;
+        Full)
+            bat_charging_icon="🔋✅"
+            ;;
+        *)
+            bat_charging_icon="❓"
+            ;;
+    esac
+fi
+
 	bat_status_1=$(acpi -V 2>/dev/null | awk -F, '/Battery/{print $2; exit}' | xargs)
 
     #Information chart
@@ -334,7 +368,7 @@ collect_info(){
 	echo -e "        ${TURQUOISE}╔════════════════════════════════════════════════════════════╗${END}"
         echo -e "        ${TURQUOISE}║${END}                   BATTERY INFORMATION                      ${TURQUOISE}║${END}"
         echo -e "        ${TURQUOISE}║                                                            ║${END}"
-        echo -e "        ${TURQUOISE}║${END} Status                           : ${GREEN}$bat_status_1${END}║" 
+        echo -e "        ${TURQUOISE}║${END} Status                           : ${GREEN}$bat_charging_icon  $bat_state${END}║" 
 	echo -e "        ${TURQUOISE}║${END} Health                           : ${GREEN}$bat_health${END}║"
 	echo -e "        ${TURQUOISE}║${END} Recommendation                           : ${GREEN}$bat_message${END}║"
 	echo -e "        ${TURQUOISE}╚════════════════════════════════════════════════════════════╝${END}"
