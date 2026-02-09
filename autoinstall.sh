@@ -368,9 +368,9 @@ fi
 	echo -e "        ${TURQUOISE}╔════════════════════════════════════════════════════════════╗${END}"
         echo -e "        ${TURQUOISE}║${END}                   BATTERY INFORMATION                      ${TURQUOISE}║${END}"
         echo -e "        ${TURQUOISE}║                                                            ║${END}"
-        echo -e "        ${TURQUOISE}║${END} Status                           : ${GREEN}$bat_charging_icon  $bat_state${END}    ║" 
-	echo -e "        ${TURQUOISE}║${END} Health                           : ${GREEN}$bat_health${END}      ║"
-	echo -e "        ${TURQUOISE}║${END} Recommendation                      : ${GREEN}$bat_message${END}║"
+        echo -e "        ${TURQUOISE}║${END} Status                           : ${GREEN}$bat_charging_icon  $bat_state${END}       ║" 
+	echo -e "        ${TURQUOISE}║${END} Health                           : ${GREEN}$bat_health${END}          ║"
+	echo -e "        ${TURQUOISE}║${END} Recommendation                   : ${GREEN}$bat_message${END}║"
 	echo -e "        ${TURQUOISE}╚════════════════════════════════════════════════════════════╝${END}"
 	
 	echo -e "        ${TURQUOISE}╔════════════════════════════════════════════════════════════╗${END}"
