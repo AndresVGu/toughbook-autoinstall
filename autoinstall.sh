@@ -381,18 +381,25 @@ fi
 	
 	    # 4️⃣ Imprimir variables
 	    for item in "${ITEMS[@]}"; do
-	        printf "${TURQUOISE} ║${END} %-${MAX_LEN}s ${TURQUOISE}║ ${END}\n" ${GREEN}"$item"${END}
+	        printf "${TURQUOISE} ║${END} %-${MAX_LEN}s ${TURQUOISE}║ ${END}\n" "$item"
 	    done
 	
 	    echo -e "${TURQUOISE} ╚${BORDER_LINE}╝ ${END}"
 	}
 
-	drawInfo_box "SYSTEM INFO" \
+	drawInfo_box "SYSTEM INFORMATION" \
 	  "Brand: $brand" \
 	  "Model: $model" \
 	  "Part Number: $part_number" \
 	  "Serial Number: $serial" \
 	  "CPU: $cpu_short"
+
+	batStatus="$bat_charging_icon ($bat_status_1) $bat_state"
+	drawInfo_box "BATTERY INFORMATION" \
+	  "Status: $batStatus" \
+	  "Health: $bat_health" \
+	  "Recommendation: $bat_message" 
+	
 
 	echo -e "	${TURQUOISE}╔════════════════════════════════════════════════════════════╗${END}"
 	echo -e "	${TURQUOISE}║${END}                    SYSTEM INFORMATION                      ${TURQUOISE}║${END}"
