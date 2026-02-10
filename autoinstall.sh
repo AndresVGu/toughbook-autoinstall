@@ -213,10 +213,10 @@ check_neofetch() {
 
 
 
-# ==================== Core Functions ====================
-########################################
-#  COLLECT INFO TEMPORARY
-################################
+# ==================== CORE FUNCTIONS ====================
+# +====================+
+# |	INFORMATION SYSTEM |
+# +====================+
 
 collect_info(){
  #brand & model
@@ -354,6 +354,45 @@ fi
     else
 	cpu_short=$cpu
     fi
+
+	drawInfo_box(){
+		local TITLE="$1"
+	    shift
+	    local ITEMS=("$@")
+	
+	    local BORDER_CHAR="*"
+	    local MAX_LEN=${#TITLE}
+	
+	    # 1️⃣ Calcular la longitud máxima del contenido
+	    for item in "${ITEMS[@]}"; do
+	        (( ${#item} > MAX_LEN )) && MAX_LEN=${#item}
+	    done
+	
+	    local BOX_WIDTH=$((MAX_LEN + 2))
+	
+	    # 2️⃣ Crear borde superior/inferior
+	    printf -v BORDER_LINE "%*s" "$BOX_WIDTH" ""
+	    BORDER_LINE="${BORDER_LINE// /$BORDER_CHAR}"
+	
+	    # 3️⃣ Dibujar caja
+	    echo -e "${TURQUOISE} ╔${BORDER_LINE}╗ ${END}"
+	    printf "${TURQUOISE} ║ %-${MAX_LEN}s ║ ${END}\n" "$TITLE"
+	    echo -e "${TURQUOISE} ╚${BORDER_LINE}╝ ${END}"
+	
+	    # 4️⃣ Imprimir variables
+	    for item in "${ITEMS[@]}"; do
+	        printf "${TURQUOISE} | %-${MAX_LEN}s | ${END}\n" "$item"
+	    done
+	
+	    echo -e "${TURQUOISE} +${BORDER_LINE}+ ${END}"
+	}
+
+	draw_box "SYSTEM INFO" \
+	  "Brand:$brand" \
+	  "Model:$model" \
+	  "Part Number:$part_number" \
+	  "Serial Number:$serial" \
+	  "CPU:$cpu_short"
 
 	echo -e "	${TURQUOISE}╔════════════════════════════════════════════════════════════╗${END}"
 	echo -e "	${TURQUOISE}║${END}                    SYSTEM INFORMATION                      ${TURQUOISE}║${END}"
