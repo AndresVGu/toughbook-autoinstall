@@ -360,7 +360,7 @@ fi
 	    shift
 	    local ITEMS=("$@")
 	
-	    local BORDER_CHAR="*"
+	    local BORDER_CHAR="═"
 	    local MAX_LEN=${#TITLE}
 	
 	    # 1️⃣ Calcular la longitud máxima del contenido
@@ -381,10 +381,10 @@ fi
 	
 	    # 4️⃣ Imprimir variables
 	    for item in "${ITEMS[@]}"; do
-	        printf "${TURQUOISE} | %-${MAX_LEN}s | ${END}\n" "$item"
+	        printf "${TURQUOISE} ║ %-${MAX_LEN}s ║ ${END}\n" "$item"
 	    done
 	
-	    echo -e "${TURQUOISE} +${BORDER_LINE}+ ${END}"
+	    echo -e "${TURQUOISE} ╚${BORDER_LINE}╝ ${END}"
 	}
 
 	drawInfo_box "SYSTEM INFO" \
