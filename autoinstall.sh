@@ -99,72 +99,18 @@ check_neofetch() {
 	
     
 
-    #--------
-    #PYTHON
-    #--------
-
-    #Confirm python3
-    if command -v python3 &> /dev/null; then
-        echo "[+] python3 already Installed."
-    else    
-        echo "[!] Installing python3 ..."
-        sudo apt install -y python3
-        
-    fi
-
-    #Confirm pip3
-    if command -v pip3 &> /dev/null; then
-        echo "[+] pip3 already Installed."
-    else    
-        echo "[!] Installing pip3 ..."
-        sudo apt install -y python3-pip
-    fi
+   
 
 #------
 #LibreOffice
 #------
-#Confirm python3
+
     if command -v libreoffice &> /dev/null; then
         echo "[+] LibreOffice already Installed."
     else    
         echo "[!] Installing Libreoffice ..."
         sudo snap install libreoffice
     fi
-
-#---------
-#-KeyTest-
-#---------
-    # Define la ruta completa de la carpeta Downloads
-    
-    USER_DIR=$SUDO_USER
-    DOWNLOADS_DIR="/home/$USER_DIR/Downloads"
-    # Define el nombre de la carpeta de destino que crea git clone
-    REPO_FOLDER="linux-keytest"
-    # Define la ruta completa donde se esperaría encontrar la carpeta
-    FULL_REPO_PATH="$DOWNLOADS_DIR/$REPO_FOLDER"
-    # Define la URL del repositorio
-    REPO_URL="https://github.com/AndresVGu/linux-keytest"
-
-    echo "🔎 Verifing repository in $DOWNLOADS_DIR"
-
-    # Verifica si la carpeta ya existe usando la ruta completa
-   if [ -d "$FULL_REPO_PATH" ]; then
-       echo "⚠️ **repository already on the system** (Directory $REPO_FOLDER already exist in $DOWNLOADS_DIR)"
-   else
-       echo "✅ Dierectory $REPO_FOLDER does not exist. Clonning in $DOWNLOADS_DIR..."
-    
-       # Clona el repositorio directamente en el directorio Downloads.
-       # El comando 'git clone' creará automáticamente la carpeta 'linux-keytest' dentro de $DOWNLOADS_DIR.
-       git clone "$REPO_URL" "$FULL_REPO_PATH"
-    
-       # Verifica si la clonación fue exitosa
-       if [ $? -eq 0 ]; then
-           echo "🎉 Repository has clonned succesfully $FULL_REPO_PATH"
-       else
-           echo "❌ ¡Error! Verify Internet connection and credentials"
-       fi
-    fi
-#--END
 
     
     echo -e "${YELLOW}[!] Collecting Device Information. ${END}"
@@ -302,9 +248,9 @@ collect_info(){
     bat_message=""
     
     if [ "$clean_value_int" -gt 85 ]; then
-        bat_message="✅ OK - Suitable for Amazon Orders"
+        bat_message="✅OK - Suitable for Amazon Orders"
     elif [ "$clean_value_int" -gt 80 ]; then
-        bat_message="✅ OK - Suitable for Shopify"
+        bat_message="✅OK - Suitable for Shopify"
     elif [ "$clean_value_int" -gt 1 ]; then
         bat_message="⚠️ Battery Health lower than 80%" 
     else
@@ -862,6 +808,63 @@ install_drivers() {
 #keytest
 #---------
 keyboard_test(){
+
+	 #--------
+    #PYTHON
+    #--------
+
+    #Confirm python3
+    if command -v python3 &> /dev/null; then
+        echo "[+] python3 already Installed."
+    else    
+        echo "[!] Installing python3 ..."
+        sudo apt install -y python3
+        
+    fi
+
+    #Confirm pip3
+    if command -v pip3 &> /dev/null; then
+        echo "[+] pip3 already Installed."
+    else    
+        echo "[!] Installing pip3 ..."
+        sudo apt install -y python3-pip
+    fi
+
+	#---------
+#-KeyTest-
+#---------
+    # Define la ruta completa de la carpeta Downloads
+    
+    USER_DIR=$SUDO_USER
+    DOWNLOADS_DIR="/home/$USER_DIR/Downloads"
+    # Define el nombre de la carpeta de destino que crea git clone
+    REPO_FOLDER="linux-keytest"
+    # Define la ruta completa donde se esperaría encontrar la carpeta
+    FULL_REPO_PATH="$DOWNLOADS_DIR/$REPO_FOLDER"
+    # Define la URL del repositorio
+    REPO_URL="https://github.com/AndresVGu/linux-keytest"
+
+    echo "🔎 Verifing repository in $DOWNLOADS_DIR"
+
+    # Verifica si la carpeta ya existe usando la ruta completa
+   if [ -d "$FULL_REPO_PATH" ]; then
+       echo "⚠️ **repository already on the system** (Directory $REPO_FOLDER already exist in $DOWNLOADS_DIR)"
+   else
+       echo "✅ Dierectory $REPO_FOLDER does not exist. Clonning in $DOWNLOADS_DIR..."
+    
+       # Clona el repositorio directamente en el directorio Downloads.
+       # El comando 'git clone' creará automáticamente la carpeta 'linux-keytest' dentro de $DOWNLOADS_DIR.
+       git clone "$REPO_URL" "$FULL_REPO_PATH"
+    
+       # Verifica si la clonación fue exitosa
+       if [ $? -eq 0 ]; then
+           echo "🎉 Repository has clonned succesfully $FULL_REPO_PATH"
+       else
+           echo "❌ ¡Error! Verify Internet connection and credentials"
+       fi
+    fi
+#--END
+	
 	echo -e "keyboard test"
 	sudo apt install dbus-x11 -y
 	echo "[!] Installing Tkinter ..."
