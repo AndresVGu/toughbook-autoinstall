@@ -248,9 +248,9 @@ collect_info(){
     bat_message=""
     
     if [ "$clean_value_int" -gt 85 ]; then
-        bat_message="✅OK - Suitable for Amazon Orders"
+        bat_message="✅ OK - Suitable for Amazon Orders"
     elif [ "$clean_value_int" -gt 80 ]; then
-        bat_message="✅OK - Suitable for Shopify"
+        bat_message="✅ OK - Suitable for Shopify"
     elif [ "$clean_value_int" -gt 1 ]; then
         bat_message="⚠️ Battery Health lower than 80%" 
     else
