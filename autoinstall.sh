@@ -236,6 +236,10 @@ collect_info(){
     #Disks
     disks=$(lsblk -d -o TYPE,SIZE,SERIAL | grep "disk")
     [ -z "$disks" ] && disks=$(echo "Empty")
+	
+	disk_info=($disks)
+	disk_serial=${disk_info[2]}
+	
  
     #Battery
     
@@ -456,15 +460,7 @@ spinner_stop OK
 
 
 	
-	echo -e "        ${TURQUOISE}╔════════════════════════════════════════════════════════════╗${END}"
-        echo -e "        ${TURQUOISE}║${END}                   STORAGE INFORMATION                      ${TURQUOISE}║${END}"
-        echo -e "        ${TURQUOISE}║                                                            ║${END}"
-        echo -e "        ${TURQUOISE}║${END} Device, Size, Serial, Model                           : ${GREEN}---${END}║" 
-        echo -e "        ${TURQUOISE}║${END} ---                           : ${GREEN}---${END}║"
-        echo -e "        ${TURQUOISE}║${END} ---                           : ${GREEN}---${END}║"
-        echo -e "        ${TURQUOISE}╚════════════════════════════════════════════════════════════╝${END}"       
-
-    echo -e "${TURQUOISE}-------------------- Disks ----------------------${END}"
+	
 	
     echo "$disks"
 
@@ -522,9 +518,9 @@ spinner_stop OK
 	
 	        local SERIAL MODEL
 	
-	        SERIAL=$(udevadm info --query=property --name="/dev/$dev" 2>/dev/null \
-	            | grep -E '^ID_SERIAL(_SHORT)?=' | head -n1 | cut -d= -f2)
-	
+	        #SERIAL=$(udevadm info --query=property --name="/dev/$dev" 2>/dev/null \
+	         #   | grep -E '^ID_SERIAL(_SHORT)?=' | head -n1 | cut -d= -f2)
+			SERIAL=$disk_serial
 	        MODEL=$(udevadm info --query=property --name="/dev/$dev" 2>/dev/null \
 	            | grep '^ID_MODEL=' | cut -d= -f2 | sed 's/_/ /g')
 	
