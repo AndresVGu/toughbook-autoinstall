@@ -135,31 +135,31 @@ collect_info(){
 
 	#Confirm dmidecode
     if command -v dmidecode &> /dev/null; then
-        echo "[+] dmidecode alredy Installed."
+        echo -e "${GREEN}[+] dmidecode alredy Installed.${END}"
     else
-        echo "[!] Installing dmindecode..."
+        echo -e "${YELLOW}[+] Installing dmindecode...${END}"
         sudo apt install dmidecode -y
     fi
 	#Confrim neofetch
 	if command -v neofetch &> /dev/null; then
-		echo "[+] Neofetch already Installed."
+		echo -e "${GREEN}[+] Neofetch already Installed.${END}"
 	else
-		echo "[!] Installing Neofetch..."
+		echo -e "${YELLOW}[+] Installing Neofetch...${END}"
 		sudo apt install neofetch -y
 	fi
     #Confirm net-tools
-    if command -v net-tools &> /dev/null; then
-        echo "[+] net-tools already Installed."
+    if command -v netstat &> /dev/null; then
+        echo -e "${GREEN}[+] net-tools already Installed.${END}"
     else
-        echo "[!] Installing net-tools"
+        echo -e "${YELLOW}[+] Installing net-tools...${END}"
         sudo apt install net-tools -y
         echo "export PATH=$PATH:/sbin" >> ~/.bashrc
     fi
     #Confirm acpi
     if command -v acpi &> /dev/null; then
-        echo "[+] acpi already Installed."
+        echo -e "${GREEN}[+] acpi already Installed.${END}"
     else    
-        echo "[!] Installing acpi ..."
+        echo -e "${YELLOW}[+] Installing acpi ...${END}"
         sudo apt install acpi -y
     fi
 
