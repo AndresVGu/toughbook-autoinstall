@@ -300,16 +300,50 @@ collect_info(){
 	cpu_short=$cpu
     fi
 
-	diagnostic_loader() {
-	    local msg="$1"
-	    local i
-	    echo -ne "${TURQUOISE}$msg${END} "
-	    for i in {1..3}; do
-	        echo -ne "${GREEN}●${END}"
-	        sleep 0.3
-	    done
-	    echo
-	}
+spinner_start() {
+    SPINNER_PID=""
+    local msg="$1"
+    local spin='|/-\'
+    local i=0
+
+    tput civis 2>/dev/null   # ocultar cursor
+
+    (
+        while true; do
+            i=$(( (i + 1) % 4 ))
+            printf "\r${TURQUOISE}%s ${GREEN}%c${END}" "$msg" "${spin:$i:1}"
+            sleep 0.1
+        done
+    ) &
+
+    SPINNER_PID=$!
+}
+
+spinner_stop() {
+    local status="$1"  # OK / FAIL / WARN
+    kill "$SPINNER_PID" 2>/dev/null
+    wait "$SPINNER_PID" 2>/dev/null
+
+    printf "\r\033[K"
+
+    case "$status" in
+        OK)
+            printf "${GREEN}✔ %s${END}\n" "Done"
+            ;;
+        WARN)
+            printf "${YELLOW}⚠ %s${END}\n" "Warning"
+            ;;
+        FAIL)
+            printf "${RED}✖ %s${END}\n" "Failed"
+            ;;
+        *)
+            echo
+            ;;
+    esac
+
+    tput cnorm 2>/dev/null  # mostrar cursor
+}
+
 	
 
 	drawInfo_box() {
@@ -395,6 +429,9 @@ collect_info(){
 }
 
 
+spinner_start "Collecting system information"
+sleep 2   # aquí va tu lógica real
+spinner_stop OK
 
 	drawInfo_box "SYSTEM INFORMATION" \
 	  "Brand: $brand" \
@@ -404,7 +441,7 @@ collect_info(){
 	  "CPU: $cpu_short"
 
 	batStatus="$bat_charging_icon ($bat_status_1) $bat_state"
-	diagnostic_loader "Checking battery health"
+	
 	drawInfo_box "BATTERY INFORMATION" \
 	  "Status:    $batStatus" \
 	  "Health: $bat_health" \
