@@ -387,7 +387,7 @@ fi
 	    echo -e "${TURQUOISE} +${BORDER_LINE}+ ${END}"
 	}
 
-	draw_box "SYSTEM INFO" \
+	drawInfo_box "SYSTEM INFO" \
 	  "Brand:$brand" \
 	  "Model:$model" \
 	  "Part Number:$part_number" \
