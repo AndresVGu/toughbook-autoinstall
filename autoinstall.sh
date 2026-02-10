@@ -403,8 +403,8 @@ fi
 	drawInfo_box "MEMORY INFORMATION" \
 	  "RAM Total: $ram_gb GB" \
 	  "RAM Type: $ram_type" \
-	  "Slot [1]: ${ram_slot_a} ${ram_size_a}"\
-	  "Slot [2]: ${ram_slot_b} ${ram_size_b}"
+	  "Slot [1]: ${ram_size_a}"\
+	  "Slot [2]: ${ram_size_b}"
 	
 
 
@@ -416,16 +416,6 @@ fi
         echo -e "        ${TURQUOISE}║${END} ---                           : ${GREEN}---${END}║"
         echo -e "        ${TURQUOISE}║${END} ---                           : ${GREEN}---${END}║"
         echo -e "        ${TURQUOISE}╚════════════════════════════════════════════════════════════╝${END}"       
-
-	echo -e "        ${TURQUOISE}╔════════════════════════════════════════════════════════════╗${END}"
-        echo -e "        ${TURQUOISE}║${END}                   MEMORY INFORMATION                       ${TURQUOISE}║${END}"
-        echo -e "        ${TURQUOISE}║                                                            ║${END}"
-        echo -e "        ${TURQUOISE}║${END} RAM Total                           : ${GREEN}$ram_gb GB         ${END}║" 
-        echo -e "        ${TURQUOISE}║${END} RAM Type                           : ${GREEN}$ram_type${END}║"
-        echo -e "        ${TURQUOISE}║${END} Slot [1]                           : ${GREEN}${ram_slot_a} ${ram_size_a}         Speed: ${ram_speed_a} MT/s${END}║"
-	echo -e "        ${TURQUOISE}║${END} Slot [2]                           : ${GREEN}${ram_slot_b} ${ram_size_b}         Speed: ${ram_speed_b} MT/s${END}║"
-        echo -e "        ${TURQUOISE}╚════════════════════════════════════════════════════════════╝${END}"
-
 
     echo -e "${TURQUOISE}-------------------- Disks ----------------------${END}"
     echo "$disks"
