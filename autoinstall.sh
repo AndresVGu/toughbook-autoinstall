@@ -277,17 +277,16 @@ collect_info(){
 	
 	    case "$bat_state" in
 	        Charging)
-	            bat_charging_icon="\xe2\x9a\xa1"
+	            bat_charging_icon="[⚡]"
 	            ;;
 	        Discharging)
-				test=$(echo -e "\xf0\x9f\x94\x8b")
-	            bat_charging_icon="$test"
+	            bat_charging_icon="[!]"
 	            ;;
 	        Full)
-	            bat_charging_icon="\xe2\x9c\x94"
+	            bat_charging_icon="[√]"
 	            ;;
 	        *)
-	            bat_charging_icon="\xe2\x9d\x8c"
+	            bat_charging_icon="[X]"
 	            ;;
 	    esac
 	fi
