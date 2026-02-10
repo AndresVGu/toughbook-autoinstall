@@ -315,11 +315,11 @@ collect_info(){
 	
 	        local SERIAL MODEL
 	
-	        #SERIAL=$(udevadm info --query=property --name="/dev/$dev" 2>/dev/null \
-	         #   | grep -E '^ID_SERIAL(_SHORT)?=' | head -n1 | cut -d= -f2)
-			SERIAL=$disk_serial
+	        SERIAL=$(udevadm info --query=property --name="/dev/$dev" 2>/dev/null \
+	            | grep '^ID_SERIAL_SHORT=' | sed 's/^ID_SERIAL_SHORT=\([^_]*\).*/\1/')
+			#SERIAL=$disk_serial
 	        MODEL=$(udevadm info --query=property --name="/dev/$dev" 2>/dev/null \
-	            | grep '^ID_MODEL=' | cut -d= -f2 | sed 's/_/ /g')
+	            | grep '^ID_MODEL=' | sed 's/^ID_MODEL=\([^_]*\).*/\1/')
 	
 	        SERIAL=${SERIAL:-N/A}
 	        MODEL=${MODEL:-Unknown}
