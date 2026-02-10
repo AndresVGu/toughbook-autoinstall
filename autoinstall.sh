@@ -381,7 +381,7 @@ fi
 	
 	    # 4️⃣ Imprimir variables
 	    for item in "${ITEMS[@]}"; do
-	        printf "${TURQUOISE} ║${END} %-${MAX_LEN}s ${TURQUOISE}║ ${END}\n" "${GREEN}$item${END}"
+	        printf "${TURQUOISE} ║${END} %-${MAX_LEN}s ${TURQUOISE}║ ${END}\n" ${GREEN}"$item"${END}
 	    done
 	
 	    echo -e "${TURQUOISE} ╚${BORDER_LINE}╝ ${END}"
