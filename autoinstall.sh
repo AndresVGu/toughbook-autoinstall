@@ -379,7 +379,7 @@ collect_info(){
 
 	batStatus="$bat_charging_icon ($bat_status_1) $bat_state"
 	drawInfo_box "BATTERY INFORMATION" \
-	  "Status: $batStatus" \
+	  "Status:    $batStatus" \
 	  "Health: $bat_health" \
 	  "Recommendation: $bat_message" 
 
