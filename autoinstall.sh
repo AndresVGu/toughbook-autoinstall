@@ -280,7 +280,8 @@ collect_info(){
 	            bat_charging_icon="\xe2\x9a\xa1"
 	            ;;
 	        Discharging)
-	            bat_charging_icon="\xf0\x9f\x94\x8b"
+				test=$(echo -e "\xf0\x9f\x94\x8b")
+	            bat_charging_icon="$test"
 	            ;;
 	        Full)
 	            bat_charging_icon="\xe2\x9c\x94"
