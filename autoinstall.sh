@@ -376,19 +376,19 @@ fi
 	
 	    # 3️⃣ Dibujar caja
 	    echo -e "${TURQUOISE} ╔${BORDER_LINE}╗ ${END}"
-	    printf "${TURQUOISE} ║ %-${MAX_LEN}s ║ ${END}\n" "$TITLE"
+	    printf "${TURQUOISE} ║${END} %-${MAX_LEN}s ${TURQUOISE}║ ${END}\n" "$TITLE"
 	    echo -e "${TURQUOISE} ╚${BORDER_LINE}╝ ${END}"
 	
 	    # 4️⃣ Imprimir variables
 	    for item in "${ITEMS[@]}"; do
-	        printf "${TURQUOISE} ║${END} %-${MAX_LEN}s ${TURQUOISE}║ ${END}\n" "$item"
+	        printf "${TURQUOISE} ║${END} %-${MAX_LEN}s ${TURQUOISE}║ ${END}\n" "${GREEN}$item${END}"
 	    done
 	
 	    echo -e "${TURQUOISE} ╚${BORDER_LINE}╝ ${END}"
 	}
 
 	drawInfo_box "SYSTEM INFO" \
-	  "Brand: ${GREEN}$brand${END}" \
+	  "Brand: $brand" \
 	  "Model: $model" \
 	  "Part Number: $part_number" \
 	  "Serial Number: $serial" \
