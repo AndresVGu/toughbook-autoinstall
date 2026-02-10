@@ -1415,6 +1415,7 @@ g1_main_menu() {
 		echo -e "[2] 🩺 Hardware Detection"
         echo -e "[3] ⚙️  Update Device"
 		echo -e "[4] 🔊 Sound Activation"
+		echo -e "[5] Disk Resize"
 		echo -e "⚠️ ${YELLOW}For SYSPREP use Prepare For Shipping To End User located on the Desktop${END} ⚠️"
         echo -e "[q|Q] ↩️  Exit"
         read -rp "Select an option: " choice
@@ -1441,6 +1442,14 @@ g1_main_menu() {
                 ;;
 			4)
 				install_sound_autostart
+				;;
+
+			5)
+				sudo apt install -y cloud-guest-utils
+				sudo growpart /dev/sda 5
+				sudo resize2fs /dev/sda5
+
+				echo -e "${GREEN}[+] Resize successful.${END}"
 				;;
             [qQ])
                 echo -e "${RED}[*] Closing script...${END}"
