@@ -96,44 +96,7 @@ check_neofetch() {
     	sudo apt-get upgrade -y
 	fi
     
-	#Confirm dmidecode
-    if command -v dmidecode &> /dev/null; then
-        echo "[+] dmidecode alredy Installed."
-    else
-        echo "[!] Installing dmindecode..."
-        sudo apt install dmidecode -y
-    fi
-
-    
-
-	if command -v neofetch &> /dev/null; then
-		echo "[+] Neofetch already Installed."
-	else
-		echo "[!] Installing Neofetch..."
-		sudo apt install neofetch -y
-	fi
-
 	
-    #---------
-    #nettools
-    #---------
-    #Confirm net-tools
-    if command -v net-tools &> /dev/null; then
-        echo "[+] net-tools already Installed."
-    else
-        echo "[!] Installing net-tools"
-        sudo apt install net-tools -y
-        echo "export PATH=$PATH:/sbin" >> ~/.bashrc
-    fi
-
-    #Confirm acpi
-    if command -v acpi &> /dev/null; then
-        echo "[+] acpi already Installed."
-    else    
-        echo "[!] Installing acpi ..."
-        sudo apt install acpi -y
-    fi
-
     
 
     #--------
@@ -219,7 +182,44 @@ check_neofetch() {
 # +====================+
 
 collect_info(){
- #brand & model
+
+	# +=======================+
+	# | CHECKING DEPENDENCIES |
+	# +=======================+
+
+	#Confirm dmidecode
+    if command -v dmidecode &> /dev/null; then
+        echo "[+] dmidecode alredy Installed."
+    else
+        echo "[!] Installing dmindecode..."
+        sudo apt install dmidecode -y
+    fi
+	#Confrim neofetch
+	if command -v neofetch &> /dev/null; then
+		echo "[+] Neofetch already Installed."
+	else
+		echo "[!] Installing Neofetch..."
+		sudo apt install neofetch -y
+	fi
+    #Confirm net-tools
+    if command -v net-tools &> /dev/null; then
+        echo "[+] net-tools already Installed."
+    else
+        echo "[!] Installing net-tools"
+        sudo apt install net-tools -y
+        echo "export PATH=$PATH:/sbin" >> ~/.bashrc
+    fi
+    #Confirm acpi
+    if command -v acpi &> /dev/null; then
+        echo "[+] acpi already Installed."
+    else    
+        echo "[!] Installing acpi ..."
+        sudo apt install acpi -y
+    fi
+
+ 	# +========================+
+	# | RETRIEVING INFORMATION |
+	# +========================+
     brand=$(sudo dmidecode -s system-manufacturer | awk '{print $1}' 2>/dev/null)
     model=$(sudo dmidecode -s system-product-name | sed -r 's/([A-Z]{2})([0-9]{2})-([0-9])/\1-\2 MK\3/' 2>/dev/null)
 
@@ -259,7 +259,6 @@ collect_info(){
         	;;
 	esac
 	
-
     #hours
     hours=$(sudo dmidecode -t 22 2>/dev/null | grep "Hours" | awk '{print $2}')
     [ -z "$hours" ] && hours=$(uptime -p)
@@ -314,37 +313,37 @@ collect_info(){
 
 	# ===================== BATTERY =====================
 
-BAT_INFO=$(acpi -b 2>/dev/null)
+	BAT_INFO=$(acpi -b 2>/dev/null)
+	
+	bat_present=false
+	bat_state="Unknown"
+	bat_percent="N/A"
+	bat_charging_icon="❓"
 
-bat_present=false
-bat_state="Unknown"
-bat_percent="N/A"
-bat_charging_icon="❓"
-
-if [[ -n "$BAT_INFO" ]]; then
-    bat_present=true
-
-    # Estado: Charging / Discharging / Full
-    bat_state=$(echo "$BAT_INFO" | awk -F': ' '{print $2}' | awk -F',' '{print $1}')
-
-    # Porcentaje
-    bat_percent=$(echo "$BAT_INFO" | grep -o '[0-9]\+%' | tr -d '%')
-
-    case "$bat_state" in
-        Charging)
-            bat_charging_icon="🔌⚡"
-            ;;
-        Discharging)
-            bat_charging_icon="🔋"
-            ;;
-        Full)
-            bat_charging_icon="🔋✅"
-            ;;
-        *)
-            bat_charging_icon="❓"
-            ;;
-    esac
-fi
+	if [[ -n "$BAT_INFO" ]]; then
+	    bat_present=true
+	
+	    # Estado: Charging / Discharging / Full
+	    bat_state=$(echo "$BAT_INFO" | awk -F': ' '{print $2}' | awk -F',' '{print $1}')
+	
+	    # Porcentaje
+	    bat_percent=$(echo "$BAT_INFO" | grep -o '[0-9]\+%' | tr -d '%')
+	
+	    case "$bat_state" in
+	        Charging)
+	            bat_charging_icon="🔌⚡"
+	            ;;
+	        Discharging)
+	            bat_charging_icon="🔋"
+	            ;;
+	        Full)
+	            bat_charging_icon="🔋✅"
+	            ;;
+	        *)
+	            bat_charging_icon="❓"
+	            ;;
+	    esac
+	fi
 
 	bat_status_1=$(acpi -V 2>/dev/null | awk -F, '/Battery/{print $2; exit}' | xargs)
 
@@ -422,6 +421,9 @@ fi
 
 
 }
+#END OF COLLECTING INFO
+
+
 #Draw Title
 draw_box(){
 
