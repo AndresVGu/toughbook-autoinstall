@@ -381,14 +381,14 @@ fi
 	
 	    # 4️⃣ Imprimir variables
 	    for item in "${ITEMS[@]}"; do
-	        printf "${TURQUOISE} ║ %-${MAX_LEN}s ║ ${END}\n" "$item"
+	        printf "${TURQUOISE} ║${END} %-${MAX_LEN}s ${TURQUOISE}║ ${END}\n" "$item"
 	    done
 	
 	    echo -e "${TURQUOISE} ╚${BORDER_LINE}╝ ${END}"
 	}
 
 	drawInfo_box "SYSTEM INFO" \
-	  "Brand:		$brand" \
+	  "Brand:$brand" \
 	  "Model:$model" \
 	  "Part Number:$part_number" \
 	  "Serial Number:$serial" \
