@@ -388,7 +388,7 @@ fi
 	}
 
 	drawInfo_box "SYSTEM INFO" \
-	  "Brand:$brand" \
+	  "Brand:		$brand" \
 	  "Model:$model" \
 	  "Part Number:$part_number" \
 	  "Serial Number:$serial" \
