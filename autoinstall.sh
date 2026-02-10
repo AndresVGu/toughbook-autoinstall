@@ -388,11 +388,11 @@ fi
 	}
 
 	drawInfo_box "SYSTEM INFO" \
-	  "Brand:$brand" \
-	  "Model:$model" \
-	  "Part Number:$part_number" \
-	  "Serial Number:$serial" \
-	  "CPU:$cpu_short"
+	  "Brand: ${GREEN}$brand${END}" \
+	  "Model: $model" \
+	  "Part Number: $part_number" \
+	  "Serial Number: $serial" \
+	  "CPU: $cpu_short"
 
 	echo -e "	${TURQUOISE}╔════════════════════════════════════════════════════════════╗${END}"
 	echo -e "	${TURQUOISE}║${END}                    SYSTEM INFORMATION                      ${TURQUOISE}║${END}"
