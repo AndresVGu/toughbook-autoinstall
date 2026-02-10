@@ -248,13 +248,13 @@ collect_info(){
     bat_message=""
     
     if [ "$clean_value_int" -gt 85 ]; then
-        bat_message="✅ OK - Suitable for Amazon"
+        bat_message=" OK - Suitable for Amazon"
     elif [ "$clean_value_int" -gt 80 ]; then
-        bat_message="✅ OK - Suitable for Shopify"
+        bat_message=" OK - Suitable for Shopify"
     elif [ "$clean_value_int" -gt 1 ]; then
-        bat_message="⚠️ Battery Health lower than 80%" 
+        bat_message="[!] Battery Health lower than 80%" 
     else
-        bat_message="❌ No Battery Detected "
+        bat_message="[X] No Battery Detected "
     fi
 
 	# ===================== BATTERY =====================
@@ -264,7 +264,7 @@ collect_info(){
 	bat_present=false
 	bat_state="Unknown"
 	bat_percent="N/A"
-	bat_charging_icon="❓"
+	bat_charging_icon="[X]"
 
 	if [[ -n "$BAT_INFO" ]]; then
 	    bat_present=true
@@ -277,16 +277,16 @@ collect_info(){
 	
 	    case "$bat_state" in
 	        Charging)
-	            bat_charging_icon="🔌⚡"
+	            bat_charging_icon="[\xe2\x9a\xa1]"
 	            ;;
 	        Discharging)
-	            bat_charging_icon="🔋"
+	            bat_charging_icon="[\xf0\x9f\x94\x8b]"
 	            ;;
 	        Full)
-	            bat_charging_icon="🔋✅"
+	            bat_charging_icon="[\xe2\x9c\x94]"
 	            ;;
 	        *)
-	            bat_charging_icon="❓"
+	            bat_charging_icon="\xe2\x9d\x8c"
 	            ;;
 	    esac
 	fi
