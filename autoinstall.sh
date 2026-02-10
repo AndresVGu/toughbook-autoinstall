@@ -300,6 +300,18 @@ collect_info(){
 	cpu_short=$cpu
     fi
 
+	diagnostic_loader() {
+	    local msg="$1"
+	    local i
+	    echo -ne "${TURQUOISE}$msg${END} "
+	    for i in {1..3}; do
+	        echo -ne "${GREEN}●${END}"
+	        sleep 0.3
+	    done
+	    echo
+	}
+	
+
 	drawInfo_box() {
 
     local TITLE="$1"
@@ -307,67 +319,81 @@ collect_info(){
     local ITEMS=("$@")
 
     local BORDER_CHAR="═"
-    local MAX_LABEL=0
-    local MAX_VALUE=0
+    local TERM_WIDTH
+    TERM_WIDTH=$(tput cols 2>/dev/null || echo 80)
 
-    # 1️⃣ Medir tamaños
+    local SAFE_MARGIN=6
+    local MAX_BOX_WIDTH=$((TERM_WIDTH - SAFE_MARGIN))
+
+    local MAX_LABEL=0
+
+    # 1️⃣ medir labels
     for item in "${ITEMS[@]}"; do
         local label="${item%%:*}"
-        local value="${item#*:}"
-        value="${value# }"
-
         (( ${#label} > MAX_LABEL )) && MAX_LABEL=${#label}
-        (( ${#value} > MAX_VALUE )) && MAX_VALUE=${#value}
     done
 
-    # Limitar ancho máximo del VALUE (clave para evitar roturas)
-    local MAX_VALUE_WIDTH=40
-    (( MAX_VALUE < MAX_VALUE_WIDTH )) && MAX_VALUE_WIDTH=$MAX_VALUE
+    local VALUE_WIDTH=$((MAX_BOX_WIDTH - MAX_LABEL - 5))
+    (( VALUE_WIDTH < 20 )) && VALUE_WIDTH=20
 
-    local CONTENT_WIDTH=$((MAX_LABEL + 3 + MAX_VALUE_WIDTH))
-    local TITLE_LEN=${#TITLE}
-    (( TITLE_LEN > CONTENT_WIDTH )) && CONTENT_WIDTH=$TITLE_LEN
-
+    local CONTENT_WIDTH=$((MAX_LABEL + 3 + VALUE_WIDTH))
     local BOX_WIDTH=$((CONTENT_WIDTH + 2))
 
-    # 2️⃣ Bordes
+    # 2️⃣ bordes
     printf -v BORDER_LINE "%*s" "$BOX_WIDTH" ""
     BORDER_LINE="${BORDER_LINE// /$BORDER_CHAR}"
 
-    # 3️⃣ Centrar título
+    # 3️⃣ centrar título
+    local TITLE_LEN=${#TITLE}
     local LP=$(( (CONTENT_WIDTH - TITLE_LEN) / 2 ))
     local RP=$(( CONTENT_WIDTH - TITLE_LEN - LP ))
     printf -v LSP "%*s" "$LP" ""
     printf -v RSP "%*s" "$RP" ""
 
+    # 4️⃣ dibujar encabezado
     echo -e "${TURQUOISE}╔${BORDER_LINE}╗${END}"
     echo -e "${TURQUOISE}║${END} ${LSP}${TITLE}${RSP} ${TURQUOISE}║${END}"
     echo -e "${TURQUOISE}╠${BORDER_LINE}╣${END}"
 
-    # 4️⃣ Imprimir items con wrap
+    # 5️⃣ items con WRAP POR PALABRAS
     for item in "${ITEMS[@]}"; do
         local label="${item%%:*}"
         local value="${item#*:}"
         value="${value# }"
 
-        # dividir value en chunks
-        while [ -n "$value" ]; do
-            local chunk="${value:0:$MAX_VALUE_WIDTH}"
-            value="${value:$MAX_VALUE_WIDTH}"
+        local first_line=1
+        local line=""
 
-            if [ "$chunk" != "" ]; then
-                printf "${TURQUOISE}║${END} %-*s ${TURQUOISE}:${END} ${GREEN}%-*s${END} ${TURQUOISE}║${END}\n" \
-                    "$MAX_LABEL" "$label" \
-                    "$MAX_VALUE_WIDTH" "$chunk"
-
-                # solo mostrar label una vez
-                label="$(printf '%*s' "$MAX_LABEL" "")"
+        for word in $value; do
+            if (( ${#line} + ${#word} + 1 > VALUE_WIDTH )); then
+                if (( first_line )); then
+                    printf "${TURQUOISE}║${END} %-*s ${TURQUOISE}:${END} ${GREEN}%-*s${END} ${TURQUOISE}║${END}\n" \
+                        "$MAX_LABEL" "$label" "$VALUE_WIDTH" "$line"
+                    first_line=0
+                    label="$(printf '%*s' "$MAX_LABEL" "")"
+                else
+                    printf "${TURQUOISE}║${END} %-*s ${TURQUOISE} ${END} ${GREEN}%-*s${END} ${TURQUOISE}║${END}\n" \
+                        "$MAX_LABEL" "$label" "$VALUE_WIDTH" "$line"
+                fi
+                line="$word"
+            else
+                line="${line:+$line }$word"
             fi
         done
+
+        # última línea
+        if (( first_line )); then
+            printf "${TURQUOISE}║${END} %-*s ${TURQUOISE}:${END} ${GREEN}%-*s${END} ${TURQUOISE}║${END}\n" \
+                "$MAX_LABEL" "$label" "$VALUE_WIDTH" "$line"
+        else
+            printf "${TURQUOISE}║${END} %-*s ${TURQUOISE} ${END} ${GREEN}%-*s${END} ${TURQUOISE}║${END}\n" \
+                "$MAX_LABEL" "$label" "$VALUE_WIDTH" "$line"
+        fi
     done
 
     echo -e "${TURQUOISE}╚${BORDER_LINE}╝${END}"
 }
+
 
 
 	drawInfo_box "SYSTEM INFORMATION" \
@@ -378,6 +404,7 @@ collect_info(){
 	  "CPU: $cpu_short"
 
 	batStatus="$bat_charging_icon ($bat_status_1) $bat_state"
+	diagnostic_loader "Checking battery health"
 	drawInfo_box "BATTERY INFORMATION" \
 	  "Status:    $batStatus" \
 	  "Health: $bat_health" \
