@@ -256,11 +256,86 @@ collect_info(){
     elif [ "$clean_value_int" -gt 80 ]; then
         bat_message=" OK - Suitable for Shopify"
     elif [ "$clean_value_int" -gt 1 ]; then
-        bat_message="[!] lower than 80% - Suitable for not guaranted battery orders" 
+        bat_message="[!] Lower than 80% - Suitable for orders without guaranteed battery life." 
     else
         bat_message="[X] No Battery Detected "
     fi
+	###################disk
+	drawStorage_info() {
+	
+	    local TITLE="STORAGE INFORMATION"
+	    local BORDER_CHAR="═"
+	
+	    local TERM_WIDTH
+	    TERM_WIDTH=$(tput cols 2>/dev/null || echo 80)
+	    local SAFE_MARGIN=6
+	    local MAX_BOX_WIDTH=$((TERM_WIDTH - SAFE_MARGIN))
+	
+	    # Column headers
+	    local HEADERS=("Device" "Size" "Serial" "Model")
+	    local COL_WIDTHS=(10 10 20 30)
+	
+	    # Ajustar ancho si el terminal es pequeño
+	    local TOTAL_COL_WIDTH=$((COL_WIDTHS[0]+COL_WIDTHS[1]+COL_WIDTHS[2]+COL_WIDTHS[3]+5))
+	    if (( TOTAL_COL_WIDTH > MAX_BOX_WIDTH )); then
+	        COL_WIDTHS[3]=$((MAX_BOX_WIDTH - (COL_WIDTHS[0]+COL_WIDTHS[1]+COL_WIDTHS[2]+5)))
+	        (( COL_WIDTHS[3] < 15 )) && COL_WIDTHS[3]=15
+	    fi
+	
+	    local CONTENT_WIDTH=$((COL_WIDTHS[0]+COL_WIDTHS[1]+COL_WIDTHS[2]+COL_WIDTHS[3]+5))
+	    local BOX_WIDTH=$((CONTENT_WIDTH + 2))
+	
+	    # Borde
+	    printf -v BORDER_LINE "%*s" "$BOX_WIDTH" ""
+	    BORDER_LINE="${BORDER_LINE// /$BORDER_CHAR}"
+	
+	    # Centrar título
+	    local TITLE_LEN=${#TITLE}
+	    local LP=$(( (CONTENT_WIDTH - TITLE_LEN) / 2 ))
+	    local RP=$(( CONTENT_WIDTH - TITLE_LEN - LP ))
+	    printf -v LSP "%*s" "$LP" ""
+	    printf -v RSP "%*s" "$RP" ""
+	
+	    # Encabezado
+	    echo -e "${TURQUOISE}╔${BORDER_LINE}╗${END}"
+	    echo -e "${TURQUOISE}║${END} ${LSP}${TITLE}${RSP} ${TURQUOISE}║${END}"
+	    echo -e "${TURQUOISE}╠${BORDER_LINE}╣${END}"
+	
+	    # Header row
+	    printf "${TURQUOISE}║${END} %-*s %-*s %-*s %-*s ${TURQUOISE}║${END}\n" \
+	        "${COL_WIDTHS[0]}" "${HEADERS[0]}" \
+	        "${COL_WIDTHS[1]}" "${HEADERS[1]}" \
+	        "${COL_WIDTHS[2]}" "${HEADERS[2]}" \
+	        "${COL_WIDTHS[3]}" "${HEADERS[3]}"
+	
+	    echo -e "${TURQUOISE}╠${BORDER_LINE}╣${END}"
+	
+	    # Detectar discos físicos (no particiones)
+	    lsblk -d -n -o NAME,SIZE,TYPE | awk '$3=="disk"{print $1,$2}' | while read -r dev size; do
+	
+	        local SERIAL MODEL
+	
+	        #SERIAL=$(udevadm info --query=property --name="/dev/$dev" 2>/dev/null \
+	         #   | grep -E '^ID_SERIAL(_SHORT)?=' | head -n1 | cut -d= -f2)
+			SERIAL=$disk_serial
+	        MODEL=$(udevadm info --query=property --name="/dev/$dev" 2>/dev/null \
+	            | grep '^ID_MODEL=' | cut -d= -f2 | sed 's/_/ /g')
+	
+	        SERIAL=${SERIAL:-N/A}
+	        MODEL=${MODEL:-Unknown}
+	
+	        printf "${TURQUOISE}║${END} %-*s %-*s %-*s %-*s ${TURQUOISE}║${END}\n" \
+	            "${COL_WIDTHS[0]}" "/dev/$dev" \
+	            "${COL_WIDTHS[1]}" "$size" \
+	            "${COL_WIDTHS[2]}" "$SERIAL" \
+	            "${COL_WIDTHS[3]}" "$MODEL"
+	    done
+	
+	    echo -e "${TURQUOISE}╚${BORDER_LINE}╝${END}"
+	}
 
+
+	###############end disk
 	# ===================== BATTERY =====================
 
 	BAT_INFO=$(acpi -b 2>/dev/null)
@@ -451,94 +526,13 @@ spinner_stop OK
 	  "Health: $bat_health" \
 	  "Recommendation: $bat_message" 
 
+	drawStorage_info
+
 	drawInfo_box "MEMORY INFORMATION" \
 	  "RAM Total: $ram_gb GB" \
 	  "RAM Type: $ram_type" \
 	  "Slot [1]: ${ram_size_a}"\
 	  "Slot [2]: ${ram_size_b}"
-	
-
-
-	
-	
-	
-    echo "$disks"
-
-		drawStorage_info() {
-	
-	    local TITLE="STORAGE INFORMATION"
-	    local BORDER_CHAR="═"
-	
-	    local TERM_WIDTH
-	    TERM_WIDTH=$(tput cols 2>/dev/null || echo 80)
-	    local SAFE_MARGIN=6
-	    local MAX_BOX_WIDTH=$((TERM_WIDTH - SAFE_MARGIN))
-	
-	    # Column headers
-	    local HEADERS=("Device" "Size" "Serial" "Model")
-	    local COL_WIDTHS=(10 10 20 30)
-	
-	    # Ajustar ancho si el terminal es pequeño
-	    local TOTAL_COL_WIDTH=$((COL_WIDTHS[0]+COL_WIDTHS[1]+COL_WIDTHS[2]+COL_WIDTHS[3]+5))
-	    if (( TOTAL_COL_WIDTH > MAX_BOX_WIDTH )); then
-	        COL_WIDTHS[3]=$((MAX_BOX_WIDTH - (COL_WIDTHS[0]+COL_WIDTHS[1]+COL_WIDTHS[2]+5)))
-	        (( COL_WIDTHS[3] < 15 )) && COL_WIDTHS[3]=15
-	    fi
-	
-	    local CONTENT_WIDTH=$((COL_WIDTHS[0]+COL_WIDTHS[1]+COL_WIDTHS[2]+COL_WIDTHS[3]+5))
-	    local BOX_WIDTH=$((CONTENT_WIDTH + 2))
-	
-	    # Borde
-	    printf -v BORDER_LINE "%*s" "$BOX_WIDTH" ""
-	    BORDER_LINE="${BORDER_LINE// /$BORDER_CHAR}"
-	
-	    # Centrar título
-	    local TITLE_LEN=${#TITLE}
-	    local LP=$(( (CONTENT_WIDTH - TITLE_LEN) / 2 ))
-	    local RP=$(( CONTENT_WIDTH - TITLE_LEN - LP ))
-	    printf -v LSP "%*s" "$LP" ""
-	    printf -v RSP "%*s" "$RP" ""
-	
-	    # Encabezado
-	    echo -e "${TURQUOISE}╔${BORDER_LINE}╗${END}"
-	    echo -e "${TURQUOISE}║${END} ${LSP}${TITLE}${RSP} ${TURQUOISE}║${END}"
-	    echo -e "${TURQUOISE}╠${BORDER_LINE}╣${END}"
-	
-	    # Header row
-	    printf "${TURQUOISE}║${END} %-*s %-*s %-*s %-*s ${TURQUOISE}║${END}\n" \
-	        "${COL_WIDTHS[0]}" "${HEADERS[0]}" \
-	        "${COL_WIDTHS[1]}" "${HEADERS[1]}" \
-	        "${COL_WIDTHS[2]}" "${HEADERS[2]}" \
-	        "${COL_WIDTHS[3]}" "${HEADERS[3]}"
-	
-	    echo -e "${TURQUOISE}╠${BORDER_LINE}╣${END}"
-	
-	    # Detectar discos físicos (no particiones)
-	    lsblk -d -n -o NAME,SIZE,TYPE | awk '$3=="disk"{print $1,$2}' | while read -r dev size; do
-	
-	        local SERIAL MODEL
-	
-	        #SERIAL=$(udevadm info --query=property --name="/dev/$dev" 2>/dev/null \
-	         #   | grep -E '^ID_SERIAL(_SHORT)?=' | head -n1 | cut -d= -f2)
-			SERIAL=$disk_serial
-	        MODEL=$(udevadm info --query=property --name="/dev/$dev" 2>/dev/null \
-	            | grep '^ID_MODEL=' | cut -d= -f2 | sed 's/_/ /g')
-	
-	        SERIAL=${SERIAL:-N/A}
-	        MODEL=${MODEL:-Unknown}
-	
-	        printf "${TURQUOISE}║${END} %-*s %-*s %-*s %-*s ${TURQUOISE}║${END}\n" \
-	            "${COL_WIDTHS[0]}" "/dev/$dev" \
-	            "${COL_WIDTHS[1]}" "$size" \
-	            "${COL_WIDTHS[2]}" "$SERIAL" \
-	            "${COL_WIDTHS[3]}" "$MODEL"
-	    done
-	
-	    echo -e "${TURQUOISE}╚${BORDER_LINE}╝${END}"
-	}
-
-	drawStorage_info
-
 
 }
 #END OF COLLECTING INFO
