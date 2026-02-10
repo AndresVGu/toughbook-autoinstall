@@ -307,52 +307,63 @@ collect_info(){
     local ITEMS=("$@")
 
     local BORDER_CHAR="═"
-
     local MAX_LABEL=0
     local MAX_VALUE=0
 
-    # 1️⃣ Calcular longitudes máximas de label y value
+    # 1️⃣ Medir tamaños
     for item in "${ITEMS[@]}"; do
-        label="${item%%:*}"
-        value="${item#*:}"
+        local label="${item%%:*}"
+        local value="${item#*:}"
         value="${value# }"
 
         (( ${#label} > MAX_LABEL )) && MAX_LABEL=${#label}
         (( ${#value} > MAX_VALUE )) && MAX_VALUE=${#value}
     done
 
-    # Ancho total: label + " : " + value + padding
-    local CONTENT_WIDTH=$((MAX_LABEL + 3 + MAX_VALUE))
+    # Limitar ancho máximo del VALUE (clave para evitar roturas)
+    local MAX_VALUE_WIDTH=40
+    (( MAX_VALUE < MAX_VALUE_WIDTH )) && MAX_VALUE_WIDTH=$MAX_VALUE
+
+    local CONTENT_WIDTH=$((MAX_LABEL + 3 + MAX_VALUE_WIDTH))
     local TITLE_LEN=${#TITLE}
     (( TITLE_LEN > CONTENT_WIDTH )) && CONTENT_WIDTH=$TITLE_LEN
 
     local BOX_WIDTH=$((CONTENT_WIDTH + 2))
 
-    # 2️⃣ Borde
+    # 2️⃣ Bordes
     printf -v BORDER_LINE "%*s" "$BOX_WIDTH" ""
     BORDER_LINE="${BORDER_LINE// /$BORDER_CHAR}"
 
     # 3️⃣ Centrar título
-    local TITLE_PAD_LEFT=$(( (CONTENT_WIDTH - TITLE_LEN) / 2 ))
-    local TITLE_PAD_RIGHT=$(( CONTENT_WIDTH - TITLE_LEN - TITLE_PAD_LEFT ))
+    local LP=$(( (CONTENT_WIDTH - TITLE_LEN) / 2 ))
+    local RP=$(( CONTENT_WIDTH - TITLE_LEN - LP ))
+    printf -v LSP "%*s" "$LP" ""
+    printf -v RSP "%*s" "$RP" ""
 
-    printf -v TITLE_L "%*s" "$TITLE_PAD_LEFT" ""
-    printf -v TITLE_R "%*s" "$TITLE_PAD_RIGHT" ""
-
-    # 4️⃣ Dibujar caja
     echo -e "${TURQUOISE}╔${BORDER_LINE}╗${END}"
-    echo -e "${TURQUOISE}║${END} ${TITLE_L}${TITLE}${TITLE_R} ${TURQUOISE}║${END}"
+    echo -e "${TURQUOISE}║${END} ${LSP}${TITLE}${RSP} ${TURQUOISE}║${END}"
     echo -e "${TURQUOISE}╠${BORDER_LINE}╣${END}"
 
-    # 5️⃣ Imprimir items
+    # 4️⃣ Imprimir items con wrap
     for item in "${ITEMS[@]}"; do
-        label="${item%%:*}"
-        value="${item#*:}"
+        local label="${item%%:*}"
+        local value="${item#*:}"
         value="${value# }"
 
-        printf "${TURQUOISE}║${END} %-*s ${TURQUOISE}:${END} ${GREEN}%-*s${END} ${TURQUOISE}║${END}\n" \
-            "$MAX_LABEL" "$label" \
-            "$MAX_VALUE" "$value"
+        # dividir value en chunks
+        while [ -n "$value" ]; do
+            local chunk="${value:0:$MAX_VALUE_WIDTH}"
+            value="${value:$MAX_VALUE_WIDTH}"
+
+            if [ "$chunk" != "" ]; then
+                printf "${TURQUOISE}║${END} %-*s ${TURQUOISE}:${END} ${GREEN}%-*s${END} ${TURQUOISE}║${END}\n" \
+                    "$MAX_LABEL" "$label" \
+                    "$MAX_VALUE_WIDTH" "$chunk"
+
+                # solo mostrar label una vez
+                label="$(printf '%*s' "$MAX_LABEL" "")"
+            fi
+        done
     done
 
     echo -e "${TURQUOISE}╚${BORDER_LINE}╝${END}"
