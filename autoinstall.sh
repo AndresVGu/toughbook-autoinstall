@@ -277,13 +277,13 @@ collect_info(){
 	
 	    case "$bat_state" in
 	        Charging)
-	            bat_charging_icon="[\xe2\x9a\xa1]"
+	            bat_charging_icon="\xe2\x9a\xa1"
 	            ;;
 	        Discharging)
-	            bat_charging_icon="[\xf0\x9f\x94\x8b]"
+	            bat_charging_icon="\xf0\x9f\x94\x8b"
 	            ;;
 	        Full)
-	            bat_charging_icon="[\xe2\x9c\x94]"
+	            bat_charging_icon="\xe2\x9c\x94"
 	            ;;
 	        *)
 	            bat_charging_icon="\xe2\x9d\x8c"
