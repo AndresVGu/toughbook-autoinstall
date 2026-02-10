@@ -37,6 +37,20 @@ The following table displays various units models and the corresponding **Ubuntu
    | FZ-G1 MK1  | Ubuntu **20.04** LTS (Focal Fossa)  |
    | FZ-G1 MK4  | Ubuntu **20.04** LTS (Focal Fossa)  |
 
+ **Important Note**
+
+ If you are installing **Ubuntu 20.04** on a **Panasonic G1 MK1** from a server using **FOG Project**, make sure to select **Option 5** during the **Autoinstall** process.
+
+ If Option 5 is not used, you must manually extend the partition by running the following commands after installation:
+
+```bash 
+ sudo apt install -y cloud-guest-utils
+ sudo growpart /dev/sda 5
+ sudo resize2fs /dev/sda5
+```
+
+Failing to do this may result in the system not using the full disk capacity.
+
 
 [⬆️ Go to Index](#Index)
 
