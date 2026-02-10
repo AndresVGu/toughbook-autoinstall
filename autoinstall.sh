@@ -303,13 +303,13 @@ collect_info(){
     bat_message=""
     
     if [ "$clean_value_int" -gt 85 ]; then
-        bat_message="✅${GREEN} OK - Suitable for Amazon Orders ${END}"
+        bat_message="✅ OK - Suitable for Amazon Orders"
     elif [ "$clean_value_int" -gt 80 ]; then
-        bat_message="✅${GREEN} OK - Suitable for Shopify ${END}"
+        bat_message="✅ OK - Suitable for Shopify"
     elif [ "$clean_value_int" -gt 1 ]; then
-        bat_message="⚠️${YELLOW} [!] Battery Health lower than 80% ${END}" 
+        bat_message="⚠️ Battery Health lower than 80%" 
     else
-        bat_message="❌${RED} [!] No Battery Detected ${END}"
+        bat_message="❌ No Battery Detected "
     fi
 
 	# ===================== BATTERY =====================
@@ -399,26 +399,15 @@ fi
 	  "Status: $batStatus" \
 	  "Health: $bat_health" \
 	  "Recommendation: $bat_message" 
+
+	drawInfo_box "MEMORY INFORMATION" \
+	  "RAM Total: $ram_gb GB" \
+	  "RAM Type: $ram_type" \
+	  "Slot [1]: ${ram_slot_a} ${ram_size_a}"\
+	  "Slot [2]: ${ram_slot_b} ${ram_size_b}"
 	
 
-	echo -e "	${TURQUOISE}╔════════════════════════════════════════════════════════════╗${END}"
-	echo -e "	${TURQUOISE}║${END}                    SYSTEM INFORMATION                      ${TURQUOISE}║${END}"
-	printf "        ${TURQUOISE}║${END}%-18s %s\n" "Model:"			 "$model                                                           ${TURQUOISE}║${END}"
-	echo -e "        ${TURQUOISE}║                                                            ║${END}"
-	echo -e "	${TURQUOISE}║${END} Brand                           : ${GREEN}$brand${END}                ${TURQUOISE}║${END}"
-	echo -e "	${TURQUOISE}║${END} Model                           : ${GREEN}$model${END}                ${TURQUOISE}║${END}"
-	echo -e "	${TURQUOISE}║${END} Part Number                     : ${GREEN}$part_number${END}             ${TURQUOISE}║${END}"
-	echo -e "	${TURQUOISE}║${END} Serial Number                   : ${GREEN}$serial${END}               ${TURQUOISE}║${END}"
-	echo -e "	${TURQUOISE}║${END} CPU                             : ${GREEN}$cpu_short${END}           ${TURQUOISE}║${END}"	
-	echo -e "	${TURQUOISE}╚════════════════════════════════════════════════════════════╝${END}"
 
-	echo -e "        ${TURQUOISE}╔════════════════════════════════════════════════════════════╗${END}"
-        echo -e "        ${TURQUOISE}║${END}                   BATTERY INFORMATION                      ${TURQUOISE}║${END}"
-        echo -e "        ${TURQUOISE}║                                                            ║${END}"
-        echo -e "        ${TURQUOISE}║${END} Status                           : ${GREEN}$bat_charging_icon [${bat_status_1}]  $bat_state${END}       ║" 
-	echo -e "        ${TURQUOISE}║${END} Health                           : ${GREEN}$bat_health${END}          ║"
-	echo -e "        ${TURQUOISE}║${END} Recommendation                   : ${GREEN}$bat_message${END}║"
-	echo -e "        ${TURQUOISE}╚════════════════════════════════════════════════════════════╝${END}"
 	
 	echo -e "        ${TURQUOISE}╔════════════════════════════════════════════════════════════╗${END}"
         echo -e "        ${TURQUOISE}║${END}                   STORAGE INFORMATION                      ${TURQUOISE}║${END}"
