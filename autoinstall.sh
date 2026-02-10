@@ -248,7 +248,7 @@ collect_info(){
     bat_message=""
     
     if [ "$clean_value_int" -gt 85 ]; then
-        bat_message="✅ OK - Suitable for Amazon Orders"
+        bat_message="✅ OK - Suitable for Amazon"
     elif [ "$clean_value_int" -gt 80 ]; then
         bat_message="✅ OK - Suitable for Shopify"
     elif [ "$clean_value_int" -gt 1 ]; then
