@@ -272,7 +272,7 @@ collect_info(){
     ram_slot_a=$(sudo dmidecode -t memory | grep -E "Handle" | sed -n '3p' | awk '{print $2}' | cut -c1-6)
     [ -z "$ram_slot_a" ] && ram_slot_a=$(echo "Empty")
 
-    ram_size_a=$(sudo dmidecode -t memory | grep -E "Size:" | sed -n '1p')
+    ram_size_a=$(sudo dmidecode -t memory | grep -E "Size:"| sed -n '1p' | sed 's/.*: //')
     [ -z "$ram_size_a" ] && ram_size_a=$(echo " ")
 
     ram_speed_a=$(sudo dmidecode -t memory 2>/dev/null | grep -E "Speed:" | head -n1 | awk '{print $2}')
@@ -282,7 +282,7 @@ collect_info(){
     ram_slot_b=$(sudo dmidecode -t memory | grep -E "Handle" | sed -n '6p' | awk '{print $2}' | cut -c1-6)
     [ -z "$ram_slot_b" ] && ram_slot_b=$(echo "Empty")
 
-    ram_size_b=$(sudo dmidecode -t memory | grep -E "Size:" | sed -n '2p')
+    ram_size_b=$(sudo dmidecode -t memory | grep -E "Size:"| sed -n '2p' | sed 's/.*: //')
     [ -z "$ram_size_b" ] && ram_size_b=$(echo " ")
 
     ram_speed_b=$(sudo dmidecode -t memory 2>/dev/null | grep  -E "Speed:" | sed -n '3p' | awk '{print $2}')
