@@ -256,7 +256,7 @@ collect_info(){
     elif [ "$clean_value_int" -gt 80 ]; then
         bat_message=" OK - Suitable for Shopify"
     elif [ "$clean_value_int" -gt 1 ]; then
-        bat_message="[!] Battery Health lower than 80%" 
+        bat_message="[!] lower than 80% - Suitable for not guaranted battery orders" 
     else
         bat_message="[X] No Battery Detected "
     fi
