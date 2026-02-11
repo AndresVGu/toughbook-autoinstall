@@ -78,6 +78,8 @@ spinner_stop() {
 
 # CHECK SCRIPT
 check_version() {
+	spinner_start "Checking Script Version"
+	sleep 0.5
 
     echo "🔄 Checking for updates..."
 
@@ -97,6 +99,8 @@ check_version() {
     else
         echo "✅ Script is already up to date."
     fi
+
+	spinner_stop OK
 }
 
 
@@ -1479,10 +1483,9 @@ g1_main_menu() {
 check_root
 show_banner
 
-spinner_start "Checking Script Version"
-sleep 0.5
+
 check_version
-spinner_stop OK
+
 #------------------------
 #-------MENU-----------
 #----------------------
