@@ -78,8 +78,6 @@ spinner_stop() {
 
 # CHECK SCRIPT
 check_version() {
-	spinner_start "Checking Script Version"
-	sleep 2
 
     echo "🔄 Checking for updates..."
 
@@ -100,7 +98,7 @@ check_version() {
         echo "✅ Script is already up to date."
     fi
 
-	spinner_stop OK
+	
 }
 
 
