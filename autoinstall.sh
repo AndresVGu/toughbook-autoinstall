@@ -79,7 +79,7 @@ spinner_stop() {
 # CHECK SCRIPT
 check_version() {
 	spinner_start "Checking Script Version"
-	sleep 0.5
+	sleep 1.5
 
     echo "🔄 Checking for updates..."
 
@@ -93,7 +93,7 @@ check_version() {
         git pull --quiet
 
         echo "🔁 Script updated. Restarting..."
-        sleep 1
+        sleep 0.5
 
         exec "$0" "$@"
     else
