@@ -1,11 +1,14 @@
 #!/usr/bin/env bash
 
 #
-# Configuration script for Panasonic Toughbooks on Ubuntu 24
+# Configuration script for Panasonic Toughbooks 
 # Author: Andres Villarreal (a.k.a. @4vs3c)
 #
 
-# ==================== Colors ====================
+# +=================+
+# | COLOR VARIABLES |
+# +=================+
+
 readonly GREEN='\033[1;32m'
 readonly END='\033[0m'
 readonly RED='\033[1;31m'
@@ -15,14 +18,65 @@ readonly PURPLE='\033[1;35m'
 readonly TURQUOISE='\033[1;36m'
 readonly GRAY='\033[1;37m'
 
-# ==================== Utility Functions ====================
 
+# +===================+
+# | UTILITY FUNCTIONS |
+# +===================+
+
+# CLOSE SCRIPT FUNCTION 
 # Traps Ctrl+C and exits the script gracefully
 ctrl_c() {
     echo -e "\n\n${RED}[!] Closing Script...${END}\n"
     exit 1
 }
 
+# LOADING FUNCTION
+
+spinner_start() {
+    SPINNER_PID=""
+    local msg="$1"
+    local spin='|/-\'
+    local i=0
+
+    tput civis 2>/dev/null   # hide pointer
+
+    (
+        while true; do
+            i=$(( (i + 1) % 4 ))
+            printf "\r${TURQUOISE}%s ${GREEN}%c${END}" "$msg" "${spin:$i:1}"
+            sleep 0.1
+        done
+    ) &
+
+    SPINNER_PID=$!
+}
+
+spinner_stop() {
+    local status="$1"  # OK / FAIL / WARN
+    kill "$SPINNER_PID" 2>/dev/null
+    wait "$SPINNER_PID" 2>/dev/null
+
+    printf "\r\033[K"
+
+    case "$status" in
+        OK)
+            printf "${GREEN}✔ %s${END}\n" "Done"
+            ;;
+        WARN)
+            printf "${YELLOW}⚠ %s${END}\n" "Warning"
+            ;;
+        FAIL)
+            printf "${RED}✖ %s${END}\n" "Failed"
+            ;;
+        *)
+            echo
+            ;;
+    esac
+
+    tput cnorm 2>/dev/null  # mostrar cursor
+}
+
+# CHECK SCRIPT
 check_version() {
 
     echo "🔄 Checking for updates..."
@@ -379,49 +433,7 @@ collect_info(){
 	cpu_short=$cpu
     fi
 
-spinner_start() {
-    SPINNER_PID=""
-    local msg="$1"
-    local spin='|/-\'
-    local i=0
 
-    tput civis 2>/dev/null   # ocultar cursor
-
-    (
-        while true; do
-            i=$(( (i + 1) % 4 ))
-            printf "\r${TURQUOISE}%s ${GREEN}%c${END}" "$msg" "${spin:$i:1}"
-            sleep 0.1
-        done
-    ) &
-
-    SPINNER_PID=$!
-}
-
-spinner_stop() {
-    local status="$1"  # OK / FAIL / WARN
-    kill "$SPINNER_PID" 2>/dev/null
-    wait "$SPINNER_PID" 2>/dev/null
-
-    printf "\r\033[K"
-
-    case "$status" in
-        OK)
-            printf "${GREEN}✔ %s${END}\n" "Done"
-            ;;
-        WARN)
-            printf "${YELLOW}⚠ %s${END}\n" "Warning"
-            ;;
-        FAIL)
-            printf "${RED}✖ %s${END}\n" "Failed"
-            ;;
-        *)
-            echo
-            ;;
-    esac
-
-    tput cnorm 2>/dev/null  # mostrar cursor
-}
 
 	
 
@@ -1466,7 +1478,11 @@ g1_main_menu() {
 
 check_root
 show_banner
+
+spinner_start "Collecting system information"
+sleep 1   # aquí va tu lógica real
 check_version
+spinner_stop OK
 #------------------------
 #-------MENU-----------
 #----------------------
