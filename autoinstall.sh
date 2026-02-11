@@ -1479,8 +1479,8 @@ g1_main_menu() {
 check_root
 show_banner
 
-spinner_start "Collecting system information"
-sleep 1   # aquí va tu lógica real
+spinner_start "Checking Script Version"
+sleep 0.5
 check_version
 spinner_stop OK
 #------------------------
