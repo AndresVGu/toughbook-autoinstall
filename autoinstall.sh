@@ -821,6 +821,52 @@ g1_detection(){
     echo -e "${GREEN}[!] Scan completed.${END}"
 }
 
+############################################
+force_gdm() {
+
+    echo -e "${BLUE}[*] Forcing GDM as display manager...${END}"
+
+    # --- Check root ---
+    if [[ $EUID -ne 0 ]]; then
+        echo -e "${RED}[ERROR] This function must be run as root.${END}"
+        return 1
+    fi
+
+    # --- Check if gdm3 exists ---
+    if ! command -v gdm3 >/dev/null 2>&1 && ! systemctl list-unit-files | grep -q gdm; then
+        echo -e "${RED}[ERROR] gdm3 is not installed.${END}"
+        return 1
+    fi
+
+    # --- Set default display manager ---
+    echo "gdm3" > /etc/X11/default-display-manager
+
+    # --- Enable GDM and disable SDDM if exists ---
+    systemctl enable gdm3 >/dev/null 2>&1 || {
+        echo -e "${RED}[ERROR] Failed to enable gdm3.${END}"
+        return 1
+    }
+
+    if systemctl list-unit-files | grep -q sddm; then
+        systemctl disable sddm >/dev/null 2>&1
+    fi
+
+    # --- Force GNOME on Xorg ---
+    mkdir -p /etc/gdm3
+    cat > /etc/gdm3/custom.conf <<EOF
+[daemon]
+WaylandEnable=false
+DefaultSession=gnome-xorg.desktop
+EOF
+
+    echo -e "${GREEN}[+] GDM configured successfully with GNOME on Xorg.${END}"
+    return 0
+}
+
+
+
+##################################END FORCING XORG
+
 
 device_detection() {
     echo -e "${GREEN}[+] Starting device detection...${END}"
@@ -1353,6 +1399,10 @@ main_menu() {
 				sudo cp touch-calibrationcf31.desktop /etc/xdg/autostart/
 				echo "[!] AutoStart Configuration Done.."
 				sleep 2
+				;;
+
+			8)
+				force_gdm
 				;;
 			
             [qQ])
