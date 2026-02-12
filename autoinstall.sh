@@ -558,6 +558,9 @@ spinner_stop OK
 	  "Slot [1]: ${ram_size_a}"\
 	  "Slot [2]: ${ram_size_b}"
 
+	  echo -e "${YELLOW}TO SCROLL UP OR DOWN IN THE CONSOLE USE:${END}"
+	  echo -e "${YELLOW}[${END} ${TURQUOISE}Ctrl + Shift {⬆️ or ⬇️}${END} ${YELLOW}]${END}"
+
 }
 #END OF COLLECTING INFO
 
