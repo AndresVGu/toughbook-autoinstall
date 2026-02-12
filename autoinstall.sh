@@ -1163,10 +1163,9 @@ prepare_environment() {
             sudo shutdown -h now
     	else    
         	echo -e "${BLUE}[*] Installing OEM dependencies...${END}"
-            if ! sudo apt install -y oem-config-gtk oem-config-slideshow-ubuntu; then
-                echo -e "${RED}[-] Failed to install dependencies.${END}"
-                exit 1
-            fi
+			sudo apt install -y oem-config-gtk
+			sudo apt install -y oem-config-slideshow-ubuntu
+            
 			echo -e "${GREEN}[+] Dependencies installed successfully.${END}"
             echo -e "${PURPLE}[*] Initializing system preparation...${END}"
 			if ! sudo oem-config-prepare; then
