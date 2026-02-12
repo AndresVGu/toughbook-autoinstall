@@ -30,6 +30,16 @@ ctrl_c() {
     exit 1
 }
 
+check_internet() {
+    # Try to ping Google
+    if ping -c 1 -q google.com &>/dev/null; then
+        echo "🌐 Internet connection detected. Continuing..."
+    else
+        echo "❌ No Internet connection. Exiting script."
+        exit 1
+    fi
+}
+
 # LOADING FUNCTION
 
 spinner_start() {
@@ -1524,6 +1534,7 @@ g1_main_menu() {
 
 check_root
 show_banner
+check_internet
 check_version
 
 #------------------------
