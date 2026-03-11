@@ -1434,7 +1434,7 @@ c2_main_menu() {
         echo -e "[3] ⚙️  Update Device"
         echo -e "[4] ⌨️  Test Keyboard"
 		echo -e "[5] 🔊 Sound Activation"
-        echo -e "[6] 💻 OEM Environment Setup ✨(SYSPREP)✨"
+        #echo -e "[6] 💻 OEM Environment Setup ✨(SYSPREP)✨"
         echo -e "[q|Q] ↩️  Exit"
         read -rp "Select an option: " choice
 
