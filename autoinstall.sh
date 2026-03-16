@@ -1306,6 +1306,51 @@ EOF
     echo "[✓] Autostart configuration done"
 }
 
+#======================== c2 audio
+install_sound_autostart_c2() {
+
+    set -e
+
+    local SCRIPT_NAME="c2audioconf.sh"
+    local INSTALL_PATH="/usr/local/bin/$SCRIPT_NAME"
+    local AUTOSTART_FILE="sound-activation.desktop"
+    local AUTOSTART_SYSTEM="/etc/xdg/autostart/$AUTOSTART_FILE"
+
+    echo "[+] Adding execution permission to the script..."
+
+    if [[ ! -f "$SCRIPT_NAME" ]]; then
+        echo "[ERROR] $SCRIPT_NAME not found"
+        return 1
+    fi
+
+    chmod 755 "$SCRIPT_NAME"
+
+    echo "[+] Copying script to /usr/local/bin..."
+    sudo cp "$SCRIPT_NAME" "$INSTALL_PATH"
+
+    echo "[✓] Script copied successfully"
+
+    echo "[+] Executing default script..."
+    "$INSTALL_PATH"
+
+    echo "[+] Creating autostart entry..."
+
+    cat <<EOF > "$AUTOSTART_FILE"
+[Desktop Entry]
+Type=Application
+Name=Sound Activation
+Comment=Executes sound activation script
+Exec=/bin/bash $INSTALL_PATH
+Terminal=false
+X-GNOME-Autostart-enabled=true
+NoDisplay=true
+EOF
+
+    sudo cp "$AUTOSTART_FILE" "$AUTOSTART_SYSTEM"
+
+    echo "[✓] Autostart configuration done"
+}
+
 
 # ==================== Main Menu ====================
 main_menu() {
@@ -1462,7 +1507,7 @@ c2_main_menu() {
                 keyboard_test
                 ;;
 			5)
-				install_sound_autostart
+				install_sound_autostart_c2
 				sleep 1
 				;;
             6)
