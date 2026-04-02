@@ -1,504 +1,595 @@
- ---
-# Ubuntu Installation & Configuration For ToughBooks
+# Ubuntu Installation & Configuration for ToughBooks
+
 ---
-# Index
-* [Recommended Ubuntu Versions by Model](#Recommended-Ubuntu-Versions-by-Model)
-* [Installation Guide](#Installation-Guide)
-* [Prepare Source for cloning](#Prepare-Hard-Drive-source-for-cloning)
-* [Auto-Install Script](#Auto-Install-Script)
-* [Ubuntu configuration](#Ubuntu-configuration)
-  * [How to Check Your Connected Devices](#How-to-Check-Your-Connected-Devices)
-  * [How to Test Bluetooth and WiFi](#how-to-test-bluetooth-and-wifi)
-  * [How to Set Up and Test the 4G Modem](#How-to-Set-Up-and-Test-the-4G-Modem)
-    * [Setting Up 4G Mobile Internet on Ubuntu 20.04](#Setting-Up-4G-Mobile-Internet-on-Ubuntu-20.04)
-  * [How to Test GPS dedicated](#How-to-Test-GPS-dedicated)
-  * [WebCam Configuration](#WebCam-Configuration)
-  * [How to Calibrate the Touch Screen](#How-to-Calibrate-the-Touch-Screen)
-    * [Make the calibration permanent](#Make-the-calibration-permanent)
-    * [In case xinput_calibrator doesn't work ](#In-case-xinput_calibrator-doesn't-work)
-  * [How to Set up the Fingerprint Sensor](#How-to-Set-up-the-Fingerprint-Sensor)
-  * [How to set up the Smart Card Reader](#How-to-set-up-the-Smart-Card-Reader)
-  * [Configure Computer Fan and Temperature](#Configure-Computer-Fan-and-Temperature)
-* [Delete Test Profile and Prepare unit](#Delete-Test-Profile-and-Prepare-unit) 
 
-Recommended Ubuntu Versions by Model
+## Index
+
+* [Recommended Ubuntu Versions by Model](#recommended-ubuntu-versions-by-model)
+* [Installation Guide](#installation-guide)
+* [Prepare Hard Drive (Source) for Cloning](#prepare-hard-drive-source-for-cloning)
+* [Auto-Install Script](#auto-install-script)
+* [Ubuntu Configuration](#ubuntu-configuration)
+  * [How to Check Your Connected Devices](#how-to-check-your-connected-devices)
+  * [How to Test Bluetooth and Wi-Fi](#how-to-test-bluetooth-and-wi-fi)
+  * [How to Set Up and Test the 4G Modem](#how-to-set-up-and-test-the-4g-modem)
+    * [Setting Up 4G Mobile Internet on Ubuntu 20.04](#setting-up-4g-mobile-internet-on-ubuntu-2004)
+  * [How to Test GPS](#how-to-test-gps)
+  * [Webcam Configuration](#webcam-configuration)
+  * [How to Calibrate the Touch Screen](#how-to-calibrate-the-touch-screen)
+    * [Make the Calibration Permanent](#make-the-calibration-permanent)
+    * [In Case xinput_calibrator Doesn't Work](#in-case-xinput_calibrator-doesnt-work)
+  * [How to Set Up the Fingerprint Sensor](#how-to-set-up-the-fingerprint-sensor)
+  * [How to Set Up the Smart Card Reader](#how-to-set-up-the-smart-card-reader)
+  * [Configure Computer Fan and Temperature](#configure-computer-fan-and-temperature)
+* [Delete Test Profile and Prepare Unit](#delete-test-profile-and-prepare-unit)
+
 ---
-When preparing to install or use an operating system, it's crucial to consider the version based on the specific hardware you intend to use. Different machine models often perform optimally with particular operating system releases.
 
-**NOTE:**
-The following table displays various units models and the corresponding **Ubuntu versions** that are recommendedn for their **correct and optimal functioning.**
+## Recommended Ubuntu Versions by Model
 
- | Model | Ubuntu Version |
-   |:-----:|:------|
-   | CF-31 MK5  |  Ubuntu **24.04** LTS (Noble Numbat)  |
-   | CF-53 MK4  |  Ubuntu **24.04** LTS (Noble Numbat)  |
-   | CF-54 MK2  |  Ubuntu **24.04** LTS (Noble Numbat)  |
-   | CF-C2 MK2  | Ubuntu **24.04** LTS (Noble Numbat)  | 
-   | FZ-G1 MK1  | Ubuntu **20.04** LTS (Focal Fossa)  |
-   | FZ-G1 MK4  | Ubuntu **20.04** LTS (Focal Fossa)  |
+When preparing to install an operating system, it is crucial to consider the version based on the specific hardware you intend to use. Different machine models often perform optimally with particular OS releases.
 
- **Important Note**
+> **Note:** The following table lists the supported unit models and the corresponding **Ubuntu versions** recommended for their **correct and optimal functioning.**
 
- If you are installing **Ubuntu 20.04** on a **Panasonic G1 MK1** from a server using **FOG Project**, make sure to select **Option 5** during the **Autoinstall** process.
+| Model | Ubuntu Version |
+|:-----:|:--------------|
+| CF-31 MK5 | Ubuntu **24.04** LTS (Noble Numbat) |
+| CF-53 MK4 | Ubuntu **24.04** LTS (Noble Numbat) |
+| CF-54 MK2 | Ubuntu **24.04** LTS (Noble Numbat) |
+| CF-C2 MK2 | Ubuntu **24.04** LTS (Noble Numbat) |
+| FZ-G1 MK1 | Ubuntu **20.04** LTS (Focal Fossa) |
+| FZ-G1 MK4 | Ubuntu **20.04** LTS (Focal Fossa) |
 
- If Option 5 is not used, you must manually extend the partition by running the following commands after installation:
+> **Important Note**
+>
+> If you are installing **Ubuntu 20.04** on a **Panasonic G1 MK1** using **FOG Project**, make sure to select **Option 5** during the **Autoinstall** process.
+>
+> If Option 5 is not used, you must manually extend the partition by running the following commands after installation:
 
-```bash 
- sudo apt install -y cloud-guest-utils
- sudo growpart /dev/sda 5
- sudo resize2fs /dev/sda5
+```bash
+sudo apt install -y cloud-guest-utils
+sudo growpart /dev/sda 5
+sudo resize2fs /dev/sda5
 ```
 
 Failing to do this may result in the system not using the full disk capacity.
 
-
-[⬆️ Go to Index](#Index)
-
----
-Installation Guide
----
-1. Boot from the USB drive
----
-**NOTE:**
-In case you are installing **Ubuntu 22.04 or an earlier version**, select the option **'Install OEM only for manufacturers'** instead of just 'Install Ubuntu.' This will enable the Sysprep (System Preparation) process.
-
----
-Choose the language and keyboard layout
-
-3. Connect to a network: It is recommended to connect to the internet during installation. **This allows the installer to download updates and third-party drivers**
-4. Select the Installation type: Enable third-party drivers.
-5. Create user account **with the following credentials**:\
-   It is important to use these credentials because when performing a **factory reset (sysprep)**, the system needs to identify a user named **'oem'**; otherwise, the reset will fail.
-   | <!--> | <!--> |
-   |:-----:|:------|
-   | Name  |  oem  |
-   | user  |  oem  |
-   | password | 1234 |
-
-6. Begin the Installation
-7. Restart
-   
-[⬆️ Go to Index](#Index)
+[⬆️ Go to Index](#index)
 
 ---
 
-Prepare Hard Drive (source) for cloning
----
-When a Linux system is cloned, the exact disk configuration is copied to all target machines.
-If the source disk is not prepared, the cloned systems may contain hardware-specific or disk-specific identifiers that can cause boot problems.
+## Installation Guide
 
-Linux relies on things like UUIDs, initramfs configuration, and system identifiers that are generated for the original machine.
-After cloning, these identifiers may:
+### 1. Boot from the USB Drive
+
+> **Note:** If you are installing **Ubuntu 22.04 or an earlier version**, select the option **"Install OEM (for manufacturers only)"** instead of plain "Install Ubuntu." This enables the Sysprep (System Preparation) process.
+
+### 2. Choose the Language and Keyboard Layout
+
+### 3. Connect to a Network
+
+It is recommended to connect to the internet during installation. **This allows the installer to download updates and third-party drivers.**
+
+### 4. Select the Installation Type
+
+Enable third-party drivers.
+
+### 5. Create a User Account with the Following Credentials
+
+It is important to use these credentials because when performing a **factory reset (Sysprep)**, the system needs to identify a user named **"oem"**; otherwise, the reset will fail.
+
+| Field | Value |
+|:-----:|:------|
+| Name | oem |
+| User | oem |
+| Password | 1234 |
+
+### 6. Begin the Installation
+
+### 7. Restart
+
+[⬆️ Go to Index](#index)
+
+---
+
+## Prepare Hard Drive (Source) for Cloning
+
+When a Linux system is cloned, the exact disk configuration is copied to all target machines. If the source disk is not properly prepared, the cloned systems may contain hardware-specific or disk-specific identifiers that can cause boot problems.
+
+Linux relies on identifiers such as UUIDs, initramfs configuration, and system IDs generated for the original machine. After cloning, these identifiers may:
 
 * Not match the target hardware
 * Appear duplicated across multiple machines
 * Be detected at the wrong time during boot
-* This can lead to intermittent boot failures, such as the system entering emergency mode.
 
-Solution Change label 
+This can lead to intermittent boot failures, such as the system entering emergency mode.
+
+**Solution: Change the Partition Labels**
 
 ```bash
-  #in the source, go to the therminal
-  lsblk
-  # Depending of the output you can get sda1 /boot, sda2
+# On the source machine, open the terminal
+lsblk
+# Depending on the output, you may see sda1 (/boot) and sda2 (/)
 
-  #Assign labels
-  sudo e2label /dev/sda2 ROOT
-  sudo e2label /dev/sda1 BOOT
-
+# Assign labels
+sudo e2label /dev/sda2 ROOT
+sudo e2label /dev/sda1 BOOT
 ```
-Edit /etc/fstab
+
+**Edit `/etc/fstab`**
 
 ```bash
 sudo nano /etc/fstab
 ```
 
 ```bash
-#change
-#UUID=xxxx / ext4 defaults 0 1
-#UUID=yyyy /boot ext4 defaults 0 2
+# Change:
+# UUID=xxxx / ext4 defaults 0 1
+# UUID=yyyy /boot ext4 defaults 0 2
 
-#for:
+# To:
 LABEL=ROOT / ext4 defaults 0 1
 LABEL=BOOT /boot ext4 defaults 0 2
 
-#regenerate boot
+# Regenerate boot
 sudo update-initramfs -u
 sudo update-grub
 ```
-[⬆️ Go to Index](#Index)
+
+[⬆️ Go to Index](#index)
 
 ---
-# Auto-Install Script 
----
-This Script automates the process of **scanning detected devices, installing the necessary drivers and packages** for testing, and performing an **OEM reset (Sysprep)**. 
 
----
-**NOTE:**
-While the script streamlines these tasks, it’s still highly recommended to manually test each device to verify its proper function.
+## Auto-Install Script
 
----
-### Clone the repository
-1. Make sure you are connected to Wi-Fi
+This script automates the process of **scanning detected devices, installing the necessary drivers and packages** for testing, and performing an **OEM reset (Sysprep)**.
+
+> **Note:** While the script streamlines these tasks, it is still highly recommended to manually test each device to verify proper functionality.
+
+### Clone the Repository
+
+1. Make sure you are connected to Wi-Fi.
+
 ```bash
- cd Downloads
- sudo apt install git –y #(in case that you did not install before)
- git clone https://github.com/AndresVGu/toughbook-autoinstall
- cd Toughbook-autoinstall
- chmod +x autoinstall.sh #gives execution permission to the script
- ./autoinstall.sh #executes the script
+cd Downloads
+sudo apt install git -y   # (skip if git is already installed)
+git clone https://github.com/AndresVGu/toughbook-autoinstall
+cd toughbook-autoinstall
+chmod +x autoinstall.sh   # grants execution permission to the script
+./autoinstall.sh          # executes the script
 ```
-[⬆️ Go to Index](#Index)
 
+[⬆️ Go to Index](#index)
 
-# Ubuntu configuration
+---
 
-1. Connect to Wi-fi
-2. Open the ubuntu terminal ( Super + terminal) and perform the following commands as **root**:\
-   Use the password for this case **&rarr; 1234**
+## Ubuntu Configuration
+
+1. Connect to Wi-Fi.
+2. Open the Ubuntu terminal (`Super` key → search "terminal") and run the following commands as **root**:  
+   Use the password **→ 1234**
+
 ```bash
-sudo su  
+sudo su
 sudo apt update -y && sudo apt upgrade -y
 sudo apt install git -y
 ```
-3.Check drives (Super + Software & updates)
-Go to Additional drivers tab and make sure that says **“No additional drivers available”**
 
-![Addditional drivers](/assets/drivers.png)
+3. Check drivers: press `Super`, open **Software & Updates**, go to the **Additional Drivers** tab, and make sure it says **"No additional drivers available."**
 
-How to Check Your Connected Devices: 
+![Additional Drivers](/assets/drivers.png)
+
 ---
-This method will show you how to check if the computer is detecting connected devices such as Webcam, 4G Modem, GPSd, Fingerprint, Touch Screen, or Smart Card Reader
-Open the terminal and use the following commands
+
+## How to Check Your Connected Devices
+
+This section explains how to verify that the computer detects connected devices such as a Webcam, 4G Modem, GPS, Fingerprint reader, Touch Screen, or Smart Card Reader.
+
+Open the terminal and run:
 
 ```bash
 lsusb
 ```
-If you do not see the device required in the list: This means the computer has not detected. This could be because the device is not working properly, it is not compatible, or it is not properly connected.
 
-![lsusb](assets/1.png)
+If you do not see the required device in the list, the computer has not detected it. This could mean the device is not working properly, is not compatible, or is not properly connected.
 
-How to Test Bluetooth & Wi-Fi:
+![lsusb output](/assets/1.png)
+
+[⬆️ Go to Index](#index)
+
 ---
-To test the Wi-Fi and Bluetooth, you don’t need to use the terminal. You can use the UI.
 
-**Settings &rarr; Networks or Bluetooth**
+## How to Test Bluetooth and Wi-Fi
 
-How to Set Up and Test the 4G Modem:
+To test Wi-Fi and Bluetooth, you do not need to use the terminal. You can use the system UI:
+
+**Settings → Network** (for Wi-Fi) or **Settings → Bluetooth**
+
+[⬆️ Go to Index](#index)
+
 ---
-Most of the time the **Sierra Wireless EM7455 Modem** works on Ubuntu 24.0, these devices are automatically detected and should work with the built-in drivers. However, you need to configurate the Access Point Name (APN) to connect your mobile data network.
 
-1. Insert the SIM Card: You will not see the **“Mobile Network Configuration”** option in the UI until a SIM Card is detected.
-2. Go to Mobile Network Settings and configure the APN: Access Point Names &rarr; add new APN and you will need to fill these fields:
-   
-   | <!--> | <!--> |
+## How to Set Up and Test the 4G Modem
+
+In most cases, the **Sierra Wireless EM7455 Modem** works out of the box on Ubuntu 24.04, as these devices are automatically detected and use built-in drivers. However, you need to configure the Access Point Name (APN) to connect to your mobile data network.
+
+1. **Insert the SIM Card.** The **"Mobile Network"** option will not appear in the UI until a SIM card is detected.
+2. **Go to Mobile Network Settings** and configure the APN: navigate to **Access Point Names → Add New APN** and fill in the following fields:
+
+   | Field | Value |
    |:-----:|:------|
-   | Name  |  internet |
-   | APN  |  sp.telus.com  |
+   | Name | internet |
+   | APN | sp.telus.com |
 
-(remember you need to use the APN for the data provider) 
+   > Remember to use the APN provided by your data carrier.
 
-![!network configuration](/assets/mobile_network.png)
+   ![Mobile Network Configuration](/assets/mobile_network.png)
 
-3. Save changes and make sure to select this APN as the default
-   
-4. Activate the Mobile data & Test:
-   
+3. Save changes and make sure to set this APN as the default.
+
+4. **Activate Mobile Data and test the connection:**
+
 ```bash
 ping 8.8.8.8
 ```
-Setting Up 4G Mobile Internet on Ubuntu 20.04:
+
+[⬆️ Go to Index](#index)
+
 ---
-You must find the correct APN for the company that provide your SIM card (e.g., Verizon, T-Mobile, Telus). You can search online for your provider APN name.
 
-- Some examples
-  
-  | <!--> | <!--> |
-   |:-----:|:------|
-   | Verizon (USA)  |  vzwinternet |
-   | Telus (Canada) |  sp.telus.com  |
-   | T-Mobile (USA) | fast.t-mobile.com |
+## Setting Up 4G Mobile Internet on Ubuntu 20.04
 
-  1. Find your 4G Device's Name
-     **What to look for:** Look for a line where the **TYPE** is listed as **gsm, wwan or something different to ethernet, wifi or loopback"**. The name in the fisrt column (e.g., cdc-wdm0, ttyACM0) is your device name. write this down
-     ```bash
-     nmcli device
-     ```
-     
-   | DEVICE | TYPE | STATE | CONNECTION |
-   | :-----: | :------: | :-----: | :------: |
-   | **cdc-wdm0**  |  **gsm**  | **disconnected** | **--**  |
-   | eth0  | ethernet | connected | Wired Connection 1 |
-   | wlp2s0 | wifi | unavialable | -- |
-   | lo | loopcabk | unmanaged | -- |
- 
-**(in the example above, your **Device Name is cdc-wdm0**)*
+You must find the correct APN for your SIM card provider (e.g., Verizon, T-Mobile, Telus). You can search online for your provider's APN.
 
-2. Confirm the System sees the SIM card
-This step confrims that your computer recognizes the SIM card and its modem.
+**Some examples:**
+
+| Provider | APN |
+|:--------:|:----|
+| Verizon (USA) | vzwinternet |
+| Telus (Canada) | sp.telus.com |
+| T-Mobile (USA) | fast.t-mobile.com |
+
+### Step 1 — Find Your 4G Device Name
+
+Run the following command:
 
 ```bash
- mmcli -L
+nmcli device
 ```
--**what to look:** If it shows a list, and you see something like **/org/freedesktop/ModemManager1/Modem/0**, it means the system has found your 4G device and SIM card.
 
-3. Removing old connections
-Old, unused connection settings can sometimes cause problems. It's best to remove any previous mobile connection to prevent interference.
+**What to look for:** Find a line where **TYPE** is listed as `gsm`, `wwan`, or anything other than `ethernet`, `wifi`, or `loopback`. The name in the first column (e.g., `cdc-wdm0`, `ttyACM0`) is your device name — write it down.
 
-look for any connection names you don't need, especially those with type **gsm or cdma**
+| DEVICE | TYPE | STATE | CONNECTION |
+|:------:|:----:|:-----:|:----------:|
+| **cdc-wdm0** | **gsm** | **disconnected** | **--** |
+| eth0 | ethernet | connected | Wired Connection 1 |
+| wlp2s0 | wifi | unavailable | -- |
+| lo | loopback | unmanaged | -- |
 
-**Delete any unwanted connections** by replacing "connection name" with the actual name of the list
+*(In the example above, the device name is **cdc-wdm0**.)*
+
+### Step 2 — Confirm the System Sees the SIM Card
+
+This step confirms that your computer recognizes the SIM card and its modem.
 
 ```bash
- nmcli connection show  #see allexisting connections
- nmcli connection delete "connection name"
+mmcli -L
 ```
 
-4. Create Your new 4G connection
-Now we put all pieces together: Device Name (from step 2), your desired connection name, and your specific APN
+**What to look for:** If you see something like `/org/freedesktop/ModemManager1/Modem/0`, the system has found your 4G device and SIM card.
+
+### Step 3 — Remove Old Connections
+
+Old, unused connection settings can sometimes cause problems. It is best to remove any previous mobile connection to prevent interference.
+
+Look for any connection names you no longer need, especially those with type **gsm** or **cdma**.
 
 ```bash
- nmcli connection add type gsm ifname "your_device_name" con-name "your_preferred_connection_name" apn "your_provider_apn"
+nmcli connection show           # lists all existing connections
+nmcli connection delete "connection name"   # replace with the actual name
 ```
+
+### Step 4 — Create Your New 4G Connection
+
+Now bring all the pieces together: your Device Name (from Step 1), your desired connection name, and your carrier's APN.
+
+```bash
+nmcli connection add type gsm ifname "your_device_name" con-name "your_preferred_connection_name" apn "your_provider_apn"
+```
+
 **Example using the information from the previous steps:**
-- Device Name: cdc-wdm0
-- Connection Name: My Verizon Internet
-- APN: vzwinternet
+- Device Name: `cdc-wdm0`
+- Connection Name: `My Verizon Internet`
+- APN: `vzwinternet`
 
-  ```bash
-   nmcli connection add type gsm ifname cdc-wdm0 con-name "My Verizon Internet" apn vzwinternet
-  ```
+```bash
+nmcli connection add type gsm ifname cdc-wdm0 con-name "My Verizon Internet" apn vzwinternet
+```
 
-5. Activate
-You have two ways to activate the new connection you just created
+### Step 5 — Activate the Connection
 
-**OPTION A: Using the setting menu:**
-- Go to your main **setings** menu
-- Find the **Mobile Network** or **wireless** settings
-- Toggle the mobile network switch **ON**
-- Your new connection should be listed and automatically connect.
+You have two ways to activate the new connection:
 
-**OPTION B: using the Terminal Command:**
+**Option A: Using the Settings Menu**
+- Go to your main **Settings** menu.
+- Find the **Mobile Network** or **Wireless** settings.
+- Toggle the mobile network switch **ON**.
+- Your new connection should appear and connect automatically.
+
+**Option B: Using the Terminal**
+
 ```bash
 nmcli connection up "your_preferred_connection_name"
-#Example:
+# Example:
 nmcli connection up "My Verizon Internet"
 ```
 
-[⬆️ Go to Index](#Index)
+[⬆️ Go to Index](#index)
 
-How to Test GPS dedicated:
 ---
-To test the GPS module, you will use a service called gpsd and its related tools.  This service manages data from the GPS receiver and makes it available for other applications.
 
-1. Install gpsd and its tools: use the following commands:
+## How to Test GPS
+
+To test the GPS module, you will use a service called `gpsd` and its related tools. This service manages data from the GPS receiver and makes it available to other applications.
+
+1. **Install `gpsd` and its tools:**
 
 ```bash
 sudo apt install gpsd gpsd-clients -y
 ```
 
-2. Verify the GPS connection
-```bash
-lsusb | grep “U-Blox”
-```
-you will see the name of the device U-Blox AG [u-blox 8]
-
-3. Run GPS test with the following commands:
+2. **Verify the GPS connection:**
 
 ```bash
-cgps #with this command you will see the data in console (text-based)
-xgps #is a visual tool that shows the same information
+lsusb | grep "U-Blox"
 ```
-It can take a few minutes to get a “fix” on the satellites.
 
-![gps example](/assets/gps_ui.png)
+You should see the device listed as **U-Blox AG [u-blox 8]**.
 
----
-**NOTE**
+3. **Run the GPS test:**
 
-If the applications don’t show any data, it might be because you are in a space where the GPS doesn’t detect the satellites, or a problem with the gpsd service. You can check its status with:
+```bash
+cgps   # displays GPS data in the console (text-based)
+xgps   # visual tool that shows the same information
+```
+
+It may take a few minutes to get a "fix" on the satellites.
+
+![GPS UI Example](/assets/gps_ui.png)
+
+> **Note:** If the applications do not show any data, you may be in a location where the GPS cannot detect satellites, or there may be an issue with the `gpsd` service. You can check its status with:
 
 ```bash
 sudo systemctl status gpsd
 ```
---- 
-[⬆️ Go to Index](#Index)
 
-WebCam Configuration: 
+[⬆️ Go to Index](#index)
+
 ---
-The Camera is usually detected and ready to go automatically. All you need to do is install a simple application to test it
+
+## Webcam Configuration
+
+The camera is usually detected and ready automatically. All you need to do is install a test application:
+
 ```bash
-sudo apt install cheese
-sudo apt -y install kamoso
+sudo apt install cheese -y
+sudo apt install kamoso -y
 ```
----
-**NOTE:**
-On some units, such as **DELL devices**, the application CHEESE may present errors or bugs. For this reason, instead of using Cheese, we will use KAMOSO
+
+> **Note:** On some units, such as **Dell devices**, the **Cheese** application may present errors or bugs. In that case, use **Kamoso** instead and remove Cheese:
 
 ```bash
 sudo apt remove cheese
 ```
----
-How to Calibrate the Touch Screen:
----
-You can calibrate the touchscreen using a command-line tool called xinput-calibrator. This tool is effective when you’re using the X Window System, which is the default display server on Ubuntu.
 
-1. Install xinput-calibrator
+[⬆️ Go to Index](#index)
+
+---
+
+## How to Calibrate the Touch Screen
+
+You can calibrate the touchscreen using a command-line tool called `xinput_calibrator`. This tool works when you are using the X Window System, which is the default display server on Ubuntu.
+
+1. **Install `xinput_calibrator`:**
+
 ```bash
 sudo apt install xinput-calibrator
 ```
-2. Run the Calibrator
-Run the calibrator from the terminal. This will launch a simple graphical interface.
+
+2. **Run the calibrator.**  
+   This will launch a simple graphical interface:
+
 ```bash
 xinput_calibrator
 ```
-![Touch calibator](/assets/touch_calibrator.png)
 
-### Make the calibration permanent:
+![Touch Screen Calibrator](/assets/touch_calibrator.png)
 
-After tapped all four points in the UI, the terminal will show the calibration data as a **“snippet”**. This snippet contains the values needed to make the calibration persistent across reboots.
+---
 
-1. Run the calibrator 
-2. Copy the entire output from the terminal (ctrl + shift + c), and replace the name of the specific touch device 
+## Make the Calibration Permanent
+
+After tapping all four points in the UI, the terminal will display the calibration data as a **"snippet"**. This snippet contains the values needed to make the calibration persist across reboots.
+
+1. Run the calibrator.
+2. Copy the entire output from the terminal (`Ctrl + Shift + C`) and paste it into the configuration file, replacing the device name with your specific touch device:
+
 ```bash
 sudo nano /etc/X11/xorg.conf.d/99-calibration.conf
-#Paste the snippet into this file (ctrl + s) => save, (ctrl + x) => exit
+# Paste the snippet into this file
+# Ctrl + S  → Save
+# Ctrl + X  → Exit
 reboot now
 ```
-### In case xinput_calibrator doesn't work 
-1. log out and use the **Gnome Xorg** option in the authentication panel
-2. open the terminal and authenticate as root
-3. go to directory: **/usr/local/bin** 
-4. Create a bash script with the following content (the values of the coordinate transformation Matrix may vary depending the unit)
+
+---
+
+## In Case xinput_calibrator Doesn't Work
+
+1. Log out and select the **Gnome on Xorg** session from the login screen.
+2. Open the terminal and authenticate as root.
+3. Navigate to **/usr/local/bin**.
+4. Create a bash script with the following content. (The values of the Coordinate Transformation Matrix may vary depending on the unit.)
 
 ```bash
 #!/bin/sh
 
-#Coordinate touch panel to screen
-#representations:
-#Touch_area_width,0,touch_x_offset,0,touch_area_height,touch_y_offset,0,0,1
+# Coordinate touch panel to screen
+# Format: touch_area_width, 0, touch_x_offset, 0, touch_area_height, touch_y_offset, 0, 0, 1
 xinput set-prop "Fujitsu Component USB Touch Panel" --type=float "Coordinate Transformation Matrix" 1.115 0 -0.0709 0 1.14 -0.108 0 0 1
 ```
-5. save and give execution permisions.
-6. then set up this script in the auto execute panel
 
-### Calibration values for CF-31 MK5 (temporary)
-modify the /usr/local/bin and replace:
+5. Save the file and grant execution permissions.
+6. Set up this script in the autostart panel.
 
-SCALE_X=1.10
-SCALE_Y=1.10
+### Calibration Values for CF-31 MK5 (Temporary)
 
-OFFSET X = -0.042
-OFFSET Y = -0.07
+Modify the script in `/usr/local/bin` and replace the following values:
 
-then, git pull to toughbook repository, press option [6] after that delete the old starup script.
+```
+SCALE_X  = 1.10
+SCALE_Y  = 1.10
+OFFSET_X = -0.042
+OFFSET_Y = -0.07
+```
 
-[⬆️ Go to Index](#Index)
+Then run `git pull` on the toughbook repository, press option **[6]**, and delete the old startup script afterward.
 
-How to Set up the Fingerprint Sensor:
+[⬆️ Go to Index](#index)
+
 ---
-To test your fingerprint sensor, you will use a command-line tool called fprintd
-1. Install fprintd
-```bash
-sudo apt install fprintd
-```
-2. Enroll a Fingerprint: If the sensor is detected, you can use fprintd to enroll a fingerprint.
-```bash
-fprintd-enroll #Follow the onscreen instructions, you’ll see a success message
-fprint-verify
-```
-[⬆️ Go to Index](#Index)
 
-How to set up the Smart Card Reader: 
+## How to Set Up the Fingerprint Sensor
+
+To test your fingerprint sensor, you will use a command-line tool called `fprintd`.
+
+1. **Install `fprintd`:**
+
+```bash
+sudo apt install fprintd -y
+```
+
+2. **Enroll a fingerprint.** If the sensor is detected, use `fprintd` to register a fingerprint:
+
+```bash
+fprintd-enroll    # Follow the on-screen instructions; you will see a success message when done
+fprintd-verify    # Verify the enrolled fingerprint
+```
+
+[⬆️ Go to Index](#index)
+
 ---
-To test the smart card reader, you can use command-line tools from pcsc-tools or opensc
-1. Install the tools:
+
+## How to Set Up the Smart Card Reader
+
+To test the smart card reader, you can use command-line tools from `pcsc-tools` or `opensc`.
+
+1. **Install the required tools:**
+
 ```bash
-sudo apt install pcscd pcsc-tools
+sudo apt install pcscd pcsc-tools -y
 ```
-### Check is the Reader is detected
-```bash
-pscc_scan
-```
-The command will tell you if a reader is detected. Look for a line that says “Reader 0: <reader_name>…”. This means the system
-recognizes the reader.
-### Test with a card
-1. Insert the smart card
+
+### Check if the Reader is Detected
+
 ```bash
 pcsc_scan
 ```
-The command will provide information about the card
 
-[⬆️ Go to Index](#Index)
+The command will indicate whether a reader is detected. Look for a line that says `Reader 0: <reader_name>...` — this means the system recognizes the reader.
 
-Configure Computer Fan and Temperature:
----
----
-**NOTE:**
-This step is only necessary if a unit failure is noticed when making the order or if it is specifically required.
+### Test with a Card
 
----
-To diagnose a fan, you can use command-line tools to monitor your CPU temperature and fan speed.
+1. Insert the smart card.
 
-### Monitor CPU temperature: 
-
-1. Install lm-sensors
 ```bash
-sudo apt install lm-sensors
+pcsc_scan
 ```
-After installing, run the following command to have the system find all your hardware sensors. Press Enter at each question to accept the default options
+
+The command will display information about the card.
+
+[⬆️ Go to Index](#index)
+
+---
+
+## Configure Computer Fan and Temperature
+
+> **Note:** This step is only necessary if a fan issue is noticed on a unit or if it is specifically required.
+
+To diagnose a fan, you can use command-line tools to monitor CPU temperature and fan speed.
+
+### Monitor CPU Temperature
+
+1. **Install `lm-sensors`:**
+
+```bash
+sudo apt install lm-sensors -y
+```
+
+2. After installing, run the following command to let the system detect all hardware sensors. Press `Enter` at each prompt to accept the default options:
+
 ```bash
 sudo sensors-detect
-sersors
+sensors
 ```
-With sensors command you can see the temperature of your CPU,GPU, and other parts.
-Monitor Fan Speed: you can use **lm-sensors** along with fancontrol
 
-2. Install fancontrol:
+The `sensors` command displays the temperature of your CPU, GPU, and other components.
+
+### Monitor Fan Speed
+
+You can use **lm-sensors** along with **fancontrol**.
+
+1. **Install `fancontrol`:**
+
 ```bash
-sudo apt install fancontrol
+sudo apt install fancontrol -y
 ```
-3. Configure fancontrol:
+
+2. **Configure `fancontrol`:**
+
 ```bash
-Sudo pwmconfig
+sudo pwmconfig
 ```
-Follow the on-screen instructions to test the fans. This will show you the current speed in RPM
 
-[⬆️ Go to Index](#Index)
+Follow the on-screen instructions to test the fans. This will display the current speed in RPM.
 
-Delete Test Profile and Prepare unit: 
----
----
-**NOTE:**
-In case you are using Ubuntu 22.04, it is not necessary to perform this step, as there is a program embedded in the desktop.
+[⬆️ Go to Index](#index)
 
 ---
-To prepare the device for distribution as an (OEM) Original Equipment Manufacturer use the following commands:
 
-1. Update and Upgrade the System:
+## Delete Test Profile and Prepare Unit
+
+> **Note:** If you are using Ubuntu 22.04, this step is not necessary — a built-in program on the desktop handles it automatically.
+
+To prepare the device for distribution as an **Original Equipment Manufacturer (OEM)** unit, run the following commands:
+
+1. **Update and upgrade the system:**
+
 ```bash
 sudo apt update && sudo apt full-upgrade -y
 ```
-2. Install OEM packages:
+
+2. **Install OEM packages:**
+
 ```bash
 sudo apt install -y oem-config-gtk oem-config-slideshow-ubuntu
 ```
-3.Prepare the System for the End-User:
 
-This is the most critical step. The oem-config-prepare command cleans up the system and sets it to a state where end-user can create their own account
+3. **Prepare the system for the end user:**
+
+This is the most critical step. The `oem-config-prepare` command cleans up the system and sets it to a state where the end user can create their own account.
+
 ```bash
 sudo oem-config-prepare
 ```
 
-4. Shutdown the device
+4. **Shut down the device:**
+
 ```bash
 sudo shutdown -h now
 ```
-[⬆️ Go to Index](#Index)
 
-[!]
-.
-
+[⬆️ Go to Index](#index)
 
 
 
