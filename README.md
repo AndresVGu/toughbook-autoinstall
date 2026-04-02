@@ -33,12 +33,15 @@ When preparing to install an operating system, it is crucial to consider the ver
 
 | Model | Ubuntu Version |
 |:-----:|:--------------|
-| CF-31 MK5 | Ubuntu **24.04** LTS (Noble Numbat) |
-| CF-53 MK4 | Ubuntu **24.04** LTS (Noble Numbat) |
-| CF-54 MK2 | Ubuntu **24.04** LTS (Noble Numbat) |
-| CF-C2 MK2 | Ubuntu **24.04** LTS (Noble Numbat) |
+| CF-31 MK5 | Ubuntu **22.04** LTS (Jammy Jellyfish) |
+| CF-53 MK4 | Ubuntu **22.04** LTS (Jammy Jellyfish) |
+| CF-54 MK2 | Ubuntu **22.04** LTS (Jammy Jellyfish) |
+| CF-C2 MK2 | Ubuntu **22.04** LTS (Jammy Jellyfish) |
 | FZ-G1 MK1 | Ubuntu **20.04** LTS (Focal Fossa) |
 | FZ-G1 MK4 | Ubuntu **20.04** LTS (Focal Fossa) |
+| CF-33 MK1 & MK2 | No Compatible |
+| FZ-M1 | No Compatible |
+| Dell Units | No 4G Compatible |
 
 > **Important Note**
 >
