@@ -65,7 +65,10 @@ keyboard_test() {
     fi
 
     echo -e "Initializing Keytest..."
-    gnome-terminal -- bash -c "cd '$FULL_REPO_PATH' && python3 keytest.py"
+    cd "$FULL_REPO_PATH" || return 1
+    sudo -u "$USER_DIR" DISPLAY=:0 XAUTHORITY="/home/$USER_DIR/.Xauthority" \
+        python3 keytest.py &
+    cd - >/dev/null
 }
 
 open_doc() {
