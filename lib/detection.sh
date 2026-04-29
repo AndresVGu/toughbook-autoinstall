@@ -1,9 +1,70 @@
 #!/usr/bin/env bash
-# Hardware detection: scans USB devices, bluetooth, cameras, touch, network
+# Hardware detection: scans USB devices, bluetooth, cameras, touch, network, GPS
 
-# Unified detection function — replaces device_detection, c2_detection, g1_detection
+# ── Table drawing helpers ──
+
+_detection_header() {
+    local TITLE="HARDWARE DETECTION"
+    local W=49  # inner width
+
+    printf -v BORDER "%*s" "$W" ""
+    BORDER="${BORDER// /═}"
+
+    local TITLE_LEN=${#TITLE}
+    local LP=$(( (W - TITLE_LEN) / 2 ))
+    local RP=$(( W - TITLE_LEN - LP ))
+    printf -v LSP "%*s" "$LP" ""
+    printf -v RSP "%*s" "$RP" ""
+
+    echo -e "${TURQUOISE}╔═${BORDER}═╗${END}"
+    echo -e "${TURQUOISE}║${END} ${LSP}${TITLE}${RSP} ${TURQUOISE}║${END}"
+    echo -e "${TURQUOISE}╠═${BORDER}═╣${END}"
+    printf "${TURQUOISE}║${END} %-30s ${TURQUOISE}│${END} %-16s ${TURQUOISE}║${END}\n" "Device" "Status"
+    echo -e "${TURQUOISE}╠═${BORDER}═╣${END}"
+}
+
+_detection_row() {
+    local device="$1"
+    local detected="$2"
+
+    if $detected; then
+        printf "${TURQUOISE}║${END} ${GREEN}%-30s${END} ${TURQUOISE}│${END} ${GREEN}%-16s${END} ${TURQUOISE}║${END}\n" "$device" "✅ Detected"
+    else
+        printf "${TURQUOISE}║${END} ${RED}%-30s${END} ${TURQUOISE}│${END} ${RED}%-16s${END} ${TURQUOISE}║${END}\n" "$device" "❌ Not Detected"
+    fi
+}
+
+_detection_footer() {
+    local W=49
+    printf -v BORDER "%*s" "$W" ""
+    BORDER="${BORDER// /═}"
+    echo -e "${TURQUOISE}╚═${BORDER}═╝${END}"
+}
+
+# ── GPS detection: USB (U-Blox) OR serial port (ttyS0/ttyS4) ──
+
+_detect_gps() {
+    local usb_devices="$1"
+
+    # Check USB
+    if echo "$usb_devices" | grep -qi "U-Blox"; then
+        return 0
+    fi
+
+    # Check serial ports
+    local tty_output
+    tty_output=$(dmesg 2>/dev/null | grep -i tty)
+    if echo "$tty_output" | grep -qE "/dev/ttyS0|ttyS0|/dev/ttyS4|ttyS4"; then
+        return 0
+    fi
+
+    return 1
+}
+
+# ── Main detection function ──
 # Usage: detect_devices <model_type>
 #   model_type: "default" | "c2" | "g1"
+
 detect_devices() {
     local model_type="${1:-default}"
 
@@ -47,25 +108,18 @@ detect_devices() {
             ;;
     esac
 
-    local modemg
-    modemg=$(echo "$usb_devices" | grep "Sierra Wireless" | awk -F 'Inc. ' '{print $2}')
-    local -a network_devices=(
-        "Sierra Wireless:Sierra Wireless(${modemg})"
-        "U-Blox:GPS Dedicated"
-    )
-
     # ── Title ──
     draw_box "You are working on a ${brand} ${model}"
+    echo ""
 
-    printf "%-25s | %s\n" "Device" "Status"
-    printf "%-25s | %s\n" "-------------------------" "------------"
+    _detection_header
 
     # ── USB devices ──
     for device_name in "${devices_to_check[@]}"; do
         if echo "$usb_devices" | grep -qi "$device_name"; then
-            printf "${GREEN}%-25s${END} | ${GREEN}%s${END}\n" "$device_name" "✅ Detected"
+            _detection_row "$device_name" true
         else
-            printf "${RED}%-25s${END} | ${RED}%s${END}\n" "$device_name" "❌  Not Detected"
+            _detection_row "$device_name" false
         fi
     done
 
@@ -74,32 +128,37 @@ detect_devices() {
         local BT_STATUS
         BT_STATUS=$(sudo systemctl status bluetooth 2>/dev/null)
         if echo "$BT_STATUS" | grep -q "Active: active (running)"; then
-            printf "${GREEN}%-25s${END} | ${GREEN}%s${END}\n" "Bluetooth" "✅ Detected"
+            _detection_row "Bluetooth" true
         else
-            printf "${RED}%-25s${END} | ${RED}%s${END}\n" "Bluetooth" "❌  Not Detected"
+            _detection_row "Bluetooth" false
         fi
     fi
 
-    # ── Network devices ──
-    for item in "${network_devices[@]}"; do
-        local search_pattern="${item%%:*}"
-        local output_alias="${item##*:}"
+    # ── 4G Modem ──
+    local modemg
+    modemg=$(echo "$usb_devices" | grep "Sierra Wireless" | awk -F 'Inc. ' '{print $2}')
 
-        if echo "$usb_devices" | grep -qi "$search_pattern"; then
-            printf "${GREEN}%-25s${END} | ${GREEN}%s${END}\n" "$output_alias" "✅ Detected"
-        else
-            printf "${RED}%-25s${END} | ${RED}%s${END}\n" "$output_alias" "❌  Not Detected"
-        fi
-    done
+    if echo "$usb_devices" | grep -qi "Sierra Wireless"; then
+        _detection_row "Sierra Wireless(${modemg})" true
+    else
+        _detection_row "Sierra Wireless (4G Modem)" false
+    fi
+
+    # ── GPS (USB + serial port fallback) ──
+    if _detect_gps "$usb_devices"; then
+        _detection_row "GPS Dedicated" true
+    else
+        _detection_row "GPS Dedicated" false
+    fi
 
     # ── Optical drive (default only) ──
     if $check_optical; then
         local OPTICAL_STATUS
-        OPTICAL_STATUS=$(dmesg | grep -i 'dvd\|cdrom\|optical')
+        OPTICAL_STATUS=$(dmesg 2>/dev/null | grep -i 'dvd\|cdrom\|optical')
         if [ -n "$OPTICAL_STATUS" ]; then
-            printf "${GREEN}%-25s${END} | ${GREEN}%s${END}\n" "Optical Drive(DVD)" "✅ Detected"
+            _detection_row "Optical Drive (DVD)" true
         else
-            printf "${RED}%-25s${END} | ${RED}%s${END}\n" "Optical Drive(DVD)" "❌  Not Detected"
+            _detection_row "Optical Drive (DVD)" false
         fi
     fi
 
@@ -108,16 +167,16 @@ detect_devices() {
     V4L_OUTPUT=$(v4l2-ctl --list-devices 2>/dev/null)
 
     if echo "$V4L_OUTPUT" | grep -q "/dev/video0"; then
-        printf "${GREEN}%-25s${END} | ${GREEN}%s${END}\n" "Front Camera" "✅ Detected"
+        _detection_row "Front Camera" true
     else
-        printf "${RED}%-25s${END} | ${RED}%s${END}\n" "Front Camera" "❌  Not Detected"
+        _detection_row "Front Camera" false
     fi
 
     if $check_rear_camera; then
         if echo "$V4L_OUTPUT" | grep -q "/dev/video1"; then
-            printf "${GREEN}%-25s${END} | ${GREEN}%s${END}\n" "Rear Camera" "✅ Detected"
+            _detection_row "Rear Camera" true
         else
-            printf "${RED}%-25s${END} | ${RED}%s${END}\n" "Rear Camera" "❌  Not Detected"
+            _detection_row "Rear Camera" false
         fi
     fi
 
@@ -128,9 +187,9 @@ detect_devices() {
             local search_pattern="${item%%:*}"
             local output_alias="${item##*:}"
             if echo "$usb_devices" | grep -qi "$search_pattern"; then
-                printf "${GREEN}%-25s${END} | ${GREEN}%s${END}\n" "$output_alias" "✅ Detected"
+                _detection_row "$output_alias" true
             else
-                printf "${RED}%-25s${END} | ${RED}%s${END}\n" "$output_alias" "❌  Not Detected"
+                _detection_row "$output_alias" false
             fi
         done
     fi
@@ -143,11 +202,9 @@ detect_devices() {
         fi
     done
 
-    if $touch_detected; then
-        printf "${GREEN}%-25s${END} | ${GREEN}%s${END}\n" "Touch Screen" "✅ Detected"
-    else
-        printf "${RED}%-25s${END} | ${RED}%s${END}\n" "Touch Screen" "❌ Not Detected"
-    fi
+    _detection_row "Touch Screen" $touch_detected
 
-    echo -e "${GREEN}[!] Scan completed.${END}"
+    _detection_footer
+
+    echo -e "\n${GREEN}[!] Scan completed.${END}"
 }
