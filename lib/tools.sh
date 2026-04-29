@@ -3,7 +3,6 @@
 
 keyboard_test() {
     command -v python3 &>/dev/null || { echo "[!] Installing python3 ..."; sudo apt install -y python3; }
-    command -v pip3    &>/dev/null || { echo "[!] Installing pip3 ...";    sudo apt install -y python3-pip; }
 
     local USER_DIR="$SUDO_USER"
     local DOWNLOADS_DIR="/home/$USER_DIR/Downloads"
@@ -11,30 +10,47 @@ keyboard_test() {
     local FULL_REPO_PATH="$DOWNLOADS_DIR/$REPO_FOLDER"
     local REPO_URL="https://github.com/AndresVGu/linux-keytest"
 
-    echo "🔎 Verifying repository in $DOWNLOADS_DIR"
+    echo "🔎 Verifying linux-keytest repository..."
 
-    if [ -d "$FULL_REPO_PATH" ]; then
-        echo "⚠️ Repository already on the system ($REPO_FOLDER exists in $DOWNLOADS_DIR)"
+    if [ -d "$FULL_REPO_PATH/.git" ]; then
+        echo "[+] Repository found. Checking for updates..."
+        cd "$FULL_REPO_PATH" || return 1
+
+        git fetch origin --quiet 2>/dev/null
+        LOCAL_HASH=$(git rev-parse HEAD 2>/dev/null)
+        REMOTE_HASH=$(git rev-parse @{u} 2>/dev/null)
+
+        if [[ "$LOCAL_HASH" != "$REMOTE_HASH" ]]; then
+            echo "⬆️  Update available. Pulling latest changes..."
+            git pull --quiet 2>/dev/null
+            echo "✅ Repository updated."
+        else
+            echo "✅ Repository is up to date."
+        fi
+
+        cd - >/dev/null
     else
-        echo "✅ Directory $REPO_FOLDER does not exist. Cloning in $DOWNLOADS_DIR..."
+        echo "[!] Repository not found. Cloning..."
+        rm -rf "$FULL_REPO_PATH" 2>/dev/null
         git clone "$REPO_URL" "$FULL_REPO_PATH"
         if [ $? -ne 0 ]; then
-            echo "❌ Error! Verify Internet connection and credentials"
+            echo "❌ Error cloning. Verify internet connection."
             return 1
         fi
-        echo "🎉 Repository cloned successfully to $FULL_REPO_PATH"
+        echo "🎉 Repository cloned successfully."
     fi
 
-    sudo apt install -y dbus-x11 python3-tk
+    # Install dependencies
+    sudo apt install -y dbus-x11 python3-tk >/dev/null 2>&1
 
     local KEYBOARD_PATH="$FULL_REPO_PATH/keytest.py"
     if [ ! -f "$KEYBOARD_PATH" ]; then
-        echo "ERROR: Keytest file not found"
+        echo "ERROR: keytest.py not found in $FULL_REPO_PATH"
         return 1
     fi
 
-    echo -e "Initializing Keytest"
-    gnome-terminal -- bash -c "python3 \"$KEYBOARD_PATH\""
+    echo -e "Initializing Keytest..."
+    gnome-terminal -- bash -c "cd '$FULL_REPO_PATH' && python3 keytest.py"
 }
 
 open_doc() {
