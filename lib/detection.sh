@@ -1,26 +1,49 @@
 #!/usr/bin/env bash
 # Hardware detection: scans USB devices, bluetooth, cameras, touch, network, GPS
 
-# ── Table drawing helpers ──
+# ── Fixed-width table constants ──
+_DET_COL1=30
+_DET_COL2=18
+_DET_W=$((_DET_COL1 + 3 + _DET_COL2))
+
+_det_border() {
+    printf -v _b1 "%*s" "$_DET_COL1" ""; _b1="${_b1// /═}"
+    printf -v _b2 "%*s" "$_DET_COL2" ""; _b2="${_b2// /═}"
+    echo "${_b1}═╤═${_b2}"
+}
+
+_det_border_mid() {
+    printf -v _b1 "%*s" "$_DET_COL1" ""; _b1="${_b1// /─}"
+    printf -v _b2 "%*s" "$_DET_COL2" ""; _b2="${_b2// /─}"
+    echo "${_b1}─┼─${_b2}"
+}
+
+_det_border_bot() {
+    printf -v _b1 "%*s" "$_DET_COL1" ""; _b1="${_b1// /═}"
+    printf -v _b2 "%*s" "$_DET_COL2" ""; _b2="${_b2// /═}"
+    echo "${_b1}═╧═${_b2}"
+}
 
 _detection_header() {
     local TITLE="HARDWARE DETECTION"
-    local W=49  # inner width
-
-    printf -v BORDER "%*s" "$W" ""
-    BORDER="${BORDER// /═}"
+    local BORDER
+    BORDER=$(_det_border)
+    local BORDER_FULL="${BORDER}"
+    local INNER_W=${_DET_W}
 
     local TITLE_LEN=${#TITLE}
-    local LP=$(( (W - TITLE_LEN) / 2 ))
-    local RP=$(( W - TITLE_LEN - LP ))
+    local LP=$(( (INNER_W - TITLE_LEN) / 2 ))
+    local RP=$(( INNER_W - TITLE_LEN - LP ))
     printf -v LSP "%*s" "$LP" ""
     printf -v RSP "%*s" "$RP" ""
 
-    echo -e "${TURQUOISE}╔═${BORDER}═╗${END}"
+    echo -e "${TURQUOISE}╔═${BORDER_FULL}═╗${END}"
     echo -e "${TURQUOISE}║${END} ${LSP}${TITLE}${RSP} ${TURQUOISE}║${END}"
-    echo -e "${TURQUOISE}╠═${BORDER}═╣${END}"
-    printf "${TURQUOISE}║${END} %-30s ${TURQUOISE}│${END} %-16s ${TURQUOISE}║${END}\n" "Device" "Status"
-    echo -e "${TURQUOISE}╠═${BORDER}═╣${END}"
+    echo -e "${TURQUOISE}╠═${BORDER_FULL}═╣${END}"
+    printf "${TURQUOISE}║${END} %-${_DET_COL1}s ${TURQUOISE}│${END} %-${_DET_COL2}s ${TURQUOISE}║${END}\n" "Device" "Status"
+    local MID
+    MID=$(_det_border_mid)
+    echo -e "${TURQUOISE}╟─${MID}─╢${END}"
 }
 
 _detection_row() {
@@ -28,16 +51,17 @@ _detection_row() {
     local detected="$2"
 
     if $detected; then
-        printf "${TURQUOISE}║${END} ${GREEN}%-30s${END} ${TURQUOISE}│${END} ${GREEN}%-16s${END} ${TURQUOISE}║${END}\n" "$device" "✅ Detected"
+        printf "${TURQUOISE}║${END} ${GREEN}%-${_DET_COL1}s${END} ${TURQUOISE}│${END} ${GREEN}%-${_DET_COL2}s${END} ${TURQUOISE}║${END}\n" \
+            "$device" "[+] Detected"
     else
-        printf "${TURQUOISE}║${END} ${RED}%-30s${END} ${TURQUOISE}│${END} ${RED}%-16s${END} ${TURQUOISE}║${END}\n" "$device" "❌ Not Detected"
+        printf "${TURQUOISE}║${END} ${RED}%-${_DET_COL1}s${END} ${TURQUOISE}│${END} ${RED}%-${_DET_COL2}s${END} ${TURQUOISE}║${END}\n" \
+            "$device" "[-] Not Detected"
     fi
 }
 
 _detection_footer() {
-    local W=49
-    printf -v BORDER "%*s" "$W" ""
-    BORDER="${BORDER// /═}"
+    local BORDER
+    BORDER=$(_det_border_bot)
     echo -e "${TURQUOISE}╚═${BORDER}═╝${END}"
 }
 
@@ -54,7 +78,7 @@ _detect_gps() {
     # Check serial ports
     local tty_output
     tty_output=$(dmesg 2>/dev/null | grep -i tty)
-    if echo "$tty_output" | grep -qE "/dev/ttyS0|ttyS0|/dev/ttyS4|ttyS4"; then
+    if echo "$tty_output" | grep -qE "ttyS0|ttyS4"; then
         return 0
     fi
 
@@ -139,7 +163,7 @@ detect_devices() {
     modemg=$(echo "$usb_devices" | grep "Sierra Wireless" | awk -F 'Inc. ' '{print $2}')
 
     if echo "$usb_devices" | grep -qi "Sierra Wireless"; then
-        _detection_row "Sierra Wireless(${modemg})" true
+        _detection_row "Sierra Wireless (${modemg})" true
     else
         _detection_row "Sierra Wireless (4G Modem)" false
     fi

@@ -125,45 +125,39 @@ collect_info() {
 
 _draw_storage_info() {
     local TITLE="STORAGE INFORMATION"
-    local BORDER_CHAR="═"
 
-    local TERM_WIDTH
-    TERM_WIDTH=$(tput cols 2>/dev/null || echo 80)
-    local SAFE_MARGIN=6
-    local MAX_BOX_WIDTH=$((TERM_WIDTH - SAFE_MARGIN))
+    local C1=12 C2=8 C3=22 C4=20
+    local INNER_W=$((C1 + 3 + C2 + 3 + C3 + 3 + C4))
 
-    local HEADERS=("Device" "Size" "Serial" "Model")
-    local COL_WIDTHS=(10 10 20 30)
+    # Borders
+    printf -v _b1 "%*s" "$C1" ""; _b1="${_b1// /═}"
+    printf -v _b2 "%*s" "$C2" ""; _b2="${_b2// /═}"
+    printf -v _b3 "%*s" "$C3" ""; _b3="${_b3// /═}"
+    printf -v _b4 "%*s" "$C4" ""; _b4="${_b4// /═}"
+    local BORDER_TOP="${_b1}═╤═${_b2}═╤═${_b3}═╤═${_b4}"
+    local BORDER_BOT="${_b1}═╧═${_b2}═╧═${_b3}═╧═${_b4}"
 
-    local TOTAL_COL_WIDTH=$((COL_WIDTHS[0]+COL_WIDTHS[1]+COL_WIDTHS[2]+COL_WIDTHS[3]+5))
-    if (( TOTAL_COL_WIDTH > MAX_BOX_WIDTH )); then
-        COL_WIDTHS[3]=$((MAX_BOX_WIDTH - (COL_WIDTHS[0]+COL_WIDTHS[1]+COL_WIDTHS[2]+5)))
-        (( COL_WIDTHS[3] < 15 )) && COL_WIDTHS[3]=15
-    fi
+    printf -v _m1 "%*s" "$C1" ""; _m1="${_m1// /─}"
+    printf -v _m2 "%*s" "$C2" ""; _m2="${_m2// /─}"
+    printf -v _m3 "%*s" "$C3" ""; _m3="${_m3// /─}"
+    printf -v _m4 "%*s" "$C4" ""; _m4="${_m4// /─}"
+    local BORDER_MID="${_m1}─┼─${_m2}─┼─${_m3}─┼─${_m4}"
 
-    local CONTENT_WIDTH=$((COL_WIDTHS[0]+COL_WIDTHS[1]+COL_WIDTHS[2]+COL_WIDTHS[3]+5))
-    local BOX_WIDTH=$((CONTENT_WIDTH + 2))
-
-    printf -v BORDER_LINE "%*s" "$BOX_WIDTH" ""
-    BORDER_LINE="${BORDER_LINE// /$BORDER_CHAR}"
-
+    # Title centering
     local TITLE_LEN=${#TITLE}
-    local LP=$(( (CONTENT_WIDTH - TITLE_LEN) / 2 ))
-    local RP=$(( CONTENT_WIDTH - TITLE_LEN - LP ))
+    local LP=$(( (INNER_W - TITLE_LEN) / 2 ))
+    local RP=$(( INNER_W - TITLE_LEN - LP ))
     printf -v LSP "%*s" "$LP" ""
     printf -v RSP "%*s" "$RP" ""
 
-    echo -e "${TURQUOISE}╔${BORDER_LINE}╗${END}"
+    echo -e "${TURQUOISE}╔═${BORDER_TOP}═╗${END}"
     echo -e "${TURQUOISE}║${END} ${LSP}${TITLE}${RSP} ${TURQUOISE}║${END}"
-    echo -e "${TURQUOISE}╠${BORDER_LINE}╣${END}"
+    echo -e "${TURQUOISE}╠═${BORDER_TOP}═╣${END}"
 
-    printf "${TURQUOISE}║${END} %-*s %-*s %-*s %-*s ${TURQUOISE}║${END}\n" \
-        "${COL_WIDTHS[0]}" "${HEADERS[0]}" \
-        "${COL_WIDTHS[1]}" "${HEADERS[1]}" \
-        "${COL_WIDTHS[2]}" "${HEADERS[2]}" \
-        "${COL_WIDTHS[3]}" "${HEADERS[3]}"
+    printf "${TURQUOISE}║${END} %-${C1}s ${TURQUOISE}│${END} %-${C2}s ${TURQUOISE}│${END} %-${C3}s ${TURQUOISE}│${END} %-${C4}s ${TURQUOISE}║${END}\n" \
+        "Device" "Size" "Serial" "Model"
 
-    echo -e "${TURQUOISE}╠${BORDER_LINE}╣${END}"
+    echo -e "${TURQUOISE}╟─${BORDER_MID}─╢${END}"
 
     lsblk -d -n -o NAME,SIZE,TYPE | awk '$3=="disk"{print $1,$2}' | while read -r dev size; do
         local SERIAL MODEL
@@ -176,12 +170,9 @@ _draw_storage_info() {
         SERIAL=${SERIAL:-N/A}
         MODEL=${MODEL:-Unknown}
 
-        printf "${TURQUOISE}║${END} %-*s %-*s %-*s %-*s ${TURQUOISE}║${END}\n" \
-            "${COL_WIDTHS[0]}" "/dev/$dev" \
-            "${COL_WIDTHS[1]}" "$size" \
-            "${COL_WIDTHS[2]}" "$SERIAL" \
-            "${COL_WIDTHS[3]}" "$MODEL"
+        printf "${TURQUOISE}║${END} %-${C1}s ${TURQUOISE}│${END} %-${C2}s ${TURQUOISE}│${END} %-${C3}s ${TURQUOISE}│${END} %-${C4}s ${TURQUOISE}║${END}\n" \
+            "/dev/$dev" "$size" "$SERIAL" "$MODEL"
     done
 
-    echo -e "${TURQUOISE}╚${BORDER_LINE}╝${END}"
+    echo -e "${TURQUOISE}╚═${BORDER_BOT}═╝${END}"
 }

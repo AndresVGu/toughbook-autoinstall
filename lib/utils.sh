@@ -132,62 +132,61 @@ draw_box() {
     echo -e "${TURQUOISE} +${BORDER_LINE}+ ${END}\n${TURQUOISE} | ${UNIT_TEXT} | ${END}\n${TURQUOISE} |${LEFT_SPACES}${linux_os}${RIGHT_SPACES}| ${END}\n${TURQUOISE} +${BORDER_LINE}+ ${END}"
 }
 
-# Draws a generic info box with label:value pairs
+# Draws a generic info box with label:value pairs (pure ASCII aligned)
 drawInfo_box() {
     local TITLE="$1"
     shift
     local ITEMS=("$@")
 
-    local BORDER_CHAR="═"
-    local TERM_WIDTH
-    TERM_WIDTH=$(tput cols 2>/dev/null || echo 80)
+    local LABEL_W=18
+    local VALUE_W=40
+    local INNER_W=$((LABEL_W + 3 + VALUE_W))
 
-    local SAFE_MARGIN=6
-    local MAX_BOX_WIDTH=$((TERM_WIDTH - SAFE_MARGIN))
-    local MAX_LABEL=0
+    # Borders
+    printf -v _bL "%*s" "$LABEL_W" ""; _bL="${_bL// /═}"
+    printf -v _bV "%*s" "$VALUE_W" ""; _bV="${_bV// /═}"
+    local BORDER_TOP="${_bL}═╤═${_bV}"
+    local BORDER_BOT="${_bL}═╧═${_bV}"
 
-    for item in "${ITEMS[@]}"; do
-        local label="${item%%:*}"
-        (( ${#label} > MAX_LABEL )) && MAX_LABEL=${#label}
-    done
+    printf -v _mL "%*s" "$LABEL_W" ""; _mL="${_mL// /─}"
+    printf -v _mV "%*s" "$VALUE_W" ""; _mV="${_mV// /─}"
+    local BORDER_MID="${_mL}─┼─${_mV}"
 
-    local VALUE_WIDTH=$((MAX_BOX_WIDTH - MAX_LABEL - 5))
-    (( VALUE_WIDTH < 20 )) && VALUE_WIDTH=20
-
-    local CONTENT_WIDTH=$((MAX_LABEL + 3 + VALUE_WIDTH))
-    local BOX_WIDTH=$((CONTENT_WIDTH + 2))
-
-    printf -v BORDER_LINE "%*s" "$BOX_WIDTH" ""
-    BORDER_LINE="${BORDER_LINE// /$BORDER_CHAR}"
-
+    # Title centering
     local TITLE_LEN=${#TITLE}
-    local LP=$(( (CONTENT_WIDTH - TITLE_LEN) / 2 ))
-    local RP=$(( CONTENT_WIDTH - TITLE_LEN - LP ))
+    local LP=$(( (INNER_W - TITLE_LEN) / 2 ))
+    local RP=$(( INNER_W - TITLE_LEN - LP ))
     printf -v LSP "%*s" "$LP" ""
     printf -v RSP "%*s" "$RP" ""
 
-    echo -e "${TURQUOISE}╔${BORDER_LINE}╗${END}"
+    echo -e "${TURQUOISE}╔═${BORDER_TOP}═╗${END}"
     echo -e "${TURQUOISE}║${END} ${LSP}${TITLE}${RSP} ${TURQUOISE}║${END}"
-    echo -e "${TURQUOISE}╠${BORDER_LINE}╣${END}"
+    echo -e "${TURQUOISE}╠═${BORDER_TOP}═╣${END}"
 
+    local first_item=true
     for item in "${ITEMS[@]}"; do
         local label="${item%%:*}"
         local value="${item#*:}"
         value="${value# }"
 
+        if ! $first_item; then
+            echo -e "${TURQUOISE}╟─${BORDER_MID}─╢${END}"
+        fi
+        first_item=false
+
+        # Word-wrap value
         local first_line=1
         local line=""
 
         for word in $value; do
-            if (( ${#line} + ${#word} + 1 > VALUE_WIDTH )); then
+            if (( ${#line} + ${#word} + 1 > VALUE_W )); then
                 if (( first_line )); then
-                    printf "${TURQUOISE}║${END} %-*s ${TURQUOISE}:${END} ${GREEN}%-*s${END} ${TURQUOISE}║${END}\n" \
-                        "$MAX_LABEL" "$label" "$VALUE_WIDTH" "$line"
+                    printf "${TURQUOISE}║${END} %-${LABEL_W}s ${TURQUOISE}│${END} ${GREEN}%-${VALUE_W}s${END} ${TURQUOISE}║${END}\n" \
+                        "$label" "$line"
                     first_line=0
-                    label="$(printf '%*s' "$MAX_LABEL" "")"
                 else
-                    printf "${TURQUOISE}║${END} %-*s ${TURQUOISE} ${END} ${GREEN}%-*s${END} ${TURQUOISE}║${END}\n" \
-                        "$MAX_LABEL" "$label" "$VALUE_WIDTH" "$line"
+                    printf "${TURQUOISE}║${END} %-${LABEL_W}s ${TURQUOISE}│${END} ${GREEN}%-${VALUE_W}s${END} ${TURQUOISE}║${END}\n" \
+                        "" "$line"
                 fi
                 line="$word"
             else
@@ -196,13 +195,13 @@ drawInfo_box() {
         done
 
         if (( first_line )); then
-            printf "${TURQUOISE}║${END} %-*s ${TURQUOISE}:${END} ${GREEN}%-*s${END} ${TURQUOISE}║${END}\n" \
-                "$MAX_LABEL" "$label" "$VALUE_WIDTH" "$line"
+            printf "${TURQUOISE}║${END} %-${LABEL_W}s ${TURQUOISE}│${END} ${GREEN}%-${VALUE_W}s${END} ${TURQUOISE}║${END}\n" \
+                "$label" "$line"
         else
-            printf "${TURQUOISE}║${END} %-*s ${TURQUOISE} ${END} ${GREEN}%-*s${END} ${TURQUOISE}║${END}\n" \
-                "$MAX_LABEL" "$label" "$VALUE_WIDTH" "$line"
+            printf "${TURQUOISE}║${END} %-${LABEL_W}s ${TURQUOISE}│${END} ${GREEN}%-${VALUE_W}s${END} ${TURQUOISE}║${END}\n" \
+                "" "$line"
         fi
     done
 
-    echo -e "${TURQUOISE}╚${BORDER_LINE}╝${END}"
+    echo -e "${TURQUOISE}╚═${BORDER_BOT}═╝${END}"
 }
