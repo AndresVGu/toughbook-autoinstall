@@ -2,8 +2,6 @@
 # Auxiliary tools: keyboard test, documentation, sound autostart, touch calibration
 
 keyboard_test() {
-    command -v python3 &>/dev/null || { echo "[!] Installing python3 ..."; sudo apt install -y python3; }
-
     local USER_DIR="$SUDO_USER"
     local DOWNLOADS_DIR="/home/$USER_DIR/Downloads"
     local REPO_FOLDER="linux-keytest"
@@ -41,7 +39,24 @@ keyboard_test() {
     fi
 
     # Install dependencies
-    sudo apt install -y dbus-x11 python3-tk >/dev/null 2>&1
+    local DEPS=(python3 python3-tk dbus-x11)
+    local MISSING=()
+
+    for pkg in "${DEPS[@]}"; do
+        if ! dpkg -s "$pkg" &>/dev/null; then
+            MISSING+=("$pkg")
+        fi
+    done
+
+    if [ ${#MISSING[@]} -gt 0 ]; then
+        echo "[+] Installing missing dependencies: ${MISSING[*]}"
+        sudo apt install -y "${MISSING[@]}"
+        if [ $? -ne 0 ]; then
+            echo -e "${RED}[!] Failed to install dependencies. Cannot run keytest.${END}"
+            return 1
+        fi
+        echo -e "${GREEN}[+] Dependencies installed.${END}"
+    fi
 
     local KEYBOARD_PATH="$FULL_REPO_PATH/keytest.py"
     if [ ! -f "$KEYBOARD_PATH" ]; then
