@@ -8,8 +8,6 @@ main_menu() {
         echo -e "[2] 🩺 Hardware Detection"
         echo -e "[3] ⚙️  Update Device"
         echo -e "[4] ⌨️  Test Keyboard"
-        echo -e "⚠️ ${YELLOW}SYSPREP OPTION TEMPORARY DISABLED ${END} ⚠️"
-        echo -e "⚠️ ${YELLOW}USE [Prepare for shipping end user] INSTEAD${END} ⚠️"
         echo -e "[q|Q] ↩️  Exit"
         read -rp "Select an option: " choice
 
@@ -18,10 +16,10 @@ main_menu() {
             2) detect_devices "default" ;;
             3) check_dependencies; install_drivers ;;
             4) keyboard_test ;;
-            5) prepare_environment ;;
-            6) install_touch_calibrator "touch-calibrator.sh" "AutoCalibrate Fujitsu" "touch-calibration.desktop" ;;
-            7) install_touch_calibrator "touch-calibrator-cf31.sh" "CF-31 MK5 Automatic-Calibration" "touch-calibrationcf31.desktop" ;;
-            8) force_gdm ;;
+            s5p) prepare_environment ;;
+            t6c) install_touch_calibrator "touch-calibrator.sh" "AutoCalibrate Fujitsu" "touch-calibration.desktop" ;;
+            t7c) install_touch_calibrator "touch-calibrator-cf31.sh" "CF-31 MK5 Automatic-Calibration" "touch-calibrationcf31.desktop" ;;
+            g8d) force_gdm ;;
             [qQ])
                 echo -e "${RED}[*] Closing script...${END}"
                 exit 0
@@ -50,7 +48,7 @@ c2_main_menu() {
             3) check_dependencies; install_drivers ;;
             4) keyboard_test ;;
             5) install_sound_autostart_c2; sleep 1 ;;
-            6) prepare_environment_c2 ;;
+            s6p) prepare_environment_c2 ;;
             [qQ])
                 echo -e "${RED}[*] Closing script...${END}"
                 exit 0
@@ -70,7 +68,6 @@ g1_main_menu() {
         echo -e "[3] ⚙️  Update Device"
         echo -e "[4] 🔊 Sound Activation"
         echo -e "[5] Disk Resize"
-        echo -e "⚠️ ${YELLOW}For SYSPREP use Prepare For Shipping To End User located on the Desktop${END} ⚠️"
         echo -e "[q|Q] ↩️  Exit"
         read -rp "Select an option: " choice
 
@@ -85,6 +82,7 @@ g1_main_menu() {
                 sudo resize2fs /dev/sda5
                 echo -e "${GREEN}[+] Resize successful.${END}"
                 ;;
+            k6t) keyboard_test ;;
             [qQ])
                 echo -e "${RED}[*] Closing script...${END}"
                 exit 0

@@ -48,6 +48,7 @@
   - [Fan & Temperature](#configure-computer-fan-and-temperature)
 - [OEM Preparation (Sysprep)](#delete-test-profile-and-prepare-unit)
 - [Troubleshooting](#troubleshooting)
+- [Admin Commands](#admin-commands)
 - [Contributing](#contributing)
 - [Author](#author)
 
@@ -677,6 +678,36 @@ sudo shutdown -h now
 | Touch screen calibration resets after reboot | Follow the [permanent calibration](#make-the-calibration-permanent) steps |
 | Audio not working after OEM reset | The autostart service should restore it; check with `amixer` |
 | Boot enters emergency mode after cloning | Follow the [cloning preparation](#prepare-hard-drive-source-for-cloning) steps |
+
+---
+
+## Admin Commands
+
+The following commands are hidden from the menu and are intended for administrators only. Type the code at the menu prompt to execute.
+
+### Main Menu (CF-54, CF-53, CF-31, default)
+
+| Code | Action |
+|:-----|:-------|
+| `s5p` | OEM Environment Setup (Sysprep) |
+| `t6c` | Touch Screen Auto-Calibration (CF-53) |
+| `t7c` | Touch Screen Auto-Calibration (CF-31 MK5) |
+| `g8d` | Force GDM as display manager (GNOME on Xorg) |
+
+### CF-C2 Menu
+
+| Code | Action |
+|:-----|:-------|
+| `s6p` | OEM Environment Setup (Sysprep for CF-C2) |
+
+### FZ-G1 Menu
+
+| Code | Action |
+|:-----|:-------|
+| `k6t` | Keyboard Test (launches linux-keytest) |
+
+> [!WARNING]
+> The Sysprep commands (`s5p`, `s6p`) will delete the current user profile and prepare the system for end-user delivery. This action is irreversible.
 
 ---
 
