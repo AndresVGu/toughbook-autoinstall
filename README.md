@@ -17,6 +17,9 @@
 
 ## 📑 Table of Contents
 
+- [What is This Project?](#what-is-this-project)
+- [Project Goals](#project-goals)
+- [Project Structure](#project-structure)
 - [Overview](#overview)
 - [Supported Models](#supported-models)
 - [Prerequisites](#prerequisites)
@@ -47,6 +50,62 @@
 - [Troubleshooting](#troubleshooting)
 - [Contributing](#contributing)
 - [Author](#author)
+
+---
+
+## What is This Project?
+
+This project is a **command-line toolkit** designed for technicians who refurbish and prepare **Panasonic Toughbook** rugged laptops and tablets for resale. It runs on **Ubuntu LTS** and provides an interactive menu that automates the most time-consuming parts of the QA (Quality Assurance) process: detecting hardware, installing drivers, testing components, and preparing the unit for the end user.
+
+In a refurbishment environment, each unit must be individually tested to ensure all components (4G modem, GPS, fingerprint reader, touch screen, cameras, smart card reader, etc.) are functional before shipping. Doing this manually on every unit is slow and error-prone. This toolkit solves that by providing a single script that handles the entire workflow — from first boot to OEM-ready state.
+
+---
+
+## Project Goals
+
+- **Reduce setup time** — Automate repetitive tasks like driver installation, system updates, and device configuration that would otherwise take 30+ minutes per unit
+- **Standardize the QA process** — Ensure every technician follows the same steps regardless of experience level
+- **Support multiple models** — Automatically detect the Toughbook model and adapt the menu, drivers, and detection logic accordingly
+- **Minimize human error** — Provide clear visual feedback (detected/not detected) for each hardware component so nothing gets missed
+- **Enable fast cloning** — Include documentation and tools for preparing source drives that can be cloned across multiple units without boot issues
+- **Simplify OEM delivery** — Automate the Sysprep (factory reset) process so units are ready for end-user setup out of the box
+
+---
+
+## Project Structure
+
+The project is organized into modular scripts under the `lib/` directory. Each module handles a specific responsibility, and `autoinstall.sh` serves as the single entry point that loads everything.
+
+```
+toughbook-autoinstall/
+├── autoinstall.sh              # Entry point — loads modules, detects model, launches menu
+├── lib/
+│   ├── colors.sh               # Terminal color variables
+│   ├── utils.sh                # Spinner, banner, root/internet checks, box drawing helpers
+│   ├── sysinfo.sh              # System info collection (CPU, RAM, battery, storage)
+│   ├── detection.sh            # Hardware detection (USB, serial, Bluetooth, cameras, GPS)
+│   ├── drivers.sh              # Driver and package installation based on detected hardware
+│   ├── tools.sh                # Keyboard test, sound autostart, touch calibration, docs
+│   ├── oem.sh                  # OEM preparation (Sysprep), GDM configuration
+│   └── menus.sh                # Interactive menus (main, CF-C2, FZ-G1)
+├── alsamixerconf.sh            # ALSA audio config for most models (FZ-G1, CF-53, CF-54)
+├── c2audioconf.sh              # ALSA audio config for CF-C2 model
+├── touch-calibrator.sh         # Touch screen calibration for CF-53
+├── touch-calibrator-cf31.sh    # Touch screen calibration for CF-31 MK5
+├── assets/                     # Screenshots used in documentation
+└── README.md                   # This file
+```
+
+| Module | What it does |
+|:-------|:-------------|
+| `colors.sh` | Defines color codes used across all terminal output |
+| `utils.sh` | Shared utilities: loading spinner, ASCII banner, root check, internet check, auto-update, and generic box-drawing functions for formatted output |
+| `sysinfo.sh` | Reads system specs via `dmidecode`, `lscpu`, `acpi`, and `lsblk`, then displays them in formatted tables |
+| `detection.sh` | Scans for connected peripherals using `lsusb`, `dmesg`, `systemctl`, and `v4l2-ctl`. Supports USB and serial port GPS detection |
+| `drivers.sh` | Installs packages based on what hardware was detected (GPS tools, fingerprint reader, smart card, camera apps, etc.) |
+| `tools.sh` | Launches keyboard test (Python/Tkinter), configures ALSA sound autostart, and installs touch screen calibration scripts |
+| `oem.sh` | Handles OEM preparation (Sysprep): installs OEM config packages, runs `oem-config-prepare`, and shuts down the unit |
+| `menus.sh` | Defines the interactive menus. Each Toughbook model family gets a tailored menu with the relevant options |
 
 ---
 
@@ -371,6 +430,11 @@ nmcli connection up "My Verizon Internet"
 
 ### How to Test GPS
 
+On most Toughbook models, the GPS module is connected via USB and appears as a **U-Blox** device in `lsusb`. However, on some laptops and tablets (such as certain FZ-G1 configurations), the GPS is connected through a **serial port** (`/dev/ttyS0` or `/dev/ttyS4`) instead of USB. In these cases, the device will not show up in `lsusb`, but it can be detected through `dmesg`.
+
+> [!NOTE]
+> The autoinstall script automatically checks both USB and serial port interfaces when detecting GPS hardware.
+
 **1. Install GPS tools:**
 
 ```bash
@@ -379,11 +443,25 @@ sudo apt install gpsd gpsd-clients -y
 
 **2. Verify the GPS device:**
 
+**USB-based GPS:**
+
 ```bash
 lsusb | grep "U-Blox"
 ```
 
 Expected output: **U-Blox AG [u-blox 8]**
+
+**Serial port-based GPS (if not found via USB):**
+
+```bash
+dmesg | grep -i tty
+```
+
+Look for `/dev/ttyS0` or `/dev/ttyS4` in the output. If found, the GPS is available through the serial interface and you need to configure `gpsd` to use it:
+
+```bash
+sudo gpsd /dev/ttyS0 -F /var/run/gpsd.sock   # or /dev/ttyS4 depending on your unit
+```
 
 **3. Run the GPS test:**
 
