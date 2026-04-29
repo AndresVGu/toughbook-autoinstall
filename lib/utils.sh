@@ -56,10 +56,30 @@ spinner_stop() {
 check_version() {
     echo "🔄 Checking for updates..."
 
-    git fetch origin >/dev/null 2>&1
+    # Skip if not a git repo or no remote configured
+    if ! git rev-parse --git-dir &>/dev/null; then
+        echo "⚠️  Not a git repository. Skipping update check."
+        return
+    fi
 
-    LOCAL_HASH=$(git rev-parse HEAD)
-    REMOTE_HASH=$(git rev-parse @{u})
+    if ! git remote get-url origin &>/dev/null; then
+        echo "⚠️  No remote configured. Skipping update check."
+        return
+    fi
+
+    if ! git fetch origin --quiet 2>/dev/null; then
+        echo "⚠️  Could not reach remote. Skipping update check."
+        return
+    fi
+
+    local LOCAL_HASH REMOTE_HASH
+    LOCAL_HASH=$(git rev-parse HEAD 2>/dev/null)
+    REMOTE_HASH=$(git rev-parse @{u} 2>/dev/null)
+
+    if [[ -z "$REMOTE_HASH" ]]; then
+        echo "⚠️  No upstream branch set. Skipping update check."
+        return
+    fi
 
     if [[ "$LOCAL_HASH" != "$REMOTE_HASH" ]]; then
         echo "⬆️ Update found. Updating script..."

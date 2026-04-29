@@ -94,6 +94,11 @@ detect_devices() {
 
     echo -e "${GREEN}[+] Starting device detection...${END}"
 
+    # Ensure model globals are set (safety net)
+    if [[ -z "$brand" || -z "$model" ]]; then
+        detect_model
+    fi
+
     command -v v4l2-ctl &>/dev/null || {
         echo "[!] Installing v4l-utils ..."
         sudo apt install v4l-utils -y

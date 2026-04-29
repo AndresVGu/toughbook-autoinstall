@@ -1,16 +1,28 @@
 #!/usr/bin/env bash
 # Driver and package installation
 
-check_dependencies() {
-    echo -e "${PURPLE}[!] Checking Dependencies...${END}"
-    sleep 1
+# Flag to avoid running apt update/upgrade twice
+_SYSTEM_UPDATED=false
 
+_ensure_system_updated() {
+    if $_SYSTEM_UPDATED; then
+        return
+    fi
     echo "🔄 Updating package lists..."
     sudo apt-get update -qq
 
     local UPGRADABLE
     UPGRADABLE=$(apt-get -s upgrade | grep -P '^\d+ upgraded' | cut -d' ' -f1)
     [[ "$UPGRADABLE" -gt 0 ]] && sudo apt-get upgrade -y
+
+    _SYSTEM_UPDATED=true
+}
+
+check_dependencies() {
+    echo -e "${PURPLE}[!] Checking Dependencies...${END}"
+    sleep 1
+
+    _ensure_system_updated
 
     if ! command -v libreoffice &>/dev/null; then
         echo "[!] Installing LibreOffice ..."
@@ -20,17 +32,41 @@ check_dependencies() {
     echo -e "${YELLOW}[!] Collecting Device Information.${END}"
 }
 
+# Reuses _detect_gps logic from detection.sh for driver installation
+_gps_detected() {
+    local usb_devices="$1"
+    if echo "$usb_devices" | grep -qi "U-Blox"; then
+        return 0
+    fi
+    local tty_output
+    tty_output=$(dmesg 2>/dev/null | grep -i tty)
+    if echo "$tty_output" | grep -qE "ttyS0|ttyS4"; then
+        return 0
+    fi
+    return 1
+}
+
 install_drivers() {
     echo -e "${GREEN}[+] Starting driver installation...${END}"
-    sudo apt update
-    sudo apt upgrade -y
 
-    local devices_to_check=("Sierra Wireless" "U-Blox" "Fingerprint" "Webcam" "Bluetooth" "Smart Card Reader" "Touch Panel" "eGalaxTouch")
+    _ensure_system_updated
+
+    local devices_to_check=("Sierra Wireless" "Fingerprint" "Webcam" "Bluetooth" "Smart Card Reader" "Touch Panel" "eGalaxTouch")
     local usb_devices
     usb_devices=$(lsusb)
 
     printf "%-25s | %s\n" "Component" "Status"
     printf "%-25s | %s\n" "-------------------------" "------------"
+
+    # GPS (USB + serial port)
+    if _gps_detected "$usb_devices"; then
+        printf "${GREEN}%-25s${END} | ${GREEN}%s${END}\n" "GPS" "Detected"
+        echo "  -> Installing GPS packages..."
+        sudo apt install -y gpsd gpsd-clients
+        sleep 1
+    else
+        printf "${RED}%-25s${END} | ${RED}%s${END}\n" "GPS" "Not Detected"
+    fi
 
     for device_name in "${devices_to_check[@]}"; do
         if echo "$usb_devices" | grep -qi "$device_name"; then
@@ -38,10 +74,6 @@ install_drivers() {
             case "$device_name" in
                 "Sierra Wireless")
                     echo "  -> Sierra Wireless detected. Skipping automatic installation."
-                    ;;
-                "U-Blox")
-                    echo "  -> Installing GPS packages..."
-                    sudo apt install -y gpsd gpsd-clients
                     ;;
                 "Fingerprint")
                     echo "  -> Installing fingerprint packages..."
