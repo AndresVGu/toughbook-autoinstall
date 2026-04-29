@@ -91,6 +91,7 @@ _detect_gps() {
 
 detect_devices() {
     local model_type="${1:-default}"
+    local start=$SECONDS
 
     echo -e "${GREEN}[+] Starting device detection...${END}"
 
@@ -161,6 +162,17 @@ detect_devices() {
         else
             _detection_row "Bluetooth" false
         fi
+    fi
+
+    # ── Wi-Fi ──
+    local WIFI_DEV
+    WIFI_DEV=$(nmcli -t -f TYPE,STATE device 2>/dev/null | grep "^wifi:")
+    if [ -n "$WIFI_DEV" ]; then
+        local WIFI_NAME
+        WIFI_NAME=$(nmcli -t -f DEVICE,TYPE device 2>/dev/null | grep ":wifi$" | cut -d: -f1)
+        _detection_row "Wi-Fi ($WIFI_NAME)" true
+    else
+        _detection_row "Wi-Fi" false
     fi
 
     # ── 4G Modem ──
@@ -235,5 +247,6 @@ detect_devices() {
 
     _detection_footer
 
-    echo -e "\n${GREEN}[!] Scan completed.${END}"
+    local elapsed=$(( SECONDS - start ))
+    echo -e "\n${GREEN}[!] Scan completed.${END} ${GRAY}($((elapsed / 60))m $((elapsed % 60))s)${END}"
 }

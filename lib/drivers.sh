@@ -9,12 +9,15 @@ _ensure_system_updated() {
         return
     fi
     echo "🔄 Updating package lists..."
+    local start=$SECONDS
     sudo apt-get update -qq
 
     local UPGRADABLE
     UPGRADABLE=$(apt-get -s upgrade | grep -P '^\d+ upgraded' | cut -d' ' -f1)
     [[ "$UPGRADABLE" -gt 0 ]] && sudo apt-get upgrade -y
 
+    local elapsed=$(( SECONDS - start ))
+    echo -e "${GRAY}[System Update] completed in $((elapsed / 60))m $((elapsed % 60))s${END}"
     _SYSTEM_UPDATED=true
 }
 
@@ -48,6 +51,7 @@ _gps_detected() {
 
 install_drivers() {
     echo -e "${GREEN}[+] Starting driver installation...${END}"
+    local total_start=$SECONDS
 
     _ensure_system_updated
 
@@ -102,5 +106,7 @@ install_drivers() {
     done
 
     echo -e "${GREEN}[+] Analysis and installation complete.${END}"
+    local total_elapsed=$(( SECONDS - total_start ))
+    echo -e "${GRAY}[Driver Installation] completed in $((total_elapsed / 60))m $((total_elapsed % 60))s${END}"
     echo -e "${YELLOW}[!] Test all devices manually before running the OEM system preparation.${END}"
 }

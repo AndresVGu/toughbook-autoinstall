@@ -2,6 +2,7 @@
 # System information collection: hardware specs, battery, storage, RAM
 
 collect_info() {
+    local start=$SECONDS
 
     # ── Dependencies ──
     command -v dmidecode &>/dev/null || { echo -e "${YELLOW}[+] Installing dmidecode...${END}"; sudo apt install dmidecode -y; }
@@ -97,6 +98,9 @@ collect_info() {
 
     echo -e "${YELLOW}TO SCROLL UP OR DOWN IN THE CONSOLE USE:${END}"
     echo -e "${YELLOW}[${END} ${TURQUOISE}Ctrl + Shift { ⬆️  or ⬇️  }${END} ${YELLOW}]${END}"
+
+    local elapsed=$(( SECONDS - start ))
+    echo -e "${GRAY}[Device Information] completed in $((elapsed / 60))m $((elapsed % 60))s${END}"
 }
 
 _draw_storage_info() {

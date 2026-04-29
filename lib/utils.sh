@@ -187,6 +187,19 @@ detect_model() {
     esac
 }
 
+# Timer helper — wraps a command and prints elapsed time
+# Usage: timed "Label" command arg1 arg2 ...
+timed() {
+    local label="$1"
+    shift
+    local start=$SECONDS
+    "$@"
+    local elapsed=$(( SECONDS - start ))
+    local mins=$(( elapsed / 60 ))
+    local secs=$(( elapsed % 60 ))
+    echo -e "${GRAY}[${label}] completed in ${mins}m ${secs}s${END}"
+}
+
 # Draws a generic info box with label:value pairs (pure ASCII aligned)
 drawInfo_box() {
     local TITLE="$1"
