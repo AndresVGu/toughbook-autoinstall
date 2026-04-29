@@ -87,13 +87,29 @@ collect_info() {
     local upower_pct
     upower_pct=$(upower -i /org/freedesktop/UPower/devices/battery_BAT0 2>/dev/null | grep "percentage:" | awk '{print $2}')
 
-    # Update icon based on best available state
-    case "$bat_state" in
-        charging)        bat_charging_icon="[+]"; bat_state="Charging" ;;
-        discharging)     bat_charging_icon="[!]"; bat_state="Discharging" ;;
-        fully-charged)   bat_charging_icon="[=]"; bat_state="Full" ;;
-        *not*charging*)  bat_charging_icon="[~]"; bat_state="Not Charging" ;;
-    esac
+    # Update icon and status based on best available state + AC connection
+    local pct_num=0
+    [[ "$upower_pct" =~ ([0-9]+) ]] && pct_num=${BASH_REMATCH[1]}
+
+    if [[ "$ac_online" == "1" ]]; then
+        # AC is connected
+        if [[ "$upower_state" == "fully-charged" ]] || (( pct_num >= 100 )); then
+            bat_charging_icon="[=]"; bat_state="Fully Charged - Connected"
+        elif [[ "$upower_state" == "charging" ]]; then
+            bat_charging_icon="[+]"; bat_state="Charging - Connected"
+        else
+            bat_charging_icon="[~]"; bat_state="Not Charging - Connected"
+        fi
+    else
+        # On battery
+        if [[ "$upower_state" == "discharging" ]]; then
+            bat_charging_icon="[!]"; bat_state="Discharging"
+        elif [[ "$upower_state" == "fully-charged" ]] || (( pct_num >= 100 )); then
+            bat_charging_icon="[=]"; bat_state="Fully Charged"
+        else
+            bat_charging_icon="[-]"; bat_state="Not Charging"
+        fi
+    fi
 
     bat_health=$(acpi -V 2>/dev/null | grep "mAh" | grep -o "[0-9]\+%")
     bat_status_1=$(acpi -V 2>/dev/null | awk -F, '/Battery/{print $2; exit}' | xargs)
