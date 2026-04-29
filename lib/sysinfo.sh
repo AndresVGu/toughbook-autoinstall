@@ -20,20 +20,17 @@ collect_info() {
     # ── RAM (with serials and calculated total in GB) ──
     ram_type=$(sudo dmidecode -t memory 2>/dev/null | grep -E "Type:.*DDR" | awk '{print $2}' | head -n1)
 
-    # Get slot sizes and serials — use simple grep without regex anchors
     local ram_size_a ram_size_b ram_serial_a ram_serial_b
     ram_size_a=$(sudo dmidecode -t memory 2>/dev/null | grep "Size:" | sed -n '1p' | awk '{print $2, $3}')
     ram_size_b=$(sudo dmidecode -t memory 2>/dev/null | grep "Size:" | sed -n '2p' | awk '{print $2, $3}')
     ram_serial_a=$(sudo dmidecode -t memory 2>/dev/null | grep "Serial Number:" | sed -n '1p' | awk -F': ' '{print $2}' | xargs)
     ram_serial_b=$(sudo dmidecode -t memory 2>/dev/null | grep "Serial Number:" | sed -n '2p' | awk -F': ' '{print $2}' | xargs)
 
-    # Clean up
     [[ -z "$ram_size_a" || "$ram_size_a" == *"No Module"* || "$ram_size_a" == *"Not"* ]] && ram_size_a=""
     [[ -z "$ram_size_b" || "$ram_size_b" == *"No Module"* || "$ram_size_b" == *"Not"* ]] && ram_size_b=""
     [[ -z "$ram_serial_a" || "$ram_serial_a" == *"Not Specified"* ]] && ram_serial_a="N/A"
     [[ -z "$ram_serial_b" || "$ram_serial_b" == *"Not Specified"* ]] && ram_serial_b="N/A"
 
-    # Extract MB and convert to GB
     local size_a_mb=0 size_b_mb=0
     [[ "$ram_size_a" =~ ([0-9]+) ]] && size_a_mb=${BASH_REMATCH[1]}
     [[ "$ram_size_b" =~ ([0-9]+) ]] && size_b_mb=${BASH_REMATCH[1]}
@@ -45,13 +42,11 @@ collect_info() {
     (( size_b_mb > 0 && size_b_mb < 1024 )) && b_gb=1
     local total_gb=$(( a_gb + b_gb ))
 
-    # Fallback: use free if dmidecode gave 0
     if (( total_gb == 0 )); then
-        total_gb=$(free --giga | awk '/Mem:/ {print $2}')
+        total_gb=$(free --giga 2>/dev/null | awk '/Mem:/ {print $2}')
         (( total_gb == 0 )) && total_gb=$(free -h | awk '/Mem:/ {sub(/[a-zA-Z]/,"",$2); print int($2+0.5)}')
     fi
 
-    # Format slot display
     local slot_a_display="Empty"
     (( a_gb > 0 )) && slot_a_display="${a_gb} GB (SN: ${ram_serial_a})"
 
@@ -132,55 +127,86 @@ collect_info() {
     msg_time "[Device Information] $((elapsed / 60))m $((elapsed % 60))s"
 }
 
+# Normalize raw disk size (476.9G -> 512 GB, 238.5G -> 256 GB, etc.)
+_normalize_disk_size() {
+    local raw="$1"
+    local num
+    num=$(echo "$raw" | sed 's/[^0-9.]//g')
+    local int_part=${num%%.*}
+
+    if [[ "$raw" == *T* ]]; then
+        echo "${int_part} TB"
+    elif [[ "$raw" == *G* ]]; then
+        if   (( int_part > 460 && int_part < 520 )); then echo "512 GB"
+        elif (( int_part > 220 && int_part < 260 )); then echo "256 GB"
+        elif (( int_part > 110 && int_part < 130 )); then echo "128 GB"
+        elif (( int_part > 920 && int_part < 1030 )); then echo "1 TB"
+        elif (( int_part > 1800 && int_part < 2050 )); then echo "2 TB"
+        else echo "${int_part} GB"
+        fi
+    else
+        echo "$raw"
+    fi
+}
+
 _draw_storage_info() {
     local TITLE="STORAGE INFORMATION"
 
-    local C1=12 C2=8 C3=22 C4=20
-    local INNER_W=$((C1 + 3 + C2 + 3 + C3 + 3 + C4))
+    local C1=10 C2=14 C3=16 C4=8 C5=14
+    local INNER_W=$((C1 + 3 + C2 + 3 + C3 + 3 + C4 + 3 + C5))
 
     printf -v _b1 "%*s" "$C1" ""; _b1="${_b1// /═}"
     printf -v _b2 "%*s" "$C2" ""; _b2="${_b2// /═}"
     printf -v _b3 "%*s" "$C3" ""; _b3="${_b3// /═}"
     printf -v _b4 "%*s" "$C4" ""; _b4="${_b4// /═}"
-    local BORDER_TOP="${_b1}═╤═${_b2}═╤═${_b3}═╤═${_b4}"
-    local BORDER_BOT="${_b1}═╧═${_b2}═╧═${_b3}═╧═${_b4}"
+    printf -v _b5 "%*s" "$C5" ""; _b5="${_b5// /═}"
+    local BT="${_b1}═╤═${_b2}═╤═${_b3}═╤═${_b4}═╤═${_b5}"
+    local BB="${_b1}═╧═${_b2}═╧═${_b3}═╧═${_b4}═╧═${_b5}"
 
     printf -v _m1 "%*s" "$C1" ""; _m1="${_m1// /─}"
     printf -v _m2 "%*s" "$C2" ""; _m2="${_m2// /─}"
     printf -v _m3 "%*s" "$C3" ""; _m3="${_m3// /─}"
     printf -v _m4 "%*s" "$C4" ""; _m4="${_m4// /─}"
-    local BORDER_MID="${_m1}─┼─${_m2}─┼─${_m3}─┼─${_m4}"
+    printf -v _m5 "%*s" "$C5" ""; _m5="${_m5// /─}"
+    local BM="${_m1}─┼─${_m2}─┼─${_m3}─┼─${_m4}─┼─${_m5}"
 
-    local TITLE_LEN=${#TITLE}
-    local LP=$(( (INNER_W - TITLE_LEN) / 2 ))
-    local RP=$(( INNER_W - TITLE_LEN - LP ))
+    local TL=${#TITLE}
+    local LP=$(( (INNER_W - TL) / 2 ))
+    local RP=$(( INNER_W - TL - LP ))
     printf -v LSP "%*s" "$LP" ""
     printf -v RSP "%*s" "$RP" ""
 
     echo ""
-    echo -e "  ${TURQUOISE}╔═${BORDER_TOP}═╗${END}"
+    echo -e "  ${TURQUOISE}╔═${BT}═╗${END}"
     echo -e "  ${TURQUOISE}║${END} ${LSP}${BOLD}${TITLE}${END}${RSP} ${TURQUOISE}║${END}"
-    echo -e "  ${TURQUOISE}╠═${BORDER_TOP}═╣${END}"
+    echo -e "  ${TURQUOISE}╠═${BT}═╣${END}"
 
-    printf "  ${TURQUOISE}║${END} %-${C1}s ${TURQUOISE}│${END} %-${C2}s ${TURQUOISE}│${END} %-${C3}s ${TURQUOISE}│${END} %-${C4}s ${TURQUOISE}║${END}\n" \
-        "Device" "Size" "Serial" "Model"
+    printf "  ${TURQUOISE}║${END} %-${C1}s ${TURQUOISE}│${END} %-${C2}s ${TURQUOISE}│${END} %-${C3}s ${TURQUOISE}│${END} %-${C4}s ${TURQUOISE}│${END} %-${C5}s ${TURQUOISE}║${END}\n" \
+        "Device" "Part Number" "Brand" "Size" "Serial"
 
-    echo -e "  ${TURQUOISE}╟─${BORDER_MID}─╢${END}"
+    echo -e "  ${TURQUOISE}╟─${BM}─╢${END}"
 
-    lsblk -d -n -o NAME,SIZE,TYPE | awk '$3=="disk"{print $1,$2}' | while read -r dev size; do
-        local SERIAL MODEL
+    lsblk -d -n -o NAME,SIZE,TYPE | awk '$3=="disk"{print $1,$2}' | while read -r dev raw_size; do
+        local FULL_MODEL SERIAL PART_NUM BRAND NORM_SIZE
 
+        FULL_MODEL=$(udevadm info --query=property --name="/dev/$dev" 2>/dev/null \
+            | grep '^ID_MODEL=' | sed 's/^ID_MODEL=//')
         SERIAL=$(udevadm info --query=property --name="/dev/$dev" 2>/dev/null \
-            | grep '^ID_SERIAL_SHORT=' | sed 's/^ID_SERIAL_SHORT=\([^_]*\).*/\1/')
-        MODEL=$(udevadm info --query=property --name="/dev/$dev" 2>/dev/null \
-            | grep '^ID_MODEL=' | sed 's/^ID_MODEL=\([^_]*\).*/\1/')
+            | grep '^ID_SERIAL_SHORT=' | sed 's/^ID_SERIAL_SHORT=//')
 
         SERIAL=${SERIAL:-N/A}
-        MODEL=${MODEL:-Unknown}
+        FULL_MODEL=${FULL_MODEL:-Unknown}
 
-        printf "  ${TURQUOISE}║${END} %-${C1}s ${TURQUOISE}│${END} %-${C2}s ${TURQUOISE}│${END} %-${C3}s ${TURQUOISE}│${END} %-${C4}s ${TURQUOISE}║${END}\n" \
-            "/dev/$dev" "$size" "$SERIAL" "$MODEL"
+        # First word = part number, rest = brand
+        PART_NUM=$(echo "$FULL_MODEL" | awk '{print $1}')
+        BRAND=$(echo "$FULL_MODEL" | awk '{$1=""; print}' | xargs)
+        [ -z "$BRAND" ] && BRAND="Unknown"
+
+        NORM_SIZE=$(_normalize_disk_size "$raw_size")
+
+        printf "  ${TURQUOISE}║${END} %-${C1}s ${TURQUOISE}│${END} %-${C2}s ${TURQUOISE}│${END} %-${C3}s ${TURQUOISE}│${END} %-${C4}s ${TURQUOISE}│${END} %-${C5}s ${TURQUOISE}║${END}\n" \
+            "/dev/$dev" "$PART_NUM" "$BRAND" "$NORM_SIZE" "$SERIAL"
     done
 
-    echo -e "  ${TURQUOISE}╚═${BORDER_BOT}═╝${END}"
+    echo -e "  ${TURQUOISE}╚═${BB}═╝${END}"
 }
