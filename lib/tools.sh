@@ -62,7 +62,6 @@ install_sound_autostart_c2() {
 }
 
 _install_sound_autostart_generic() {
-    set -e
     local SCRIPT_NAME="$1"
     local INSTALL_PATH="/usr/local/bin/$SCRIPT_NAME"
     local AUTOSTART_FILE="sound-activation.desktop"
@@ -72,7 +71,6 @@ _install_sound_autostart_generic() {
 
     if [[ ! -f "$SCRIPT_NAME" ]]; then
         echo "[ERROR] $SCRIPT_NAME not found"
-        set +e
         return 1
     fi
 
@@ -99,7 +97,6 @@ EOF
 
     sudo cp "$AUTOSTART_FILE" "$AUTOSTART_SYSTEM"
     echo "[✓] Autostart configuration done"
-    set +e
 }
 
 # Touch calibration installer helper

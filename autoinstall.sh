@@ -8,8 +8,6 @@
 # based on the detected Toughbook model.
 #
 
-set -euo pipefail
-
 # ── Resolve script directory (works even via symlinks) ──
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
