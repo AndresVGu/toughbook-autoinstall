@@ -17,41 +17,66 @@ collect_info() {
     hours=$(sudo dmidecode -t 22 2>/dev/null | grep "Hours" | awk '{print $2}')
     [ -z "$hours" ] && hours=$(uptime -p)
 
-    # ── RAM (with serials and calculated total in GB) ──
-    ram_type=$(sudo dmidecode -t memory 2>/dev/null | grep -E "Type:.*DDR" | awk '{print $2}' | head -n1)
+    # ── RAM (parse Memory Device blocks from dmidecode) ──
+    local dmi_mem
+    dmi_mem=$(sudo dmidecode -t memory 2>/dev/null)
 
-    local ram_size_a ram_size_b ram_serial_a ram_serial_b
-    ram_size_a=$(sudo dmidecode -t memory 2>/dev/null | grep "Size:" | sed -n '1p' | awk '{print $2, $3}')
-    ram_size_b=$(sudo dmidecode -t memory 2>/dev/null | grep "Size:" | sed -n '2p' | awk '{print $2, $3}')
-    ram_serial_a=$(sudo dmidecode -t memory 2>/dev/null | grep "Serial Number:" | sed -n '1p' | awk -F': ' '{print $2}' | xargs)
-    ram_serial_b=$(sudo dmidecode -t memory 2>/dev/null | grep "Serial Number:" | sed -n '2p' | awk -F': ' '{print $2}' | xargs)
+    ram_type=$(echo "$dmi_mem" | grep -E "^\s+Type:" | grep -v "Type Detail" | head -1 | awk '{print $2}')
 
-    [[ -z "$ram_size_a" || "$ram_size_a" == *"No Module"* || "$ram_size_a" == *"Not"* ]] && ram_size_a=""
-    [[ -z "$ram_size_b" || "$ram_size_b" == *"No Module"* || "$ram_size_b" == *"Not"* ]] && ram_size_b=""
-    [[ -z "$ram_serial_a" || "$ram_serial_a" == *"Not Specified"* ]] && ram_serial_a="N/A"
-    [[ -z "$ram_serial_b" || "$ram_serial_b" == *"Not Specified"* ]] && ram_serial_b="N/A"
+    # Extract data from first Memory Device block (Slot 1)
+    local slot1_block slot2_block
+    slot1_block=$(echo "$dmi_mem" | awk '/^Handle.*DMI type 17/{n++} n==1' )
+    slot2_block=$(echo "$dmi_mem" | awk '/^Handle.*DMI type 17/{n++} n==2' )
 
-    local size_a_mb=0 size_b_mb=0
-    [[ "$ram_size_a" =~ ([0-9]+) ]] && size_a_mb=${BASH_REMATCH[1]}
-    [[ "$ram_size_b" =~ ([0-9]+) ]] && size_b_mb=${BASH_REMATCH[1]}
+    local ram_size_a ram_size_b ram_serial_a ram_serial_b ram_mfg_a ram_mfg_b ram_pn_a ram_pn_b ram_slot_a ram_slot_b
 
+    ram_size_a=$(echo "$slot1_block" | grep "^\s*Size:" | head -1 | sed 's/.*Size: //')
+    ram_serial_a=$(echo "$slot1_block" | grep "Serial Number:" | head -1 | sed 's/.*Serial Number: //' | xargs)
+    ram_mfg_a=$(echo "$slot1_block" | grep "Manufacturer:" | head -1 | sed 's/.*Manufacturer: //' | xargs)
+    ram_pn_a=$(echo "$slot1_block" | grep "Part Number:" | head -1 | sed 's/.*Part Number: //' | xargs)
+    ram_slot_a=$(echo "$slot1_block" | grep "Locator:" | grep -v "Bank" | head -1 | sed 's/.*Locator: //' | xargs)
+
+    ram_size_b=$(echo "$slot2_block" | grep "^\s*Size:" | head -1 | sed 's/.*Size: //')
+    ram_serial_b=$(echo "$slot2_block" | grep "Serial Number:" | head -1 | sed 's/.*Serial Number: //' | xargs)
+    ram_mfg_b=$(echo "$slot2_block" | grep "Manufacturer:" | head -1 | sed 's/.*Manufacturer: //' | xargs)
+    ram_pn_b=$(echo "$slot2_block" | grep "Part Number:" | head -1 | sed 's/.*Part Number: //' | xargs)
+    ram_slot_b=$(echo "$slot2_block" | grep "Locator:" | grep -v "Bank" | head -1 | sed 's/.*Locator: //' | xargs)
+
+    # Extract numeric GB from Size field ("16 GB" -> 16)
     local a_gb=0 b_gb=0
-    (( size_a_mb >= 1024 )) && a_gb=$(( size_a_mb / 1024 ))
-    (( size_a_mb > 0 && size_a_mb < 1024 )) && a_gb=1
-    (( size_b_mb >= 1024 )) && b_gb=$(( size_b_mb / 1024 ))
-    (( size_b_mb > 0 && size_b_mb < 1024 )) && b_gb=1
+    [[ "$ram_size_a" =~ ([0-9]+) ]] && a_gb=${BASH_REMATCH[1]}
+    [[ "$ram_size_b" =~ ([0-9]+) ]] && b_gb=${BASH_REMATCH[1]}
+
+    # If size was in MB, convert
+    if [[ "$ram_size_a" == *MB* ]] && (( a_gb >= 1024 )); then a_gb=$(( a_gb / 1024 )); fi
+    if [[ "$ram_size_b" == *MB* ]] && (( b_gb >= 1024 )); then b_gb=$(( b_gb / 1024 )); fi
+
     local total_gb=$(( a_gb + b_gb ))
 
+    # Fallback if dmidecode gave 0
     if (( total_gb == 0 )); then
         total_gb=$(free --giga 2>/dev/null | awk '/Mem:/ {print $2}')
         (( total_gb == 0 )) && total_gb=$(free -h | awk '/Mem:/ {sub(/[a-zA-Z]/,"",$2); print int($2+0.5)}')
     fi
 
+    # Clean empty values
+    [[ -z "$ram_size_a" || "$ram_size_a" == *"No Module"* ]] && a_gb=0
+    [[ -z "$ram_size_b" || "$ram_size_b" == *"No Module"* ]] && b_gb=0
+    [[ -z "$ram_serial_a" || "$ram_serial_a" == *"Not"* ]] && ram_serial_a="N/A"
+    [[ -z "$ram_serial_b" || "$ram_serial_b" == *"Not"* ]] && ram_serial_b="N/A"
+    [[ -z "$ram_mfg_a" || "$ram_mfg_a" == *"Not"* ]] && ram_mfg_a="N/A"
+    [[ -z "$ram_mfg_b" || "$ram_mfg_b" == *"Not"* ]] && ram_mfg_b="N/A"
+    [[ -z "$ram_pn_a" || "$ram_pn_a" == *"Not"* ]] && ram_pn_a="N/A"
+    [[ -z "$ram_pn_b" || "$ram_pn_b" == *"Not"* ]] && ram_pn_b="N/A"
+    [ -z "$ram_slot_a" ] && ram_slot_a="Slot 1"
+    [ -z "$ram_slot_b" ] && ram_slot_b="Slot 2"
+
+    # Format slot display
     local slot_a_display="Empty"
-    (( a_gb > 0 )) && slot_a_display="${a_gb} GB (SN: ${ram_serial_a})"
+    (( a_gb > 0 )) && slot_a_display="${a_gb} GB | ${ram_mfg_a} | SN: ${ram_serial_a}"
 
     local slot_b_display="Empty"
-    (( b_gb > 0 )) && slot_b_display="${b_gb} GB (SN: ${ram_serial_b})"
+    (( b_gb > 0 )) && slot_b_display="${b_gb} GB | ${ram_mfg_b} | SN: ${ram_serial_b}"
 
     # ── Battery ──
     BAT_INFO=$(acpi -b 2>/dev/null)
