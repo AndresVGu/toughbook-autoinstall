@@ -20,42 +20,41 @@ collect_info() {
     # ── RAM (with serials and calculated total in GB) ──
     ram_type=$(sudo dmidecode -t memory | grep -E "Type:.*DDR" | awk '{print $2}' | head -n1)
 
-    local ram_size_a_raw ram_size_b_raw ram_serial_a ram_serial_b
-    ram_size_a_raw=$(sudo dmidecode -t memory | awk '/^Memory Device$/,/^$/' | grep -m1 "Size:" | sed 's/.*: //')
-    ram_size_b_raw=$(sudo dmidecode -t memory | awk '/^Memory Device$/,/^$/{found++} found==2' | grep -m1 "Size:" | sed 's/.*: //')
+    # Get slot sizes and serials from dmidecode
+    local ram_size_a ram_size_b ram_serial_a ram_serial_b
+    ram_size_a=$(sudo dmidecode -t memory | grep -E "^\sSize:" | sed -n '1p' | sed 's/.*: //')
+    ram_size_b=$(sudo dmidecode -t memory | grep -E "^\sSize:" | sed -n '2p' | sed 's/.*: //')
+    ram_serial_a=$(sudo dmidecode -t memory | grep -E "^\sSerial Number:" | sed -n '1p' | sed 's/.*: //')
+    ram_serial_b=$(sudo dmidecode -t memory | grep -E "^\sSerial Number:" | sed -n '2p' | sed 's/.*: //')
 
-    ram_serial_a=$(sudo dmidecode -t memory | awk '/^Memory Device$/,/^$/' | grep -m1 "Serial Number:" | sed 's/.*: //')
-    ram_serial_b=$(sudo dmidecode -t memory | awk '/^Memory Device$/,/^$/{found++} found==2' | grep -m1 "Serial Number:" | sed 's/.*: //')
+    # Clean up empty/missing values
+    [[ -z "$ram_size_a" || "$ram_size_a" == *"No Module"* ]] && ram_size_a="Empty"
+    [[ -z "$ram_size_b" || "$ram_size_b" == *"No Module"* ]] && ram_size_b="Empty"
+    [[ -z "$ram_serial_a" || "$ram_serial_a" == *"Not Specified"* ]] && ram_serial_a="N/A"
+    [[ -z "$ram_serial_b" || "$ram_serial_b" == *"Not Specified"* ]] && ram_serial_b="N/A"
 
-    [[ "$ram_size_a_raw" == *"No Module"* ]] && ram_size_a_raw="Empty"
-    [[ "$ram_size_b_raw" == *"No Module"* ]] && ram_size_b_raw="Empty"
-    [ -z "$ram_size_a_raw" ] && ram_size_a_raw="Empty"
-    [ -z "$ram_size_b_raw" ] && ram_size_b_raw="Empty"
-    [[ "$ram_serial_a" == *"Not Specified"* ]] && ram_serial_a="N/A"
-    [[ "$ram_serial_b" == *"Not Specified"* ]] && ram_serial_b="N/A"
-    [ -z "$ram_serial_a" ] && ram_serial_a="N/A"
-    [ -z "$ram_serial_b" ] && ram_serial_b="N/A"
-
-    # Calculate total RAM in GB
+    # Extract MB numbers and convert to GB
     local size_a_mb=0 size_b_mb=0
-    if [[ "$ram_size_a_raw" =~ ([0-9]+) ]]; then size_a_mb=${BASH_REMATCH[1]}; fi
-    if [[ "$ram_size_b_raw" =~ ([0-9]+) ]]; then size_b_mb=${BASH_REMATCH[1]}; fi
-    local total_ram_mb=$(( size_a_mb + size_b_mb ))
-    local total_ram_gb=$(( total_ram_mb / 1024 ))
-    (( total_ram_gb == 0 && total_ram_mb > 0 )) && total_ram_gb=1
+    [[ "$ram_size_a" =~ ([0-9]+) ]] && size_a_mb=${BASH_REMATCH[1]}
+    [[ "$ram_size_b" =~ ([0-9]+) ]] && size_b_mb=${BASH_REMATCH[1]}
 
-    # Format slot display with GB and serial
-    local slot_a_display="Empty"
-    if [[ "$ram_size_a_raw" != "Empty" ]]; then
-        local a_gb=$(( size_a_mb / 1024 ))
-        slot_a_display="${a_gb} GB (SN: ${ram_serial_a})"
+    local a_gb=0 b_gb=0
+    (( size_a_mb > 0 )) && a_gb=$(( size_a_mb / 1024 ))
+    (( size_b_mb > 0 )) && b_gb=$(( size_b_mb / 1024 ))
+    local total_gb=$(( a_gb + b_gb ))
+
+    # Fallback: use free if dmidecode gave 0
+    if (( total_gb == 0 )); then
+        total_gb=$(free -g | awk '/Mem:/ {print $2}')
+        (( total_gb == 0 )) && total_gb=1
     fi
+
+    # Format slot display
+    local slot_a_display="Empty"
+    (( a_gb > 0 )) && slot_a_display="${a_gb} GB (SN: ${ram_serial_a})"
 
     local slot_b_display="Empty"
-    if [[ "$ram_size_b_raw" != "Empty" ]]; then
-        local b_gb=$(( size_b_mb / 1024 ))
-        slot_b_display="${b_gb} GB (SN: ${ram_serial_b})"
-    fi
+    (( b_gb > 0 )) && slot_b_display="${b_gb} GB (SN: ${ram_serial_b})"
 
     # ── Battery ──
     BAT_INFO=$(acpi -b 2>/dev/null)
@@ -119,7 +118,7 @@ collect_info() {
     _draw_storage_info
 
     drawInfo_box "MEMORY INFORMATION" \
-        "Total: ${total_ram_gb} GB" \
+        "Total: ${total_gb} GB" \
         "Type: $ram_type" \
         "Slot [1]: $slot_a_display" \
         "Slot [2]: $slot_b_display"
