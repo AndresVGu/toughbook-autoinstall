@@ -132,6 +132,41 @@ draw_box() {
     echo -e "${TURQUOISE} +${BORDER_LINE}+ ${END}\n${TURQUOISE} | ${UNIT_TEXT} | ${END}\n${TURQUOISE} |${LEFT_SPACES}${linux_os}${RIGHT_SPACES}| ${END}\n${TURQUOISE} +${BORDER_LINE}+ ${END}"
 }
 
+# Detects and normalizes the Toughbook model.
+# Sets globals: brand, model, serial, part_number, cpu, menu_type
+detect_model() {
+    brand=$(sudo dmidecode -s system-manufacturer | awk '{print $1}' 2>/dev/null)
+    model=$(sudo dmidecode -s system-product-name \
+        | sed -r 's/([A-Z]{2})([0-9]{2})-([0-9])/\1-\2 MK\3/' 2>/dev/null)
+    serial=$(sudo dmidecode -s system-serial-number 2>/dev/null)
+    part_number=$(sudo dmidecode -s system-sku-number 2>/dev/null)
+    cpu=$(lscpu | grep "BIOS Model name:" | sed 's/BIOS Model name:\s*//')
+    menu_type="main"
+
+    case "$model" in
+        "CF-54-2")
+            model="CF-54 Mk2"
+            ;;
+        "CF-54-3")
+            model="CF-54 Mk3"
+            ;;
+        "FZ-G1A"*)
+            model="FZ-G1 MK1"
+            part_number=$(sudo dmidecode -s system-product-name \
+                | sed -r 's/([A-Z]{2})([0-9]{2})-([0-9])/\1-\2 MK\3/' 2>/dev/null)
+            cpu=$(lscpu | grep "Model name:" | sed 's/Model name:\s*//')
+            menu_type="g1"
+            ;;
+        "CF-53 MK4")
+            cpu=$(lscpu | grep "Model name:" | sed 's/Model name:\s*//')
+            ;;
+        "CF-C2C"*)
+            model="CF-C2 MK2"
+            menu_type="c2"
+            ;;
+    esac
+}
+
 # Draws a generic info box with label:value pairs (pure ASCII aligned)
 drawInfo_box() {
     local TITLE="$1"

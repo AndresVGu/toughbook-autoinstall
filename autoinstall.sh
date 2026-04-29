@@ -31,30 +31,10 @@ check_internet
 check_version
 
 # ── Detect model and launch menu ──
-menu_model=$(sudo dmidecode -s system-product-name \
-    | sed -r 's/([A-Z]{2})([0-9]{2})-([0-9])/\1-\2 MK\3/' 2>/dev/null)
+detect_model
 
-case "$menu_model" in
-    "CF-54-2")
-        menu_model="CF-54 Mk2"
-        main_menu
-        ;;
-    "CF-54-3")
-        menu_model="CF-54 Mk3"
-        main_menu
-        ;;
-    "FZ-G1A"*)
-        menu_model="FZ-G1 MK1"
-        g1_main_menu
-        ;;
-    "CF-C2C"*)
-        menu_model="CF-C2 MK2"
-        c2_main_menu
-        ;;
-    "CF-53 MK4")
-        main_menu
-        ;;
-    *)
-        main_menu
-        ;;
+case "$menu_type" in
+    g1)  g1_main_menu ;;
+    c2)  c2_main_menu ;;
+    *)   main_menu ;;
 esac

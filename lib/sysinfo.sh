@@ -9,32 +9,8 @@ collect_info() {
     command -v netstat   &>/dev/null || { echo -e "${YELLOW}[+] Installing net-tools...${END}"; sudo apt install net-tools -y; echo "export PATH=\$PATH:/sbin" >> ~/.bashrc; }
     command -v acpi      &>/dev/null || { echo -e "${YELLOW}[+] Installing acpi...${END}";      sudo apt install acpi -y; }
 
-    # ── System identity ──
-    brand=$(sudo dmidecode -s system-manufacturer | awk '{print $1}' 2>/dev/null)
-    model=$(sudo dmidecode -s system-product-name | sed -r 's/([A-Z]{2})([0-9]{2})-([0-9])/\1-\2 MK\3/' 2>/dev/null)
-    serial=$(sudo dmidecode -s system-serial-number 2>/dev/null)
-    part_number=$(sudo dmidecode -s system-sku-number 2>/dev/null)
-    cpu=$(lscpu | grep "BIOS Model name:" | sed 's/BIOS Model name:\s*//')
-
-    case "$model" in
-        "CF-54-2")
-            model="CF-54 Mk2"
-            ;;
-        "CF-54-3")
-            model="CF-54 Mk3"
-            ;;
-        "FZ-G1A"*)
-            model="FZ-G1 MK1"
-            part_number=$(sudo dmidecode -s system-product-name | sed -r 's/([A-Z]{2})([0-9]{2})-([0-9])/\1-\2 MK\3/' 2>/dev/null)
-            cpu=$(lscpu | grep "Model name:" | sed 's/Model name:\s*//')
-            ;;
-        "CF-53 MK4")
-            cpu=$(lscpu | grep "Model name:" | sed 's/Model name:\s*//')
-            ;;
-        "CF-C2C"*)
-            model="CF-C2 MK2"
-            ;;
-    esac
+    # ── Refresh model data (uses centralized detect_model from utils.sh) ──
+    detect_model
 
     # ── Hours ──
     hours=$(sudo dmidecode -t 22 2>/dev/null | grep "Hours" | awk '{print $2}')
