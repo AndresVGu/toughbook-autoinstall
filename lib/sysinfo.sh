@@ -5,10 +5,10 @@ collect_info() {
     local start=$SECONDS
 
     # ── Dependencies ──
-    command -v dmidecode &>/dev/null || { echo -e "${YELLOW}[+] Installing dmidecode...${END}"; sudo apt install dmidecode -y; }
-    command -v neofetch  &>/dev/null || { echo -e "${YELLOW}[+] Installing neofetch...${END}";  sudo apt install neofetch -y; }
-    command -v netstat   &>/dev/null || { echo -e "${YELLOW}[+] Installing net-tools...${END}"; sudo apt install net-tools -y; echo "export PATH=\$PATH:/sbin" >> ~/.bashrc; }
-    command -v acpi      &>/dev/null || { echo -e "${YELLOW}[+] Installing acpi...${END}";      sudo apt install acpi -y; }
+    command -v dmidecode &>/dev/null || { msg_info "Installing dmidecode..."; sudo apt install dmidecode -y; }
+    command -v neofetch  &>/dev/null || { msg_info "Installing neofetch...";  sudo apt install neofetch -y; }
+    command -v netstat   &>/dev/null || { msg_info "Installing net-tools..."; sudo apt install net-tools -y; echo "export PATH=\$PATH:/sbin" >> ~/.bashrc; }
+    command -v acpi      &>/dev/null || { msg_info "Installing acpi...";      sudo apt install acpi -y; }
 
     # ── Refresh model data (uses centralized detect_model from utils.sh) ──
     detect_model
@@ -96,11 +96,10 @@ collect_info() {
         "Slot [1]: ${ram_size_a}" \
         "Slot [2]: ${ram_size_b}"
 
-    echo -e "${YELLOW}TO SCROLL UP OR DOWN IN THE CONSOLE USE:${END}"
-    echo -e "${YELLOW}[${END} ${TURQUOISE}Ctrl + Shift { ⬆️  or ⬇️  }${END} ${YELLOW}]${END}"
+    echo -e "${YELLOW}  TO SCROLL: Ctrl + Shift + Up/Down${END}"
 
     local elapsed=$(( SECONDS - start ))
-    echo -e "${GRAY}[Device Information] completed in $((elapsed / 60))m $((elapsed % 60))s${END}"
+    msg_time "[Device Information] $((elapsed / 60))m $((elapsed % 60))s"
 }
 
 _draw_storage_info() {

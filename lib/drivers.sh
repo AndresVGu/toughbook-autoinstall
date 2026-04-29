@@ -17,13 +17,12 @@ _ensure_system_updated() {
     [[ "$UPGRADABLE" -gt 0 ]] && sudo apt-get upgrade -y
 
     local elapsed=$(( SECONDS - start ))
-    echo -e "${GRAY}[System Update] completed in $((elapsed / 60))m $((elapsed % 60))s${END}"
+    echo -e "${GRAY}  [System Update] completed in $((elapsed / 60))m $((elapsed % 60))s${END}"
     _SYSTEM_UPDATED=true
 }
 
 check_dependencies() {
-    echo -e "${PURPLE}[!] Checking Dependencies...${END}"
-    sleep 1
+    msg_info "Checking dependencies..."
 
     _ensure_system_updated
 
@@ -32,7 +31,7 @@ check_dependencies() {
         sudo snap install libreoffice
     fi
 
-    echo -e "${YELLOW}[!] Collecting Device Information.${END}"
+    msg_ok "Dependencies checked."
 }
 
 # Reuses _detect_gps logic from detection.sh for driver installation
@@ -50,7 +49,7 @@ _gps_detected() {
 }
 
 install_drivers() {
-    echo -e "${GREEN}[+] Starting driver installation...${END}"
+    msg_info "Starting driver installation..."
     local total_start=$SECONDS
 
     _ensure_system_updated
@@ -105,8 +104,8 @@ install_drivers() {
         fi
     done
 
-    echo -e "${GREEN}[+] Analysis and installation complete.${END}"
+    msg_ok "Analysis and installation complete."
     local total_elapsed=$(( SECONDS - total_start ))
-    echo -e "${GRAY}[Driver Installation] completed in $((total_elapsed / 60))m $((total_elapsed % 60))s${END}"
-    echo -e "${YELLOW}[!] Test all devices manually before running the OEM system preparation.${END}"
+    msg_time "[Driver Installation] $((total_elapsed / 60))m $((total_elapsed % 60))s"
+    msg_warn "Test all devices manually before running OEM preparation."
 }

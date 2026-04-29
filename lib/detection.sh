@@ -37,13 +37,13 @@ _detection_header() {
     printf -v LSP "%*s" "$LP" ""
     printf -v RSP "%*s" "$RP" ""
 
-    echo -e "${TURQUOISE}╔═${BORDER_FULL}═╗${END}"
-    echo -e "${TURQUOISE}║${END} ${LSP}${TITLE}${RSP} ${TURQUOISE}║${END}"
-    echo -e "${TURQUOISE}╠═${BORDER_FULL}═╣${END}"
-    printf "${TURQUOISE}║${END} %-${_DET_COL1}s ${TURQUOISE}│${END} %-${_DET_COL2}s ${TURQUOISE}║${END}\n" "Device" "Status"
+    echo -e "  ${TURQUOISE}╔═${BORDER_FULL}═╗${END}"
+    echo -e "  ${TURQUOISE}║${END} ${LSP}${BOLD}${TITLE}${END}${RSP} ${TURQUOISE}║${END}"
+    echo -e "  ${TURQUOISE}╠═${BORDER_FULL}═╣${END}"
+    printf "  ${TURQUOISE}║${END} %-${_DET_COL1}s ${TURQUOISE}│${END} %-${_DET_COL2}s ${TURQUOISE}║${END}\n" "Device" "Status"
     local MID
     MID=$(_det_border_mid)
-    echo -e "${TURQUOISE}╟─${MID}─╢${END}"
+    echo -e "  ${TURQUOISE}╟─${MID}─╢${END}"
 }
 
 _detection_row() {
@@ -51,10 +51,10 @@ _detection_row() {
     local detected="$2"
 
     if $detected; then
-        printf "${TURQUOISE}║${END} ${GREEN}%-${_DET_COL1}s${END} ${TURQUOISE}│${END} ${GREEN}%-${_DET_COL2}s${END} ${TURQUOISE}║${END}\n" \
+        printf "  ${TURQUOISE}║${END} ${GREEN}%-${_DET_COL1}s${END} ${TURQUOISE}│${END} ${GREEN}%-${_DET_COL2}s${END} ${TURQUOISE}║${END}\n" \
             "$device" "[+] Detected"
     else
-        printf "${TURQUOISE}║${END} ${RED}%-${_DET_COL1}s${END} ${TURQUOISE}│${END} ${RED}%-${_DET_COL2}s${END} ${TURQUOISE}║${END}\n" \
+        printf "  ${TURQUOISE}║${END} ${RED}%-${_DET_COL1}s${END} ${TURQUOISE}│${END} ${RED}%-${_DET_COL2}s${END} ${TURQUOISE}║${END}\n" \
             "$device" "[-] Not Detected"
     fi
 }
@@ -62,7 +62,7 @@ _detection_row() {
 _detection_footer() {
     local BORDER
     BORDER=$(_det_border_bot)
-    echo -e "${TURQUOISE}╚═${BORDER}═╝${END}"
+    echo -e "  ${TURQUOISE}╚═${BORDER}═╝${END}"
 }
 
 # ── GPS detection: USB (U-Blox) OR serial port (ttyS0/ttyS4) ──
@@ -93,7 +93,7 @@ detect_devices() {
     local model_type="${1:-default}"
     local start=$SECONDS
 
-    echo -e "${GREEN}[+] Starting device detection...${END}"
+    msg_info "Starting device detection..."
 
     # Ensure model globals are set (safety net)
     if [[ -z "$brand" || -z "$model" ]]; then
@@ -105,7 +105,7 @@ detect_devices() {
         sudo apt install v4l-utils -y
     }
 
-    echo -e "${YELLOW}[!] Make sure that each device is properly connected.${END}"
+    msg_warn "Make sure that each device is properly connected."
     sleep 1.5
 
     local usb_devices
@@ -142,6 +142,7 @@ detect_devices() {
     draw_box "You are working on a ${brand} ${model}"
     echo ""
 
+    echo ""
     _detection_header
 
     # ── USB devices ──
@@ -248,5 +249,7 @@ detect_devices() {
     _detection_footer
 
     local elapsed=$(( SECONDS - start ))
-    echo -e "\n${GREEN}[!] Scan completed.${END} ${GRAY}($((elapsed / 60))m $((elapsed % 60))s)${END}"
+    echo ""
+    msg_ok "Scan completed."
+    msg_time "[Hardware Detection] $((elapsed / 60))m $((elapsed % 60))s"
 }

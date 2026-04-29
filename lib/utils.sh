@@ -1,17 +1,20 @@
 #!/usr/bin/env bash
 # Utility functions: spinner, banner, checks, draw helpers
 
-# Traps Ctrl+C and exits gracefully
 ctrl_c() {
-    echo -e "\n\n${RED}[!] Closing Script...${END}\n"
+    echo ""
+    separator
+    msg_err "Interrupted. Closing script..."
+    echo ""
     exit 1
 }
 
 check_internet() {
+    msg_info "Checking internet connection..."
     if ping -c 1 -q google.com &>/dev/null; then
-        echo "🌐 Internet connection detected. Continuing..."
+        msg_ok "Internet connection detected."
     else
-        echo "❌ No Internet connection. Exiting script."
+        msg_err "No internet connection. Exiting."
         exit 1
     fi
 }
@@ -20,16 +23,16 @@ SPINNER_PID=""
 
 spinner_start() {
     local msg="$1"
-    local spin='|/-\'
+    local spin='⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏'
     local i=0
 
     tput civis 2>/dev/null
 
     (
         while true; do
-            i=$(( (i + 1) % 4 ))
-            printf "\r${TURQUOISE}%s ${GREEN}%c${END}" "$msg" "${spin:$i:1}"
-            sleep 0.1
+            i=$(( (i + 1) % ${#spin} ))
+            printf "\r  ${TURQUOISE}${spin:$i:1}${END} %s" "$msg"
+            sleep 0.08
         done
     ) &
 
@@ -44,9 +47,9 @@ spinner_stop() {
     printf "\r\033[K"
 
     case "$status" in
-        OK)   printf "${GREEN}✔ %s${END}\n" "Done" ;;
-        WARN) printf "${YELLOW}⚠ %s${END}\n" "Warning" ;;
-        FAIL) printf "${RED}✖ %s${END}\n" "Failed" ;;
+        OK)   msg_ok "Done" ;;
+        WARN) msg_warn "Warning" ;;
+        FAIL) msg_err "Failed" ;;
         *)    echo ;;
     esac
 
@@ -54,21 +57,20 @@ spinner_stop() {
 }
 
 check_version() {
-    echo "🔄 Checking for updates..."
+    msg_info "Checking for script updates..."
 
-    # Skip if not a git repo or no remote configured
     if ! git rev-parse --git-dir &>/dev/null; then
-        echo "⚠️  Not a git repository. Skipping update check."
+        msg_warn "Not a git repository. Skipping."
         return
     fi
 
     if ! git remote get-url origin &>/dev/null; then
-        echo "⚠️  No remote configured. Skipping update check."
+        msg_warn "No remote configured. Skipping."
         return
     fi
 
     if ! git fetch origin --quiet 2>/dev/null; then
-        echo "⚠️  Could not reach remote. Skipping update check."
+        msg_warn "Could not reach remote. Skipping."
         return
     fi
 
@@ -77,48 +79,50 @@ check_version() {
     REMOTE_HASH=$(git rev-parse @{u} 2>/dev/null)
 
     if [[ -z "$REMOTE_HASH" ]]; then
-        echo "⚠️  No upstream branch set. Skipping update check."
+        msg_warn "No upstream branch. Skipping."
         return
     fi
 
     if [[ "$LOCAL_HASH" != "$REMOTE_HASH" ]]; then
-        echo "⬆️ Update found. Updating script..."
+        msg_info "Update found. Pulling..."
         git pull --quiet
-        echo "🔁 Script updated. Restarting..."
+        msg_ok "Script updated. Restarting..."
         sleep 1
         exec "$0" "$@"
     else
-        echo "✅ Script is already up to date."
+        msg_ok "Script is up to date."
     fi
 }
 
 show_banner() {
     clear
+    echo ""
     echo -e "${TURQUOISE}"
-    echo "╔════════════════════════════════════════════════════════════╗"
-    echo "║                                                            ║"
-    echo "║   ████████╗ ██████╗ ██╗   ██╗ ██████╗ ██╗  ██╗             ║"
-    echo "║   ╚══██╔══╝██╔═══██╗██║   ██║██╔════╝ ██║ ██╔╝             ║"
-    echo "║      ██║   ██║   ██║██║   ██║██║  ███╗█████╔╝              ║"
-    echo "║      ██║   ██║   ██║██║   ██║██║   ██║██╔═██╗              ║"
-    echo "║      ██║   ╚██████╔╝╚██████╔╝╚██████╔╝██║  ██╗             ║"
-    echo "║      ╚═╝    ╚═════╝  ╚═════╝  ╚═════╝ ╚═╝  ╚═╝             ║"
-    echo "║                                                            ║"
-    echo "║        Panasonic Toughbook OEM Utility                     ║"
-    echo "║        Ubuntu LTS   AutoInstall                            ║"
-    echo "║                                                            ║"
-    echo "║        Author: Andres Villarreal (@4vs3c)                  ║"
-    echo "║                                                            ║"
-    echo "╚════════════════════════════════════════════════════════════╝"
+    echo "    ╔══════════════════════════════════════════════════╗"
+    echo "    ║                                                  ║"
+    echo "    ║   ████████╗ ██████╗ ██╗   ██╗ ██████╗ ██╗  ██╗  ║"
+    echo "    ║   ╚══██╔══╝██╔═══██╗██║   ██║██╔════╝ ██║ ██╔╝  ║"
+    echo "    ║      ██║   ██║   ██║██║   ██║██║  ███╗█████╔╝   ║"
+    echo "    ║      ██║   ██║   ██║██║   ██║██║   ██║██╔═██╗   ║"
+    echo "    ║      ██║   ╚██████╔╝╚██████╔╝╚██████╔╝██║  ██╗  ║"
+    echo "    ║      ╚═╝    ╚═════╝  ╚═════╝  ╚═════╝ ╚═╝  ╚═╝  ║"
+    echo "    ║                                                  ║"
+    echo "    ║      Panasonic Toughbook OEM Utility              ║"
+    echo "    ║      Ubuntu LTS AutoInstall                       ║"
+    echo "    ║                                                  ║"
+    echo "    ╚══════════════════════════════════════════════════╝"
     echo -e "${END}"
-    echo -e "${GRAY}🔧 Refurb • QA • OEM Preparation • Device Validation${END}\n"
-    sleep 1.2
+    echo -e "    ${DIM}Refurb  •  QA  •  OEM Preparation  •  Validation${END}"
+    echo -e "    ${DIM}Author: Andres Villarreal (@4vs3c)${END}"
+    echo ""
+    sleep 1
 }
 
 check_root() {
     if [ "$EUID" -ne 0 ]; then
         show_banner
-        echo -e "\n${RED}[!] This script must be run as root!${END}\n"
+        msg_err "This script must be run as root!"
+        echo -e "    ${DIM}Usage: sudo ./autoinstall.sh${END}\n"
         exit 1
     fi
 }
@@ -126,30 +130,21 @@ check_root() {
 # Draws a title box with model and OS info
 draw_box() {
     local linux_os
-    linux_os=$(neofetch --stdout | grep 'OS:' | awk -F': ' '{print $2}' | awk '{print $1, $2}')
+    linux_os=$(neofetch --stdout 2>/dev/null | grep 'OS:' | awk -F': ' '{print $2}' | awk '{print $1, $2}')
 
     local UNIT_TEXT="$1"
-    local TEXT_LEN=${#UNIT_TEXT}
-    local OS_LEN=${#linux_os}
-    local BORDER_CHAR="*"
-    local BORDER_LEN=$((TEXT_LEN + 2))
+    local W=${#UNIT_TEXT}
+    local OS_W=${#linux_os}
+    (( W < OS_W )) && W=$OS_W
+    local BOX_W=$((W + 4))
 
-    printf -v BORDER_LINE "%*s" $BORDER_LEN ""
-    BORDER_LINE="${BORDER_LINE// /$BORDER_CHAR}"
+    printf -v BORDER "%*s" "$BOX_W" ""
+    BORDER="${BORDER// /─}"
 
-    local DIFF=$((TEXT_LEN - OS_LEN))
-    local LEFT_PAD=$(( (DIFF / 2) + 1 ))
-    local RIGHT_PAD=$(( TEXT_LEN - OS_LEN - LEFT_PAD + 2))
-
-    if [ $LEFT_PAD -lt 1 ]; then
-        LEFT_PAD=1
-        RIGHT_PAD=1
-    fi
-
-    printf -v LEFT_SPACES "%*s" $LEFT_PAD ""
-    printf -v RIGHT_SPACES "%*s" $RIGHT_PAD ""
-
-    echo -e "${TURQUOISE} +${BORDER_LINE}+ ${END}\n${TURQUOISE} | ${UNIT_TEXT} | ${END}\n${TURQUOISE} |${LEFT_SPACES}${linux_os}${RIGHT_SPACES}| ${END}\n${TURQUOISE} +${BORDER_LINE}+ ${END}"
+    echo -e "  ${TURQUOISE}┌${BORDER}┐${END}"
+    printf "  ${TURQUOISE}│${END}  %-${W}s  ${TURQUOISE}│${END}\n" "$UNIT_TEXT"
+    printf "  ${TURQUOISE}│${END}  ${DIM}%-${W}s${END}  ${TURQUOISE}│${END}\n" "$linux_os"
+    echo -e "  ${TURQUOISE}└${BORDER}┘${END}"
 }
 
 # Detects and normalizes the Toughbook model.
@@ -187,20 +182,17 @@ detect_model() {
     esac
 }
 
-# Timer helper — wraps a command and prints elapsed time
-# Usage: timed "Label" command arg1 arg2 ...
+# Timer helper
 timed() {
     local label="$1"
     shift
     local start=$SECONDS
     "$@"
     local elapsed=$(( SECONDS - start ))
-    local mins=$(( elapsed / 60 ))
-    local secs=$(( elapsed % 60 ))
-    echo -e "${GRAY}[${label}] completed in ${mins}m ${secs}s${END}"
+    msg_time "[$label] completed in $((elapsed / 60))m $((elapsed % 60))s"
 }
 
-# Draws a generic info box with label:value pairs (pure ASCII aligned)
+# Draws a generic info box with label:value pairs
 drawInfo_box() {
     local TITLE="$1"
     shift
@@ -210,7 +202,6 @@ drawInfo_box() {
     local VALUE_W=40
     local INNER_W=$((LABEL_W + 3 + VALUE_W))
 
-    # Borders
     printf -v _bL "%*s" "$LABEL_W" ""; _bL="${_bL// /═}"
     printf -v _bV "%*s" "$VALUE_W" ""; _bV="${_bV// /═}"
     local BORDER_TOP="${_bL}═╤═${_bV}"
@@ -220,16 +211,16 @@ drawInfo_box() {
     printf -v _mV "%*s" "$VALUE_W" ""; _mV="${_mV// /─}"
     local BORDER_MID="${_mL}─┼─${_mV}"
 
-    # Title centering
     local TITLE_LEN=${#TITLE}
     local LP=$(( (INNER_W - TITLE_LEN) / 2 ))
     local RP=$(( INNER_W - TITLE_LEN - LP ))
     printf -v LSP "%*s" "$LP" ""
     printf -v RSP "%*s" "$RP" ""
 
-    echo -e "${TURQUOISE}╔═${BORDER_TOP}═╗${END}"
-    echo -e "${TURQUOISE}║${END} ${LSP}${TITLE}${RSP} ${TURQUOISE}║${END}"
-    echo -e "${TURQUOISE}╠═${BORDER_TOP}═╣${END}"
+    echo ""
+    echo -e "  ${TURQUOISE}╔═${BORDER_TOP}═╗${END}"
+    echo -e "  ${TURQUOISE}║${END} ${LSP}${BOLD}${TITLE}${END}${RSP} ${TURQUOISE}║${END}"
+    echo -e "  ${TURQUOISE}╠═${BORDER_TOP}═╣${END}"
 
     local first_item=true
     for item in "${ITEMS[@]}"; do
@@ -238,22 +229,21 @@ drawInfo_box() {
         value="${value# }"
 
         if ! $first_item; then
-            echo -e "${TURQUOISE}╟─${BORDER_MID}─╢${END}"
+            echo -e "  ${TURQUOISE}╟─${BORDER_MID}─╢${END}"
         fi
         first_item=false
 
-        # Word-wrap value
         local first_line=1
         local line=""
 
         for word in $value; do
             if (( ${#line} + ${#word} + 1 > VALUE_W )); then
                 if (( first_line )); then
-                    printf "${TURQUOISE}║${END} %-${LABEL_W}s ${TURQUOISE}│${END} ${GREEN}%-${VALUE_W}s${END} ${TURQUOISE}║${END}\n" \
+                    printf "  ${TURQUOISE}║${END} %-${LABEL_W}s ${TURQUOISE}│${END} ${GREEN}%-${VALUE_W}s${END} ${TURQUOISE}║${END}\n" \
                         "$label" "$line"
                     first_line=0
                 else
-                    printf "${TURQUOISE}║${END} %-${LABEL_W}s ${TURQUOISE}│${END} ${GREEN}%-${VALUE_W}s${END} ${TURQUOISE}║${END}\n" \
+                    printf "  ${TURQUOISE}║${END} %-${LABEL_W}s ${TURQUOISE}│${END} ${GREEN}%-${VALUE_W}s${END} ${TURQUOISE}║${END}\n" \
                         "" "$line"
                 fi
                 line="$word"
@@ -263,13 +253,13 @@ drawInfo_box() {
         done
 
         if (( first_line )); then
-            printf "${TURQUOISE}║${END} %-${LABEL_W}s ${TURQUOISE}│${END} ${GREEN}%-${VALUE_W}s${END} ${TURQUOISE}║${END}\n" \
+            printf "  ${TURQUOISE}║${END} %-${LABEL_W}s ${TURQUOISE}│${END} ${GREEN}%-${VALUE_W}s${END} ${TURQUOISE}║${END}\n" \
                 "$label" "$line"
         else
-            printf "${TURQUOISE}║${END} %-${LABEL_W}s ${TURQUOISE}│${END} ${GREEN}%-${VALUE_W}s${END} ${TURQUOISE}║${END}\n" \
+            printf "  ${TURQUOISE}║${END} %-${LABEL_W}s ${TURQUOISE}│${END} ${GREEN}%-${VALUE_W}s${END} ${TURQUOISE}║${END}\n" \
                 "" "$line"
         fi
     done
 
-    echo -e "${TURQUOISE}╚═${BORDER_BOT}═╝${END}"
+    echo -e "  ${TURQUOISE}╚═${BORDER_BOT}═╝${END}"
 }
