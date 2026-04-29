@@ -40,10 +40,10 @@ main_menu() {
         _menu_prompt
 
         case "$choice" in
-            1) echo ""; collect_info ;;
-            2) echo ""; detect_devices "default" ;;
-            3) echo ""; check_dependencies; install_drivers ;;
-            4) echo ""; keyboard_test ;;
+            1) echo ""; spinner_start "Loading device information..."; sleep 0.5; spinner_stop OK; collect_info ;;
+            2) echo ""; spinner_start "Scanning hardware..."; sleep 0.5; spinner_stop OK; detect_devices "default" ;;
+            3) echo ""; spinner_start "Preparing update..."; sleep 0.5; spinner_stop OK; check_dependencies; install_drivers ;;
+            4) echo ""; spinner_start "Launching keyboard test..."; sleep 0.5; spinner_stop OK; keyboard_test ;;
             s5p) prepare_environment ;;
             t6c) install_touch_calibrator "touch-calibrator.sh" "AutoCalibrate Fujitsu" "touch-calibration.desktop" ;;
             t7c) install_touch_calibrator "touch-calibrator-cf31.sh" "CF-31 MK5 Automatic-Calibration" "touch-calibrationcf31.desktop" ;;
@@ -66,11 +66,11 @@ c2_main_menu() {
         _menu_prompt
 
         case "$choice" in
-            1) echo ""; collect_info ;;
-            2) echo ""; detect_devices "c2" ;;
-            3) echo ""; check_dependencies; install_drivers ;;
-            4) echo ""; keyboard_test ;;
-            5) echo ""; install_sound_autostart_c2; sleep 1 ;;
+            1) echo ""; spinner_start "Loading device information..."; sleep 0.5; spinner_stop OK; collect_info ;;
+            2) echo ""; spinner_start "Scanning hardware..."; sleep 0.5; spinner_stop OK; detect_devices "c2" ;;
+            3) echo ""; spinner_start "Preparing update..."; sleep 0.5; spinner_stop OK; check_dependencies; install_drivers ;;
+            4) echo ""; spinner_start "Launching keyboard test..."; sleep 0.5; spinner_stop OK; keyboard_test ;;
+            5) echo ""; spinner_start "Configuring audio..."; sleep 0.5; spinner_stop OK; install_sound_autostart_c2; sleep 1 ;;
             s6p) prepare_environment_c2 ;;
             [qQ]) _menu_exit ;;
             *) msg_err "Invalid option." ;;
@@ -90,12 +90,15 @@ g1_main_menu() {
         _menu_prompt
 
         case "$choice" in
-            1) echo ""; collect_info ;;
-            2) echo ""; detect_devices "g1" ;;
-            3) echo ""; check_dependencies; install_drivers ;;
-            4) echo ""; install_sound_autostart ;;
+            1) echo ""; spinner_start "Loading device information..."; sleep 0.5; spinner_stop OK; collect_info ;;
+            2) echo ""; spinner_start "Scanning hardware..."; sleep 0.5; spinner_stop OK; detect_devices "g1" ;;
+            3) echo ""; spinner_start "Preparing update..."; sleep 0.5; spinner_stop OK; check_dependencies; install_drivers ;;
+            4) echo ""; spinner_start "Configuring audio..."; sleep 0.5; spinner_stop OK; install_sound_autostart ;;
             5)
                 echo ""
+                spinner_start "Resizing disk..."
+                sleep 0.5
+                spinner_stop OK
                 sudo apt install -y cloud-guest-utils
                 sudo growpart /dev/sda 5
                 sudo resize2fs /dev/sda5

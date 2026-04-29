@@ -18,35 +18,37 @@ collect_info() {
     [ -z "$hours" ] && hours=$(uptime -p)
 
     # ── RAM (with serials and calculated total in GB) ──
-    ram_type=$(sudo dmidecode -t memory | grep -E "Type:.*DDR" | awk '{print $2}' | head -n1)
+    ram_type=$(sudo dmidecode -t memory 2>/dev/null | grep -E "Type:.*DDR" | awk '{print $2}' | head -n1)
 
-    # Get slot sizes and serials from dmidecode
+    # Get slot sizes and serials — use simple grep without regex anchors
     local ram_size_a ram_size_b ram_serial_a ram_serial_b
-    ram_size_a=$(sudo dmidecode -t memory | grep -E "^\sSize:" | sed -n '1p' | sed 's/.*: //')
-    ram_size_b=$(sudo dmidecode -t memory | grep -E "^\sSize:" | sed -n '2p' | sed 's/.*: //')
-    ram_serial_a=$(sudo dmidecode -t memory | grep -E "^\sSerial Number:" | sed -n '1p' | sed 's/.*: //')
-    ram_serial_b=$(sudo dmidecode -t memory | grep -E "^\sSerial Number:" | sed -n '2p' | sed 's/.*: //')
+    ram_size_a=$(sudo dmidecode -t memory 2>/dev/null | grep "Size:" | sed -n '1p' | awk '{print $2, $3}')
+    ram_size_b=$(sudo dmidecode -t memory 2>/dev/null | grep "Size:" | sed -n '2p' | awk '{print $2, $3}')
+    ram_serial_a=$(sudo dmidecode -t memory 2>/dev/null | grep "Serial Number:" | sed -n '1p' | awk -F': ' '{print $2}' | xargs)
+    ram_serial_b=$(sudo dmidecode -t memory 2>/dev/null | grep "Serial Number:" | sed -n '2p' | awk -F': ' '{print $2}' | xargs)
 
-    # Clean up empty/missing values
-    [[ -z "$ram_size_a" || "$ram_size_a" == *"No Module"* ]] && ram_size_a="Empty"
-    [[ -z "$ram_size_b" || "$ram_size_b" == *"No Module"* ]] && ram_size_b="Empty"
+    # Clean up
+    [[ -z "$ram_size_a" || "$ram_size_a" == *"No Module"* || "$ram_size_a" == *"Not"* ]] && ram_size_a=""
+    [[ -z "$ram_size_b" || "$ram_size_b" == *"No Module"* || "$ram_size_b" == *"Not"* ]] && ram_size_b=""
     [[ -z "$ram_serial_a" || "$ram_serial_a" == *"Not Specified"* ]] && ram_serial_a="N/A"
     [[ -z "$ram_serial_b" || "$ram_serial_b" == *"Not Specified"* ]] && ram_serial_b="N/A"
 
-    # Extract MB numbers and convert to GB
+    # Extract MB and convert to GB
     local size_a_mb=0 size_b_mb=0
     [[ "$ram_size_a" =~ ([0-9]+) ]] && size_a_mb=${BASH_REMATCH[1]}
     [[ "$ram_size_b" =~ ([0-9]+) ]] && size_b_mb=${BASH_REMATCH[1]}
 
     local a_gb=0 b_gb=0
-    (( size_a_mb > 0 )) && a_gb=$(( size_a_mb / 1024 ))
-    (( size_b_mb > 0 )) && b_gb=$(( size_b_mb / 1024 ))
+    (( size_a_mb >= 1024 )) && a_gb=$(( size_a_mb / 1024 ))
+    (( size_a_mb > 0 && size_a_mb < 1024 )) && a_gb=1
+    (( size_b_mb >= 1024 )) && b_gb=$(( size_b_mb / 1024 ))
+    (( size_b_mb > 0 && size_b_mb < 1024 )) && b_gb=1
     local total_gb=$(( a_gb + b_gb ))
 
     # Fallback: use free if dmidecode gave 0
     if (( total_gb == 0 )); then
-        total_gb=$(free -g | awk '/Mem:/ {print $2}')
-        (( total_gb == 0 )) && total_gb=1
+        total_gb=$(free --giga | awk '/Mem:/ {print $2}')
+        (( total_gb == 0 )) && total_gb=$(free -h | awk '/Mem:/ {sub(/[a-zA-Z]/,"",$2); print int($2+0.5)}')
     fi
 
     # Format slot display
