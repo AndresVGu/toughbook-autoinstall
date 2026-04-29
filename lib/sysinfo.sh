@@ -70,6 +70,31 @@ collect_info() {
         esac
     fi
 
+    # Alternative charging detection via sysfs / upower
+    local power_source="Unknown"
+    local ac_online
+    ac_online=$(cat /sys/class/power_supply/*/online 2>/dev/null | head -1)
+    if [[ "$ac_online" == "1" ]]; then
+        power_source="AC Connected"
+    else
+        power_source="Battery"
+    fi
+
+    local upower_state
+    upower_state=$(upower -i /org/freedesktop/UPower/devices/battery_BAT0 2>/dev/null | grep "state:" | awk '{print $2}')
+    [ -n "$upower_state" ] && bat_state="$upower_state"
+
+    local upower_pct
+    upower_pct=$(upower -i /org/freedesktop/UPower/devices/battery_BAT0 2>/dev/null | grep "percentage:" | awk '{print $2}')
+
+    # Update icon based on best available state
+    case "$bat_state" in
+        charging)        bat_charging_icon="[+]"; bat_state="Charging" ;;
+        discharging)     bat_charging_icon="[!]"; bat_state="Discharging" ;;
+        fully-charged)   bat_charging_icon="[=]"; bat_state="Full" ;;
+        *not*charging*)  bat_charging_icon="[~]"; bat_state="Not Charging" ;;
+    esac
+
     bat_health=$(acpi -V 2>/dev/null | grep "mAh" | grep -o "[0-9]\+%")
     bat_status_1=$(acpi -V 2>/dev/null | awk -F, '/Battery/{print $2; exit}' | xargs)
 
@@ -109,6 +134,8 @@ collect_info() {
 
     drawInfo_box "BATTERY INFORMATION" \
         "Status: $batStatus" \
+        "Charge: ${upower_pct:-N/A}" \
+        "Power Source: $power_source" \
         "Health: $bat_health" \
         "Recommendation: $bat_message"
 
@@ -152,7 +179,7 @@ _normalize_disk_size() {
 _draw_storage_info() {
     local TITLE="STORAGE INFORMATION"
 
-    local C1=10 C2=14 C3=16 C4=8 C5=14
+    local C1=14 C2=16 C3=18 C4=10 C5=16
     local INNER_W=$((C1 + 3 + C2 + 3 + C3 + 3 + C4 + 3 + C5))
 
     printf -v _b1 "%*s" "$C1" ""; _b1="${_b1// /═}"
