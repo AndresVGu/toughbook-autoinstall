@@ -41,13 +41,13 @@ main_menu() {
 
         case "$choice" in
             1) echo ""; spinner_start "Loading device information..."; sleep 0.5; spinner_stop OK; collect_info ;;
-            2) echo ""; spinner_start "Scanning hardware..."; sleep 0.5; spinner_stop OK; detect_devices "default" ;;
-            3) echo ""; spinner_start "Preparing update..."; sleep 0.5; spinner_stop OK; check_dependencies; install_drivers ;;
-            4) echo ""; spinner_start "Launching keyboard test..."; sleep 0.5; spinner_stop OK; keyboard_test ;;
-            s5p) prepare_environment ;;
-            t6c) install_touch_calibrator "touch-calibrator.sh" "AutoCalibrate Fujitsu" "touch-calibration.desktop" ;;
-            t7c) install_touch_calibrator "touch-calibrator-cf31.sh" "CF-31 MK5 Automatic-Calibration" "touch-calibrationcf31.desktop" ;;
-            g8d) force_gdm ;;
+            2) require_root && { echo ""; spinner_start "Scanning hardware..."; sleep 0.5; spinner_stop OK; detect_devices "default"; } ;;
+            3) require_root && { echo ""; spinner_start "Preparing update..."; sleep 0.5; spinner_stop OK; check_dependencies; install_drivers; } ;;
+            4) require_root && { echo ""; spinner_start "Launching keyboard test..."; sleep 0.5; spinner_stop OK; keyboard_test; } ;;
+            s5p) require_root && prepare_environment ;;
+            t6c) require_root && install_touch_calibrator "touch-calibrator.sh" "AutoCalibrate Fujitsu" "touch-calibration.desktop" ;;
+            t7c) require_root && install_touch_calibrator "touch-calibrator-cf31.sh" "CF-31 MK5 Automatic-Calibration" "touch-calibrationcf31.desktop" ;;
+            g8d) require_root && force_gdm ;;
             [qQ]) _menu_exit ;;
             *) msg_err "Invalid option." ;;
         esac
@@ -67,11 +67,11 @@ c2_main_menu() {
 
         case "$choice" in
             1) echo ""; spinner_start "Loading device information..."; sleep 0.5; spinner_stop OK; collect_info ;;
-            2) echo ""; spinner_start "Scanning hardware..."; sleep 0.5; spinner_stop OK; detect_devices "c2" ;;
-            3) echo ""; spinner_start "Preparing update..."; sleep 0.5; spinner_stop OK; check_dependencies; install_drivers ;;
-            4) echo ""; spinner_start "Launching keyboard test..."; sleep 0.5; spinner_stop OK; keyboard_test ;;
-            5) echo ""; spinner_start "Configuring audio..."; sleep 0.5; spinner_stop OK; install_sound_autostart_c2; sleep 1 ;;
-            s6p) prepare_environment_c2 ;;
+            2) require_root && { echo ""; spinner_start "Scanning hardware..."; sleep 0.5; spinner_stop OK; detect_devices "c2"; } ;;
+            3) require_root && { echo ""; spinner_start "Preparing update..."; sleep 0.5; spinner_stop OK; check_dependencies; install_drivers; } ;;
+            4) require_root && { echo ""; spinner_start "Launching keyboard test..."; sleep 0.5; spinner_stop OK; keyboard_test; } ;;
+            5) require_root && { echo ""; spinner_start "Configuring audio..."; sleep 0.5; spinner_stop OK; install_sound_autostart_c2; sleep 1; } ;;
+            s6p) require_root && prepare_environment_c2 ;;
             [qQ]) _menu_exit ;;
             *) msg_err "Invalid option." ;;
         esac
@@ -91,10 +91,10 @@ g1_main_menu() {
 
         case "$choice" in
             1) echo ""; spinner_start "Loading device information..."; sleep 0.5; spinner_stop OK; collect_info ;;
-            2) echo ""; spinner_start "Scanning hardware..."; sleep 0.5; spinner_stop OK; detect_devices "g1" ;;
-            3) echo ""; spinner_start "Preparing update..."; sleep 0.5; spinner_stop OK; check_dependencies; install_drivers ;;
-            4) echo ""; spinner_start "Configuring audio..."; sleep 0.5; spinner_stop OK; install_sound_autostart ;;
-            5)
+            2) require_root && { echo ""; spinner_start "Scanning hardware..."; sleep 0.5; spinner_stop OK; detect_devices "g1"; } ;;
+            3) require_root && { echo ""; spinner_start "Preparing update..."; sleep 0.5; spinner_stop OK; check_dependencies; install_drivers; } ;;
+            4) require_root && { echo ""; spinner_start "Configuring audio..."; sleep 0.5; spinner_stop OK; install_sound_autostart; } ;;
+            5) require_root && {
                 echo ""
                 spinner_start "Resizing disk..."
                 sleep 0.5
@@ -103,8 +103,8 @@ g1_main_menu() {
                 sudo growpart /dev/sda 5
                 sudo resize2fs /dev/sda5
                 msg_ok "Resize successful."
-                ;;
-            k6t) keyboard_test ;;
+                } ;;
+            k6t) require_root && keyboard_test ;;
             [qQ]) _menu_exit ;;
             *) msg_err "Invalid option." ;;
         esac

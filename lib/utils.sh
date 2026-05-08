@@ -119,11 +119,15 @@ show_banner() {
 }
 
 check_root() {
-    if [ "$EUID" -ne 0 ]; then
-        show_banner
-        msg_err "This script must be run as root!"
+    IS_ROOT=false
+    [ "$EUID" -eq 0 ] && IS_ROOT=true
+}
+
+require_root() {
+    if [ "$IS_ROOT" = false ]; then
+        msg_err "This option requires root privileges!"
         echo -e "    ${DIM}Usage: sudo ./autoinstall.sh${END}\n"
-        exit 1
+        return 1
     fi
 }
 
