@@ -222,18 +222,13 @@ detect_devices() {
         fi
     fi
 
-    # For default model, check cameras via lsusb
+    # For default model, check rear camera via lsusb
     if [[ "$model_type" == "default" ]]; then
-        local -a cameras=("Webcam:Front Camera" "Camera:Rear Camera")
-        for item in "${cameras[@]}"; do
-            local search_pattern="${item%%:*}"
-            local output_alias="${item##*:}"
-            if echo "$usb_devices" | grep -qi "$search_pattern"; then
-                _detection_row "$output_alias" true
-            else
-                _detection_row "$output_alias" false
-            fi
-        done
+        if echo "$usb_devices" | grep -qi "Camera"; then
+            _detection_row "Rear Camera" true
+        else
+            _detection_row "Rear Camera" false
+        fi
     fi
 
     # ── Touch screen ──
