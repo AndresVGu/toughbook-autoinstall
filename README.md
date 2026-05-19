@@ -296,7 +296,7 @@ After installation, connect to Wi-Fi and run:
 
 ```bash
 sudo su            # Password: 1234
-sudo apt update -y && sudo apt upgrade -y
+sudo apt update -y && sudo apt full-upgrade -y && sudo apt autoremove -y && sudo apt autoclean -y
 sudo apt install git -y
 ```
 
@@ -642,7 +642,7 @@ sudo pwmconfig         # Follow on-screen instructions
 **1. Update the system:**
 
 ```bash
-sudo apt update && sudo apt full-upgrade -y
+sudo apt update -y && sudo apt full-upgrade -y && sudo apt autoremove -y && sudo apt autoclean -y
 ```
 
 **2. Install OEM packages:**
