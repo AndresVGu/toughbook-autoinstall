@@ -66,7 +66,24 @@ keyboard_test() {
 
     echo -e "Initializing Keytest..."
     cd "$FULL_REPO_PATH" || return 1
-    sudo -u "$USER_DIR" DISPLAY=:0 XAUTHORITY="/home/$USER_DIR/.Xauthority" \
+
+    # Grant local display access for the user
+    local DISPLAY_VAL="${DISPLAY:-:0}"
+    local XAUTH_FILE="/home/$USER_DIR/.Xauthority"
+
+    # Try to find the active Xauthority if the default doesn't exist
+    if [ ! -f "$XAUTH_FILE" ]; then
+        # Check for runtime directory cookie (common in GDM/SDDM sessions)
+        local RUNTIME_XAUTH="/run/user/$(id -u "$USER_DIR")/gdm/Xauthority"
+        if [ -f "$RUNTIME_XAUTH" ]; then
+            XAUTH_FILE="$RUNTIME_XAUTH"
+        fi
+    fi
+
+    # Allow local connections to the X server
+    xhost +si:localuser:"$USER_DIR" >/dev/null 2>&1 || true
+
+    sudo -u "$USER_DIR" DISPLAY="$DISPLAY_VAL" XAUTHORITY="$XAUTH_FILE" \
         python3 keytest.py &
     cd - >/dev/null
 }
