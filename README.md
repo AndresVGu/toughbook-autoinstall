@@ -586,7 +586,7 @@ sudo apt install fprintd -y
 fprintd-enroll     # Register a fingerprint
 fprintd-verify     # Test the enrolled fingerprint
 ```
-** In case you have Broadcom 58200, you can follow this process: **
+**In case you have Broadcom 58200, you can follow this process: **
 
 1. Install fprintd service
 ```bash
@@ -640,6 +640,41 @@ Look for `Reader 0: <reader_name>...` in the output.
 
 **3. Test with a card inserted:**
 
+```bash
+pcsc_scan
+```
+
+## Set Insertable & Contactless Smart Card Reader for DELL 
+
+**1. Install the tools:**
+
+```bash
+sudo apt install pcscd pcsc-tools libpcsclite-dev libccid
+```
+**2. Enable the tools:**
+```bash
+sudo systemctl enable --now pcscd
+```
+
+**3. Test Insertable:**
+```bash
+pcsc_scan
+```
+
+**4. Contactless (Install python3):**
+```bash
+sudo apt install python3 python3-usb
+```
+
+
+**5. Clone Script to enable Contactless:**
+```bash
+git clone https://github.com/kalpo/controlvault2-nfc-enable
+cd controlvault2-nfc-enable
+sudo ./nfc.py on
+```
+
+**3. Test Contactless:**
 ```bash
 pcsc_scan
 ```
