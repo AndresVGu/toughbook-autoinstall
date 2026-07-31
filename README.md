@@ -730,3 +730,44 @@ The following commands are hidden from the menu and are intended for administrat
 <p align="center">
   <sub>Built with ❤️ for the refurb & QA team</sub>
 </p>
+
+2. Instala el driver necesario (para Broadcom)
+El driver para estos lectores no viene incluido en Ubuntu y, además, depende de una versión antigua de una librería de seguridad. Sigue estos pasos en la terminal para instalarlo:
+
+Actualiza e instala las herramientas base:
+
+bash
+sudo apt update
+sudo apt install fprintd libpam-fprintd -y
+Esto instala el servicio fprintd que gestiona las huellas y el módulo para que el sistema pueda usarlas para autenticarte.
+
+Instala la librería libssl1.1 (requisito indispensable):
+
+bash
+wget http://archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2.24_amd64.deb
+sudo dpkg -i libssl1.1_1.1.1f-1ubuntu2.24_amd64.deb
+Esto es necesario porque el driver Broadcom fue creado para una versión anterior de Ubuntu y necesita esta librería específica.
+
+Instala el driver propietario de Broadcom:
+
+bash
+wget http://dell.archive.canonical.com/updates/pool/public/libf/libfprint-2-tod1-broadcom/libfprint-2-tod1-broadcom_5.12.018-0ubuntu1~22.04.01_amd64.deb
+sudo apt install ./libfprint-2-tod1-broadcom_5.12.018-0ubuntu1~22.04.01_amd64.deb
+Este es el "secreto" que hace funcionar al lector. Es un paquete .deb de Dell para Broadcom.
+
+Reinicia el sistema:
+
+bash
+sudo reboot
+Es importante reiniciar para que todos los servicios se carguen correctamente con el nuevo controlador.
+
+3. Inscribe tu huella
+Una vez que el sistema haya reiniciado, puedes inscribir tu huella.
+
+Método gráfico (recomendado): Ve a Configuración → Usuarios. Haz clic en tu nombre y, en la sección "Autenticación por huella digital", haz clic en el botón "+" para añadir una huella y seguir las instrucciones.
+
+Método por terminal: También puedes usar el comando fprintd-enroll. Por defecto, inscribirá tu dedo índice derecho. Si quieres usar otro dedo, especifícalo, por ejemplo:
+
+bash
+fprintd-enroll -f left-index-finger
+Sigue las instrucciones en pantalla, levantando y apoyando el dedo repetidamente
