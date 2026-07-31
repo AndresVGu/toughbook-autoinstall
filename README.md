@@ -586,7 +586,7 @@ sudo apt install fprintd -y
 fprintd-enroll     # Register a fingerprint
 fprintd-verify     # Test the enrolled fingerprint
 ```
-**In case you have Broadcom 58200, you can follow this process: **
+**In case you have Broadcom 58200, you can follow this process:**
 
 1. Install fprintd service
 ```bash
