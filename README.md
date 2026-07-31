@@ -136,7 +136,7 @@ This toolkit automates the process of installing, configuring, and preparing **P
 | FZ-G1 MK4 | **20.04** LTS (Focal Fossa) | |
 | CF-33 MK1 & MK2 | ❌ Not Compatible | |
 | FZ-M1 | ❌ Not Compatible | |
-| Dell Units | ⚠️ Partial | No 4G support |
+| Dell Units | ⚠️ Partial | No 4G support, Fingerprint & Camera in some cases |
 
 > [!WARNING]
 > **FZ-G1 MK1 with FOG Project:** If Option 5 is not used during Autoinstall, you must manually extend the partition:
