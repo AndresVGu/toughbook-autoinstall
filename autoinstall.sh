@@ -19,6 +19,7 @@ source "$SCRIPT_DIR/lib/detection.sh"
 source "$SCRIPT_DIR/lib/drivers.sh"
 source "$SCRIPT_DIR/lib/tools.sh"
 source "$SCRIPT_DIR/lib/oem.sh"
+source "$SCRIPT_DIR/lib/report.sh"
 source "$SCRIPT_DIR/lib/menus.sh"
 
 # ── Trap Ctrl+C ──

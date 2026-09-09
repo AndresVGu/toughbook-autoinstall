@@ -36,6 +36,7 @@ main_menu() {
         _menu_option "2" "🔍" "Hardware Detection"
         _menu_option "3" "📦" "Update & Install Drivers"
         _menu_option "4" "⌨ " "Keyboard Test"
+        _menu_option "5" "📄" "Generate Report"
         _menu_option "Q" "🚪" "Exit"
         _menu_prompt
 
@@ -44,6 +45,7 @@ main_menu() {
             2) require_root && { echo ""; spinner_start "Scanning hardware..."; sleep 0.5; spinner_stop OK; detect_devices "default"; } ;;
             3) require_root && { echo ""; spinner_start "Preparing update..."; sleep 0.5; spinner_stop OK; check_dependencies; install_drivers; } ;;
             4) require_root && { echo ""; spinner_start "Launching keyboard test..."; sleep 0.5; spinner_stop OK; keyboard_test; } ;;
+            5) require_root && { echo ""; spinner_start "Generating inspection report..."; sleep 0.5; spinner_stop OK; generate_report; } ;;
             s5p) require_root && prepare_environment ;;
             t6c) require_root && install_touch_calibrator "touch-calibrator.sh" "AutoCalibrate Fujitsu" "touch-calibration.desktop" ;;
             t7c) require_root && install_touch_calibrator "touch-calibrator-cf31.sh" "CF-31 MK5 Automatic-Calibration" "touch-calibrationcf31.desktop" ;;
@@ -62,6 +64,7 @@ c2_main_menu() {
         _menu_option "3" "📦" "Update & Install Drivers"
         _menu_option "4" "⌨ " "Keyboard Test"
         _menu_option "5" "🔊" "Sound Activation"
+        _menu_option "6" "📄" "Generate Report"
         _menu_option "Q" "🚪" "Exit"
         _menu_prompt
 
@@ -71,6 +74,7 @@ c2_main_menu() {
             3) require_root && { echo ""; spinner_start "Preparing update..."; sleep 0.5; spinner_stop OK; check_dependencies; install_drivers; } ;;
             4) require_root && { echo ""; spinner_start "Launching keyboard test..."; sleep 0.5; spinner_stop OK; keyboard_test; } ;;
             5) require_root && { echo ""; spinner_start "Configuring audio..."; sleep 0.5; spinner_stop OK; install_sound_autostart_c2; sleep 1; } ;;
+            6) require_root && { echo ""; spinner_start "Generating inspection report..."; sleep 0.5; spinner_stop OK; generate_report; } ;;
             s6p) require_root && prepare_environment_c2 ;;
             [qQ]) _menu_exit ;;
             *) msg_err "Invalid option." ;;
@@ -86,6 +90,7 @@ g1_main_menu() {
         _menu_option "3" "📦" "Update & Install Drivers"
         _menu_option "4" "🔊" "Sound Activation"
         _menu_option "5" "💾" "Disk Resize"
+        _menu_option "6" "📄" "Generate Report"
         _menu_option "Q" "🚪" "Exit"
         _menu_prompt
 
@@ -104,6 +109,7 @@ g1_main_menu() {
                 sudo resize2fs /dev/sda5
                 msg_ok "Resize successful."
                 } ;;
+            6) require_root && { echo ""; spinner_start "Generating inspection report..."; sleep 0.5; spinner_stop OK; generate_report; } ;;
             k6t) require_root && keyboard_test ;;
             [qQ]) _menu_exit ;;
             *) msg_err "Invalid option." ;;
