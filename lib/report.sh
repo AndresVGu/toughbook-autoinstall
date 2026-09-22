@@ -538,6 +538,15 @@ HTML_HEAD
     chown "$owner":"$owner_group" "$final_dest" 2>/dev/null || true
     chmod 644 "$final_dest" 2>/dev/null || true
     msg_ok "Report saved to: $final_dest"
+    echo ' __________________'
+    echo '< Report is in     >'
+    echo '< Downloads Folder >'
+    echo ' ------------------'
+    echo '        \   ^__^'
+    echo '         \  (oo)\_______'
+    echo '            (__)\       )\/\'
+    echo '                ||----w |'
+    echo '                ||     ||'
 
     rm -f "$_RPT_BODY" "$_RPT_BODY2" 2>/dev/null
     rm -rf "$tmp_dir" 2>/dev/null
